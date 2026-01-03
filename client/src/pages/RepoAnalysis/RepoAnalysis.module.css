@@ -1,0 +1,1086 @@
+/* Page Container */
+.page {
+  min-height: 100vh;
+  background: var(--bg-primary);
+  transition: background 0.3s ease;
+}
+
+.main {
+  padding-bottom: 4rem;
+}
+
+/* Header Section */
+.header {
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  padding: 2rem 0;
+  margin-top: 70px;
+  transition: all 0.3s ease;
+}
+
+.headerContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.breadcrumbLink {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.breadcrumbLink:hover {
+  color: var(--text-primary);
+}
+
+.repoInfo {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+}
+
+.repoIcon {
+  width: 64px;
+  height: 64px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+}
+
+.repoDetails {
+  flex: 1;
+}
+
+.repoName {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+  transition: color 0.3s ease;
+}
+
+.repoDescription {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  line-height: 1.5;
+  transition: color 0.3s ease;
+}
+
+.repoMeta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.metaItem {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  transition: color 0.3s ease;
+}
+
+/* Tabs Section */
+.tabsSection {
+  background: var(--bg-primary);
+  border-bottom: 1px solid var(--border-color);
+  position: sticky;
+  top: 70px;
+  z-index: 50;
+  transition: all 0.3s ease;
+}
+
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+  padding: 1rem 0;
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: transparent;
+  border: none;
+  border-radius: 0.5rem;
+  color: var(--text-secondary);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tab:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.tabActive {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.tabActive:hover {
+  background: linear-gradient(135deg, #5a6fd6 0%, #6a4299 100%);
+  color: white;
+}
+
+.tabIcon {
+  font-size: 1.125rem;
+}
+
+/* Content Section */
+.content {
+  padding: 2rem 0;
+}
+
+.tabContent {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.3s ease;
+}
+
+.tabContent.loaded {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Overview Grid */
+.overviewGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+.summaryCard {
+  grid-column: 1 / -1;
+  background: var(--card-bg);
+  transition: background 0.3s ease;
+}
+
+.metricsCard {
+  background: var(--card-bg);
+  transition: background 0.3s ease;
+}
+
+.techCard {
+  background: var(--card-bg);
+  transition: background 0.3s ease;
+}
+
+.depsCard {
+  grid-column: 1 / -1;
+  background: var(--card-bg);
+  transition: background 0.3s ease;
+}
+
+/* Section Header */
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.sectionTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  transition: color 0.3s ease;
+}
+
+.sectionIcon {
+  font-size: 1.25rem;
+}
+
+.expandIcon {
+  font-size: 1.5rem;
+  color: var(--text-secondary);
+  font-weight: 300;
+  transition: color 0.3s ease;
+}
+
+/* Summary Content */
+.summaryContent {
+  animation: fadeIn 0.3s ease;
+}
+
+.paragraph {
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin-bottom: 1rem;
+  transition: color 0.3s ease;
+}
+
+.paragraph:last-child {
+  margin-bottom: 0;
+}
+
+.paragraph strong {
+  color: var(--text-primary);
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+/* Metrics Grid */
+.metricsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.metricItem {
+  text-align: center;
+  padding: 1rem;
+  background: var(--bg-tertiary);
+  border-radius: 0.75rem;
+  transition: all 0.2s;
+}
+
+.metricItem:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.metricValue {
+  display: block;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.metricLabel {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: color 0.3s ease;
+}
+
+/* Tech Stack */
+.techStack {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.techItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.techInfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.techName {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  transition: color 0.3s ease;
+}
+
+.techPercent {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.techBar {
+  height: 8px;
+  background: var(--bg-tertiary);
+  border-radius: 4px;
+  overflow: hidden;
+  transition: background 0.3s ease;
+}
+
+.techProgress {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.5s ease-out;
+}
+
+/* Dependencies */
+.depsStats {
+  display: flex;
+  gap: 3rem;
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.depsStat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.depsValue {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  transition: color 0.3s ease;
+}
+
+.depsValue.warning {
+  color: #f59e0b;
+}
+
+.depsValue.success {
+  color: #10b981;
+}
+
+.depsLabel {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: color 0.3s ease;
+}
+
+.mainDeps {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.depsTitle {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.depsTags {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.depTag {
+  padding: 0.375rem 0.75rem;
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-radius: 9999px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.depTag:hover {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+/* Diagram Container */
+.diagramContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.diagramSelector {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.diagramBtn {
+  padding: 0.75rem 1.25rem;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  color: var(--text-secondary);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.diagramBtn:hover {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-color-strong);
+}
+
+.diagramBtn.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-color: transparent;
+}
+
+.diagramCard {
+  background: var(--card-bg);
+  transition: background 0.3s ease;
+}
+
+.diagramHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  transition: border-color 0.3s ease;
+}
+
+.diagramTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+  transition: color 0.3s ease;
+}
+
+.diagramActions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.diagramAction {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.diagramAction:hover {
+  background: var(--bg-secondary);
+  border-color: var(--border-color-strong);
+}
+
+.diagramWrapper {
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-tertiary);
+  border-radius: 0.75rem;
+  padding: 2rem;
+  overflow: auto;
+  transition: background 0.3s ease;
+}
+
+/* Visual Diagram Styles */
+.diagramVisual {
+  width: 100%;
+  max-width: 800px;
+}
+
+/* Architecture Diagram */
+.archDiagram {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+}
+
+.archLayer {
+  width: 100%;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  background: rgba(102, 126, 234, 0.1);
+  border: 2px solid rgba(102, 126, 234, 0.3);
+  transition: all 0.3s ease;
+}
+
+.archLayer:nth-child(3) {
+  background: rgba(16, 185, 129, 0.1);
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.archLayer:nth-child(5) {
+  background: rgba(245, 158, 11, 0.1);
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+.archLabel {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 1rem;
+  text-align: center;
+  transition: color 0.3s ease;
+}
+
+.archBoxes {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.archBox {
+  padding: 0.75rem 1.25rem;
+  background: var(--card-bg);
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s;
+}
+
+.archBox:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.archArrow {
+  color: var(--text-tertiary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0.5rem;
+  transition: color 0.3s ease;
+}
+
+/* Class Diagram */
+.classDiagram {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.classCard {
+  min-width: 180px;
+  background: var(--card-bg);
+  border: 2px solid rgba(102, 126, 234, 0.3);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  transition: all 0.2s;
+}
+
+.classCard:hover {
+  border-color: rgba(102, 126, 234, 0.6);
+  box-shadow: var(--shadow-md);
+}
+
+.className {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 0.75rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.classProps,
+.classMethods {
+  padding: 0.75rem;
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  font-family: 'Monaco', 'Menlo', monospace;
+  transition: color 0.3s ease;
+}
+
+.classProps {
+  border-bottom: 1px solid var(--border-color);
+  transition: border-color 0.3s ease;
+}
+
+.classProps div,
+.classMethods div {
+  padding: 0.25rem 0;
+}
+
+.classRelation {
+  color: var(--text-tertiary);
+  font-size: 1rem;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: color 0.3s ease;
+}
+
+/* Sequence Diagram */
+.seqDiagram {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.seqParticipants {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.seqParticipant {
+  padding: 0.75rem 1rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-align: center;
+  min-width: 80px;
+}
+
+.seqLines {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: var(--card-bg);
+  border-radius: 0.75rem;
+  border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+}
+
+.seqMessage {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--bg-tertiary);
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  transition: all 0.2s;
+}
+
+.seqMessage:hover {
+  background: rgba(102, 126, 234, 0.1);
+}
+
+.seqArrow {
+  color: #667eea;
+  font-weight: 700;
+}
+
+/* Code Details */
+.codeDetails {
+  margin-top: 1.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  transition: border-color 0.3s ease;
+}
+
+.codeSummary {
+  padding: 1rem;
+  background: var(--bg-tertiary);
+  cursor: pointer;
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition: all 0.2s;
+}
+
+.codeSummary:hover {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.mermaidCode {
+  margin: 0;
+  padding: 1.5rem;
+  background: #1e1e1e;
+  overflow-x: auto;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+}
+
+.mermaidCode code {
+  color: #d4d4d4;
+  font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
+}
+
+/* Insights Container */
+.insightsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.insightsHeader {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.insightsTitle {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+  transition: color 0.3s ease;
+}
+
+.insightsSubtitle {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  transition: color 0.3s ease;
+}
+
+.insightsList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.insightCard {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  background: var(--card-bg);
+  transition: all 0.2s;
+}
+
+.insightCard:hover {
+  transform: translateX(4px);
+}
+
+.insightCard.success {
+  border-left: 4px solid #10b981;
+}
+
+.insightCard.warning {
+  border-left: 4px solid #f59e0b;
+}
+
+.insightCard.info {
+  border-left: 4px solid #3b82f6;
+}
+
+.insightCard.error {
+  border-left: 4px solid #ef4444;
+}
+
+.insightIcon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.insightContent {
+  flex: 1;
+}
+
+.insightTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+  transition: color 0.3s ease;
+}
+
+.insightDesc {
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0;
+  transition: color 0.3s ease;
+}
+
+/* File Structure */
+.fileStructureCard {
+  background: var(--card-bg);
+  transition: background 0.3s ease;
+}
+
+.fileStructureTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+}
+
+.fileTree {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.fileTreeItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.fileTreeFolder {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--bg-tertiary);
+  border-radius: 0.5rem;
+  transition: background 0.3s ease;
+}
+
+.folderIcon {
+  font-size: 1rem;
+}
+
+.folderName {
+  font-weight: 500;
+  color: var(--text-primary);
+  flex: 1;
+  transition: color 0.3s ease;
+}
+
+.fileCount {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  background: var(--bg-secondary);
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  transition: all 0.3s ease;
+}
+
+.fileTreeChildren {
+  margin-left: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  border-left: 2px solid var(--border-color);
+  padding-left: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.fileTreeChild {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.5rem;
+  border-radius: 0.375rem;
+  transition: background 0.2s;
+}
+
+.fileTreeChild:hover {
+  background: var(--bg-tertiary);
+}
+
+/* Actions */
+.actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+}
+
+.primaryAction {
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 14px 0 rgba(102, 126, 234, 0.39);
+}
+
+.primaryAction:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px 0 rgba(102, 126, 234, 0.5);
+}
+
+.secondaryAction {
+  padding: 1rem 2rem;
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.secondaryAction:hover {
+  background: var(--bg-secondary);
+  border-color: var(--border-color-strong);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .overviewGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .summaryCard,
+  .depsCard {
+    grid-column: 1;
+  }
+
+  .metricsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .classDiagram {
+    flex-direction: column;
+  }
+
+  .classRelation {
+    transform: rotate(90deg);
+    padding: 0.5rem 0;
+  }
+
+  .header {
+    margin-top: 70px;
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    padding: 1.5rem 0;
+  }
+
+  .repoInfo {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .repoIcon {
+    width: 48px;
+    height: 48px;
+  }
+
+  .repoName {
+    font-size: 1.5rem;
+  }
+
+  .tabs {
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+  }
+
+  .tab {
+    padding: 0.625rem 1rem;
+    font-size: 0.875rem;
+    white-space: nowrap;
+  }
+
+  .metricsGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .metricValue {
+    font-size: 1.5rem;
+  }
+
+  .depsStats {
+    gap: 1.5rem;
+  }
+
+  .diagramWrapper {
+    min-height: 300px;
+    padding: 1rem;
+  }
+
+  .seqParticipants {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .seqParticipant {
+    min-width: auto;
+    font-size: 0.625rem;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .archBoxes {
+    gap: 0.5rem;
+  }
+
+  .archBox {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.75rem;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .primaryAction,
+  .secondaryAction {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .metricsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .repoMeta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .diagramSelector {
+    flex-direction: column;
+  }
+
+  .diagramBtn {
+    width: 100%;
+    justify-content: center;
+  }
+}
