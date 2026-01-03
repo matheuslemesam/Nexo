@@ -1,12 +1,13 @@
 """
 Nexo API - FastAPI Application
 """
+
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from api import auth
+from api import auth, extract
 from core.config import settings
 from services.database import connect_to_mongo, close_mongo_connection
 
@@ -44,6 +45,7 @@ app.add_middleware(
 
 # Rotas
 app.include_router(auth.router, prefix=settings.API_V1_PREFIX)
+app.include_router(extract.router, prefix=settings.API_V1_PREFIX)
 
 
 @app.get("/")
