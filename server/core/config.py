@@ -25,7 +25,7 @@ class Settings(BaseSettings):
 
     # Gemini API
     GEMINI_API_KEY: str = ""
-    GEMINI_MODEL: str = "gemini-2.0-flash-lite"
+    GEMINI_MODEL: str = "gemini-2.5-flash"
     GEMINI_MAX_TOKENS: int = 8192
 
     # ElevenLabs API (for podcast generation)

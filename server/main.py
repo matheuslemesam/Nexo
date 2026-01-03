@@ -7,7 +7,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from api import auth, extract, podcast
+from api import auth, extract, podcast, overview
 from core.config import settings
 from services.database import connect_to_mongo, close_mongo_connection
 
@@ -33,7 +33,7 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:5173",  
+        "http://localhost:5173",
         "http://localhost:3000",
         "http://127.0.0.1:5173",
         "http://127.0.0.1:5174",
@@ -46,7 +46,11 @@ app.add_middleware(
 # Rotas
 app.include_router(auth.router, prefix=settings.API_V1_PREFIX)
 app.include_router(extract.router, prefix=settings.API_V1_PREFIX)
+<<<<<<< HEAD
 app.include_router(podcast.router, prefix=f"{settings.API_V1_PREFIX}/podcast", tags=["Podcast"])
+=======
+app.include_router(overview.router, prefix=settings.API_V1_PREFIX)
+>>>>>>> 3a7f300 (feat(overview): backend do overview do projeto)
 
 
 @app.get("/")
