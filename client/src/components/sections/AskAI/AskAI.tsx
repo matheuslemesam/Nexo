@@ -1,20 +1,23 @@
-import { Container, Card } from '../../ui';
-import styles from './AskAI.module.css';
+import { Container, Card } from "../../ui";
+import styles from "./AskAI.module.css";
 
 export function AskAI() {
   return (
     <section className={styles.section}>
-      <Container size="xl">
+      <Container size='xl'>
         <div className={styles.header}>
-          <h2 className={styles.title}>Pergunte ao Código</h2>
+          <h2 className={styles.title}>Ask the Code</h2>
           <p className={styles.subtitle}>
-            Converse com seu projeto. Faça perguntas e receba respostas contextualizadas sobre qualquer parte do código.
+            Chat with your project. Ask questions and receive contextualized
+            answers about any part of the code.
           </p>
-          <a href="#" className={styles.link}>Ver como funciona →</a>
+          <a href='#' className={styles.link}>
+            See how it works →
+          </a>
         </div>
 
         <div className={styles.showcase}>
-          <Card variant="elevated" padding="none" className={styles.chatCard}>
+          <Card variant='elevated' padding='none' className={styles.chatCard}>
             <div className={styles.chatWindow}>
               <div className={styles.chatHeader}>
                 <span className={styles.aiIcon}>🤖</span>
@@ -22,33 +25,39 @@ export function AskAI() {
               </div>
               <div className={styles.chatBody}>
                 <div className={styles.messageUser}>
-                  O que faz a função processPayment?
+                  What does the processPayment function do?
                 </div>
                 <div className={styles.messageAI}>
-                  A função processPayment valida os dados do cartão, conecta com o gateway de pagamento e retorna o status da transação. Ela está em src/services/payment.ts...
+                  The processPayment function validates card data, connects to
+                  the payment gateway and returns the transaction status. It's
+                  located in src/services/payment.ts...
                 </div>
               </div>
               <div className={styles.chatInput}>
-                <input type="text" placeholder="Pergunte qualquer coisa sobre o código..." />
+                <input
+                  type='text'
+                  placeholder='Ask anything about the code...'
+                />
               </div>
             </div>
           </Card>
         </div>
 
         <div className={styles.features}>
-          <Card variant="outlined" padding="lg" className={styles.featureCard}>
+          <Card variant='outlined' padding='lg' className={styles.featureCard}>
             <div className={styles.featureIcon}>💬</div>
-            <h3 className={styles.featureTitle}>Onboarding Acelerado</h3>
+            <h3 className={styles.featureTitle}>Accelerated Onboarding</h3>
             <p className={styles.featureDesc}>
-              Novos devs entendem o projeto em horas, não semanas. Pergunte e aprenda.
+              New developers understand the project in hours, not weeks. Ask and
+              learn.
             </p>
           </Card>
 
-          <Card variant="outlined" padding="lg" className={styles.featureCard}>
+          <Card variant='outlined' padding='lg' className={styles.featureCard}>
             <div className={styles.featureIcon}>🧠</div>
-            <h3 className={styles.featureTitle}>Contexto Completo</h3>
+            <h3 className={styles.featureTitle}>Complete Context</h3>
             <p className={styles.featureDesc}>
-              Respostas baseadas no código real, não em suposições genéricas.
+              Answers based on real code, not generic assumptions.
             </p>
           </Card>
         </div>

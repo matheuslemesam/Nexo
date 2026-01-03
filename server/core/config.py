@@ -26,6 +26,9 @@ class Settings(BaseSettings):
     API_V1_PREFIX: str = "/api/v1"
     PROJECT_NAME: str = "Nexo API"
     
+    # ElevenLabs API
+    ELEVENLABS_API_KEY: str = ""  # Add your ElevenLabs API key here
+    
     # CORS - Segurança
     ALLOWED_ORIGINS: list = [
         "http://localhost:5173",

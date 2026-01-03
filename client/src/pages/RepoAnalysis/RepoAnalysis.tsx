@@ -1,38 +1,39 @@
-import { useState, useEffect, useRef } from 'react';
-import { useSearchParams, Link } from 'react-router-dom';
-import { Navbar } from '../../components/layout';
-import { Container, Card, Badge } from '../../components/ui';
-import styles from './RepoAnalysis.module.css';
+import { useState, useEffect, useRef } from "react";
+import { useSearchParams, Link } from "react-router-dom";
+import { Navbar } from "../../components/layout";
+import { Container, Card, Badge } from "../../components/ui";
+import styles from "./RepoAnalysis.module.css";
+import api from "../../services/api";
 
 // Mock data for repository analysis
 const MOCK_REPO_DATA = {
-  name: 'awesome-project',
-  owner: 'usuario',
-  fullName: 'usuario/awesome-project',
-  description: 'Um projeto incrível para demonstrar análise de código com IA',
-  language: 'TypeScript',
+  name: "awesome-project",
+  owner: "user",
+  fullName: "user/awesome-project",
+  description: "An amazing project to demonstrate AI-powered code analysis",
+  language: "TypeScript",
   stars: 1247,
   forks: 89,
   issues: 12,
-  lastUpdate: '2026-01-02',
+  lastUpdate: "2026-01-02",
   analyzedAt: new Date().toISOString(),
 };
 
 const MOCK_ANALYSIS = {
-  summary: `Este repositório é uma aplicação **full-stack moderna** construída com TypeScript, React e Node.js. A arquitetura segue padrões de **Clean Architecture** com separação clara entre camadas.
+  summary: `This repository is a **modern full-stack application** built with TypeScript, React and Node.js. The architecture follows **Clean Architecture** patterns with clear separation between layers.
 
-O projeto demonstra excelentes práticas de desenvolvimento:
-- **Componentização modular** no frontend
-- **API RESTful** bem estruturada no backend
-- **Tipagem forte** em todo o código
-- **Testes automatizados** com boa cobertura`,
+The project demonstrates excellent development practices:
+- **Modular componentization** in the frontend
+- **Well-structured RESTful API** in the backend
+- **Strong typing** throughout the codebase
+- **Automated tests** with good coverage`,
 
   techStack: [
-    { name: 'TypeScript', percentage: 68, color: '#3178c6' },
-    { name: 'React', percentage: 45, color: '#61dafb' },
-    { name: 'Node.js', percentage: 32, color: '#68a063' },
-    { name: 'PostgreSQL', percentage: 15, color: '#336791' },
-    { name: 'Docker', percentage: 10, color: '#2496ed' },
+    { name: "TypeScript", percentage: 68, color: "#3178c6" },
+    { name: "React", percentage: 45, color: "#61dafb" },
+    { name: "Node.js", percentage: 32, color: "#68a063" },
+    { name: "PostgreSQL", percentage: 15, color: "#336791" },
+    { name: "Docker", percentage: 10, color: "#2496ed" },
   ],
 
   metrics: {
@@ -41,58 +42,69 @@ O projeto demonstra excelentes práticas de desenvolvimento:
     functions: 234,
     classes: 45,
     coverage: 78,
-    complexity: 'Média',
-    maintainability: 'Alta',
+    complexity: "Média",
+    maintainability: "Alta",
   },
 
   insights: [
     {
-      type: 'success',
-      icon: '✓',
-      title: 'Estrutura bem organizada',
-      description: 'O projeto segue uma estrutura de pastas clara e consistente.',
+      type: "success",
+      icon: "✓",
+      title: "Well-organized structure",
+      description:
+        "The project follows a clear and consistent folder structure.",
     },
     {
-      type: 'success',
-      icon: '✓',
-      title: 'Tipagem completa',
-      description: 'TypeScript está configurado com modo strict, garantindo type safety.',
+      type: "success",
+      icon: "✓",
+      title: "Complete typing",
+      description:
+        "TypeScript is configured with strict mode, ensuring type safety.",
     },
     {
-      type: 'warning',
-      icon: '⚠',
-      title: 'Documentação parcial',
-      description: 'Algumas funções complexas não possuem JSDoc ou comentários explicativos.',
+      type: "warning",
+      icon: "⚠",
+      title: "Partial documentation",
+      description: "Some complex functions lack JSDoc or explanatory comments.",
     },
     {
-      type: 'info',
-      icon: 'ℹ',
-      title: 'Oportunidade de refatoração',
-      description: 'O módulo de autenticação pode ser simplificado usando padrões mais modernos.',
+      type: "info",
+      icon: "ℹ",
+      title: "Refactoring opportunity",
+      description:
+        "The authentication module can be simplified using more modern patterns.",
     },
   ],
 
   fileTree: [
-    { name: 'src/', type: 'folder', children: [
-      { name: 'components/', type: 'folder', files: 24 },
-      { name: 'pages/', type: 'folder', files: 8 },
-      { name: 'services/', type: 'folder', files: 6 },
-      { name: 'hooks/', type: 'folder', files: 12 },
-      { name: 'utils/', type: 'folder', files: 15 },
-    ]},
-    { name: 'server/', type: 'folder', children: [
-      { name: 'api/', type: 'folder', files: 10 },
-      { name: 'models/', type: 'folder', files: 8 },
-      { name: 'services/', type: 'folder', files: 7 },
-    ]},
-    { name: 'tests/', type: 'folder', files: 32 },
+    {
+      name: "src/",
+      type: "folder",
+      children: [
+        { name: "components/", type: "folder", files: 24 },
+        { name: "pages/", type: "folder", files: 8 },
+        { name: "services/", type: "folder", files: 6 },
+        { name: "hooks/", type: "folder", files: 12 },
+        { name: "utils/", type: "folder", files: 15 },
+      ],
+    },
+    {
+      name: "server/",
+      type: "folder",
+      children: [
+        { name: "api/", type: "folder", files: 10 },
+        { name: "models/", type: "folder", files: 8 },
+        { name: "services/", type: "folder", files: 7 },
+      ],
+    },
+    { name: "tests/", type: "folder", files: 32 },
   ],
 
   dependencies: {
     total: 45,
     outdated: 3,
     vulnerable: 0,
-    main: ['react', 'typescript', 'express', 'prisma', 'zod'],
+    main: ["react", "typescript", "express", "prisma", "zod"],
   },
 };
 
@@ -185,24 +197,97 @@ const MOCK_SEQUENCE_DIAGRAM = `sequenceDiagram
     A-->>F: Análise completa
     F-->>U: Exibe dashboard`;
 
-type DiagramType = 'architecture' | 'classes' | 'sequence';
+type DiagramType = "architecture" | "classes" | "sequence";
 
 /**
  * RepoAnalysis page - Displays repository analysis results
  */
 export function RepoAnalysis() {
   const [searchParams] = useSearchParams();
-  const repoUrl = searchParams.get('repo') || 'https://github.com/usuario/awesome-project';
-  
-  const [activeTab, setActiveTab] = useState<'overview' | 'diagram' | 'insights'>('overview');
-  const [activeDiagram, setActiveDiagram] = useState<DiagramType>('architecture');
+  const repoUrl =
+    searchParams.get("repo") || "https://github.com/usuario/awesome-project";
+
+  const [activeTab, setActiveTab] = useState<
+    "overview" | "diagram" | "insights"
+  >("overview");
+  const [activeDiagram, setActiveDiagram] =
+    useState<DiagramType>("architecture");
   const [isLoaded, setIsLoaded] = useState(false);
-  const [expandedSection, setExpandedSection] = useState<string | null>('summary');
+  const [expandedSection, setExpandedSection] = useState<string | null>(
+    "summary"
+  );
+  const [podcastState, setPodcastState] = useState<{
+    isGenerating: boolean;
+    audioUrl: string | null;
+    error: string | null;
+  }>({
+    isGenerating: false,
+    audioUrl: null,
+    error: null,
+  });
   const diagramRef = useRef<HTMLDivElement>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
 
   // Parse repo info from URL
-  const repoFromUrl = repoUrl.replace('https://github.com/', '');
+  const repoFromUrl = repoUrl.replace("https://github.com/", "");
   const displayRepoName = repoFromUrl || MOCK_REPO_DATA.fullName;
+
+  interface PodcastResponse {
+    success: boolean;
+    audio_url: string;
+    [key: string]: unknown;
+  }
+
+  // Generate podcast
+  const handleGeneratePodcast = async () => {
+    setPodcastState({ isGenerating: true, audioUrl: null, error: null });
+
+    try {
+      const fullRepoUrl = repoUrl.startsWith("http")
+        ? repoUrl
+        : `https://github.com/${repoUrl}`;
+
+      const response = await api.post<PodcastResponse>(
+        "/api/v1/podcast/generate/general",
+        {
+          repository_url: fullRepoUrl,
+          save_to_file: true,
+        }
+      );
+
+      console.log("Podcast API Response:", response);
+
+      // api.post returns JSON directly, not response.data
+      if (response.success) {
+        // Build complete audio URL
+        const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:8000";
+        const audioUrl = `${baseUrl}${response.audio_url}`;
+        console.log("Audio URL:", audioUrl);
+        setPodcastState({
+          isGenerating: false,
+          audioUrl,
+          error: null,
+        });
+      } else {
+        throw new Error("Failed to generate podcast");
+      }
+    } catch (error) {
+      const err = error as Error & {
+        response?: { data?: { detail?: string } };
+        message?: string;
+      };
+      console.error("Error generating podcast:", err);
+      console.error("Error response:", err.response);
+      setPodcastState({
+        isGenerating: false,
+        audioUrl: null,
+        error:
+          err.response?.data?.detail ||
+          err.message ||
+          "Error generating podcast. Please try again.",
+      });
+    }
+  };
 
   // Simulate loading animation
   useEffect(() => {
@@ -212,7 +297,7 @@ export function RepoAnalysis() {
 
   // Render Mermaid diagram as SVG simulation
   useEffect(() => {
-    if (diagramRef.current && activeTab === 'diagram') {
+    if (diagramRef.current && activeTab === "diagram") {
       // In a real implementation, you would use mermaid.render() here
       // For now, we'll display the diagram code with styling
     }
@@ -220,11 +305,11 @@ export function RepoAnalysis() {
 
   const getCurrentDiagram = () => {
     switch (activeDiagram) {
-      case 'architecture':
+      case "architecture":
         return MOCK_MERMAID_DIAGRAM;
-      case 'classes':
+      case "classes":
         return MOCK_CLASS_DIAGRAM;
-      case 'sequence':
+      case "sequence":
         return MOCK_SEQUENCE_DIAGRAM;
       default:
         return MOCK_MERMAID_DIAGRAM;
@@ -233,46 +318,59 @@ export function RepoAnalysis() {
 
   const getDiagramTitle = () => {
     switch (activeDiagram) {
-      case 'architecture':
-        return 'Arquitetura do Sistema';
-      case 'classes':
-        return 'Diagrama de Classes';
-      case 'sequence':
-        return 'Fluxo de Análise';
+      case "architecture":
+        return "System Architecture";
+      case "classes":
+        return "Class Diagram";
+      case "sequence":
+        return "Analysis Flow";
       default:
-        return 'Diagrama';
+        return "Diagram";
     }
   };
 
   return (
     <div className={styles.page}>
       <Navbar />
-      
+
       <main className={styles.main}>
         {/* Header Section */}
         <section className={styles.header}>
-          <Container size="xl">
+          <Container size='xl'>
             <div className={styles.headerContent}>
               <div className={styles.breadcrumb}>
-                <Link to="/comecar" className={styles.breadcrumbLink}>
+                <Link to='/comecar' className={styles.breadcrumbLink}>
                   ← Voltar
                 </Link>
               </div>
-              
+
               <div className={styles.repoInfo}>
                 <div className={styles.repoIcon}>
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                  <svg
+                    width='32'
+                    height='32'
+                    viewBox='0 0 24 24'
+                    fill='currentColor'
+                  >
+                    <path d='M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z' />
                   </svg>
                 </div>
                 <div className={styles.repoDetails}>
                   <h1 className={styles.repoName}>{displayRepoName}</h1>
-                  <p className={styles.repoDescription}>{MOCK_REPO_DATA.description}</p>
+                  <p className={styles.repoDescription}>
+                    {MOCK_REPO_DATA.description}
+                  </p>
                   <div className={styles.repoMeta}>
-                    <Badge variant="primary">{MOCK_REPO_DATA.language}</Badge>
-                    <span className={styles.metaItem}>⭐ {MOCK_REPO_DATA.stars}</span>
-                    <span className={styles.metaItem}>🍴 {MOCK_REPO_DATA.forks}</span>
-                    <span className={styles.metaItem}>📋 {MOCK_REPO_DATA.issues} issues</span>
+                    <Badge variant='primary'>{MOCK_REPO_DATA.language}</Badge>
+                    <span className={styles.metaItem}>
+                      ⭐ {MOCK_REPO_DATA.stars}
+                    </span>
+                    <span className={styles.metaItem}>
+                      🍴 {MOCK_REPO_DATA.forks}
+                    </span>
+                    <span className={styles.metaItem}>
+                      📋 {MOCK_REPO_DATA.issues} issues
+                    </span>
                   </div>
                 </div>
               </div>
@@ -282,25 +380,31 @@ export function RepoAnalysis() {
 
         {/* Tabs Navigation */}
         <section className={styles.tabsSection}>
-          <Container size="xl">
+          <Container size='xl'>
             <div className={styles.tabs}>
               <button
-                className={`${styles.tab} ${activeTab === 'overview' ? styles.tabActive : ''}`}
-                onClick={() => setActiveTab('overview')}
+                className={`${styles.tab} ${
+                  activeTab === "overview" ? styles.tabActive : ""
+                }`}
+                onClick={() => setActiveTab("overview")}
               >
                 <span className={styles.tabIcon}>📊</span>
-                Visão Geral
+                Overview
               </button>
               <button
-                className={`${styles.tab} ${activeTab === 'diagram' ? styles.tabActive : ''}`}
-                onClick={() => setActiveTab('diagram')}
+                className={`${styles.tab} ${
+                  activeTab === "diagram" ? styles.tabActive : ""
+                }`}
+                onClick={() => setActiveTab("diagram")}
               >
                 <span className={styles.tabIcon}>🔀</span>
-                Diagramas
+                Diagrams
               </button>
               <button
-                className={`${styles.tab} ${activeTab === 'insights' ? styles.tabActive : ''}`}
-                onClick={() => setActiveTab('insights')}
+                className={`${styles.tab} ${
+                  activeTab === "insights" ? styles.tabActive : ""
+                }`}
+                onClick={() => setActiveTab("insights")}
               >
                 <span className={styles.tabIcon}>💡</span>
                 Insights
@@ -311,91 +415,218 @@ export function RepoAnalysis() {
 
         {/* Content Section */}
         <section className={styles.content}>
-          <Container size="xl">
+          <Container size='xl'>
             {/* Overview Tab */}
-            {activeTab === 'overview' && (
-              <div className={`${styles.tabContent} ${isLoaded ? styles.loaded : ''}`}>
+            {activeTab === "overview" && (
+              <div
+                className={`${styles.tabContent} ${
+                  isLoaded ? styles.loaded : ""
+                }`}
+              >
                 <div className={styles.overviewGrid}>
+                  {/* Podcast Section - Main Feature */}
+                  <Card className={styles.analysisCard}>
+                    <div className={styles.cardHeader}>
+                      <div className={styles.cardHeaderLeft}>
+                        <span className={styles.cardIcon}>🎙️</span>
+                        <h3 className={styles.cardTitle}>
+                          AI-Generated Podcast
+                        </h3>
+                      </div>
+                    </div>
+                    <div className={styles.cardContent}>
+                      <p className={styles.podcastDescription}>
+                        Generate an AI-narrated podcast that explains this
+                        repository in detail, including architecture,
+                        technologies, structure and main features.
+                      </p>
+
+                      {!podcastState.audioUrl && !podcastState.isGenerating && (
+                        <button
+                          className={styles.generatePodcastButton}
+                          onClick={handleGeneratePodcast}
+                        >
+                          🎧 Generate Podcast
+                        </button>
+                      )}
+
+                      {podcastState.isGenerating && (
+                        <div className={styles.podcastLoading}>
+                          <div className={styles.spinner}></div>
+                          <p>
+                            Generating AI podcast... This may take a few
+                            seconds.
+                          </p>
+                        </div>
+                      )}
+
+                      {podcastState.error && (
+                        <div className={styles.podcastError}>
+                          <span className={styles.errorIcon}>⚠️</span>
+                          <p>{podcastState.error}</p>
+                          <button
+                            className={styles.retryButton}
+                            onClick={handleGeneratePodcast}
+                          >
+                            🔄 Try Again
+                          </button>
+                        </div>
+                      )}
+
+                      {podcastState.audioUrl && (
+                        <div className={styles.podcastPlayer}>
+                          <div className={styles.playerHeader}>
+                            <span className={styles.successIcon}>✓</span>
+                            <span>Podcast generated successfully!</span>
+                          </div>
+                          <audio
+                            ref={audioRef}
+                            controls
+                            className={styles.audioPlayer}
+                            src={podcastState.audioUrl}
+                          >
+                            Your browser does not support the audio element.
+                          </audio>
+                          <div className={styles.playerActions}>
+                            <a
+                              href={podcastState.audioUrl}
+                              download
+                              className={styles.downloadButton}
+                            >
+                              📥 Download MP3
+                            </a>
+                            <button
+                              className={styles.regenerateButton}
+                              onClick={handleGeneratePodcast}
+                            >
+                              🔄 Generate Again
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </Card>
+
                   {/* Summary Card */}
-                  <Card variant="elevated" padding="lg" className={styles.summaryCard}>
-                    <div 
+                  <Card
+                    variant='elevated'
+                    padding='lg'
+                    className={styles.summaryCard}
+                  >
+                    <div
                       className={styles.sectionHeader}
-                      onClick={() => setExpandedSection(expandedSection === 'summary' ? null : 'summary')}
+                      onClick={() =>
+                        setExpandedSection(
+                          expandedSection === "summary" ? null : "summary"
+                        )
+                      }
                     >
                       <h2 className={styles.sectionTitle}>
                         <span className={styles.sectionIcon}>📝</span>
-                        Resumo da Análise
+                        Analysis Summary
                       </h2>
                       <span className={styles.expandIcon}>
-                        {expandedSection === 'summary' ? '−' : '+'}
+                        {expandedSection === "summary" ? "−" : "+"}
                       </span>
                     </div>
-                    {expandedSection === 'summary' && (
+                    {expandedSection === "summary" && (
                       <div className={styles.summaryContent}>
-                        {MOCK_ANALYSIS.summary.split('\n\n').map((paragraph, idx) => (
-                          <p key={idx} className={styles.paragraph}>
-                            {paragraph.split('**').map((part, i) => 
-                              i % 2 === 1 ? <strong key={i}>{part}</strong> : part
-                            )}
-                          </p>
-                        ))}
+                        {MOCK_ANALYSIS.summary
+                          .split("\n\n")
+                          .map((paragraph, idx) => (
+                            <p key={idx} className={styles.paragraph}>
+                              {paragraph
+                                .split("**")
+                                .map((part, i) =>
+                                  i % 2 === 1 ? (
+                                    <strong key={i}>{part}</strong>
+                                  ) : (
+                                    part
+                                  )
+                                )}
+                            </p>
+                          ))}
                       </div>
                     )}
                   </Card>
 
                   {/* Metrics Card */}
-                  <Card variant="elevated" padding="lg" className={styles.metricsCard}>
+                  <Card
+                    variant='elevated'
+                    padding='lg'
+                    className={styles.metricsCard}
+                  >
                     <h2 className={styles.sectionTitle}>
                       <span className={styles.sectionIcon}>📈</span>
-                      Métricas do Código
+                      Code Metrics
                     </h2>
                     <div className={styles.metricsGrid}>
                       <div className={styles.metricItem}>
-                        <span className={styles.metricValue}>{MOCK_ANALYSIS.metrics.files}</span>
-                        <span className={styles.metricLabel}>Arquivos</span>
+                        <span className={styles.metricValue}>
+                          {MOCK_ANALYSIS.metrics.files}
+                        </span>
+                        <span className={styles.metricLabel}>Files</span>
                       </div>
                       <div className={styles.metricItem}>
-                        <span className={styles.metricValue}>{MOCK_ANALYSIS.metrics.lines.toLocaleString()}</span>
-                        <span className={styles.metricLabel}>Linhas</span>
+                        <span className={styles.metricValue}>
+                          {MOCK_ANALYSIS.metrics.lines.toLocaleString()}
+                        </span>
+                        <span className={styles.metricLabel}>Lines</span>
                       </div>
                       <div className={styles.metricItem}>
-                        <span className={styles.metricValue}>{MOCK_ANALYSIS.metrics.functions}</span>
-                        <span className={styles.metricLabel}>Funções</span>
+                        <span className={styles.metricValue}>
+                          {MOCK_ANALYSIS.metrics.functions}
+                        </span>
+                        <span className={styles.metricLabel}>Functions</span>
                       </div>
                       <div className={styles.metricItem}>
-                        <span className={styles.metricValue}>{MOCK_ANALYSIS.metrics.classes}</span>
+                        <span className={styles.metricValue}>
+                          {MOCK_ANALYSIS.metrics.classes}
+                        </span>
                         <span className={styles.metricLabel}>Classes</span>
                       </div>
                       <div className={styles.metricItem}>
-                        <span className={styles.metricValue}>{MOCK_ANALYSIS.metrics.coverage}%</span>
-                        <span className={styles.metricLabel}>Cobertura</span>
+                        <span className={styles.metricValue}>
+                          {MOCK_ANALYSIS.metrics.coverage}%
+                        </span>
+                        <span className={styles.metricLabel}>Coverage</span>
                       </div>
                       <div className={styles.metricItem}>
-                        <span className={styles.metricValue}>{MOCK_ANALYSIS.metrics.maintainability}</span>
-                        <span className={styles.metricLabel}>Manutenibilidade</span>
+                        <span className={styles.metricValue}>
+                          {MOCK_ANALYSIS.metrics.maintainability}
+                        </span>
+                        <span className={styles.metricLabel}>
+                          Maintainability
+                        </span>
                       </div>
                     </div>
                   </Card>
 
                   {/* Tech Stack Card */}
-                  <Card variant="elevated" padding="lg" className={styles.techCard}>
+                  <Card
+                    variant='elevated'
+                    padding='lg'
+                    className={styles.techCard}
+                  >
                     <h2 className={styles.sectionTitle}>
                       <span className={styles.sectionIcon}>🛠️</span>
-                      Stack Tecnológica
+                      Tech Stack
                     </h2>
                     <div className={styles.techStack}>
                       {MOCK_ANALYSIS.techStack.map((tech) => (
                         <div key={tech.name} className={styles.techItem}>
                           <div className={styles.techInfo}>
                             <span className={styles.techName}>{tech.name}</span>
-                            <span className={styles.techPercent}>{tech.percentage}%</span>
+                            <span className={styles.techPercent}>
+                              {tech.percentage}%
+                            </span>
                           </div>
                           <div className={styles.techBar}>
-                            <div 
+                            <div
                               className={styles.techProgress}
-                              style={{ 
+                              style={{
                                 width: `${tech.percentage}%`,
-                                background: tech.color 
+                                background: tech.color,
                               }}
                             />
                           </div>
@@ -405,24 +636,34 @@ export function RepoAnalysis() {
                   </Card>
 
                   {/* Dependencies Card */}
-                  <Card variant="elevated" padding="lg" className={styles.depsCard}>
+                  <Card
+                    variant='elevated'
+                    padding='lg'
+                    className={styles.depsCard}
+                  >
                     <h2 className={styles.sectionTitle}>
                       <span className={styles.sectionIcon}>📦</span>
-                      Dependências
+                      Dependencies
                     </h2>
                     <div className={styles.depsStats}>
                       <div className={styles.depsStat}>
-                        <span className={styles.depsValue}>{MOCK_ANALYSIS.dependencies.total}</span>
+                        <span className={styles.depsValue}>
+                          {MOCK_ANALYSIS.dependencies.total}
+                        </span>
                         <span className={styles.depsLabel}>Total</span>
                       </div>
                       <div className={styles.depsStat}>
-                        <span className={`${styles.depsValue} ${styles.warning}`}>
+                        <span
+                          className={`${styles.depsValue} ${styles.warning}`}
+                        >
                           {MOCK_ANALYSIS.dependencies.outdated}
                         </span>
                         <span className={styles.depsLabel}>Desatualizadas</span>
                       </div>
                       <div className={styles.depsStat}>
-                        <span className={`${styles.depsValue} ${styles.success}`}>
+                        <span
+                          className={`${styles.depsValue} ${styles.success}`}
+                        >
                           {MOCK_ANALYSIS.dependencies.vulnerable}
                         </span>
                         <span className={styles.depsLabel}>Vulneráveis</span>
@@ -432,7 +673,9 @@ export function RepoAnalysis() {
                       <span className={styles.depsTitle}>Principais:</span>
                       <div className={styles.depsTags}>
                         {MOCK_ANALYSIS.dependencies.main.map((dep) => (
-                          <span key={dep} className={styles.depTag}>{dep}</span>
+                          <span key={dep} className={styles.depTag}>
+                            {dep}
+                          </span>
                         ))}
                       </div>
                     </div>
@@ -442,64 +685,110 @@ export function RepoAnalysis() {
             )}
 
             {/* Diagram Tab */}
-            {activeTab === 'diagram' && (
-              <div className={`${styles.tabContent} ${isLoaded ? styles.loaded : ''}`}>
+            {activeTab === "diagram" && (
+              <div
+                className={`${styles.tabContent} ${
+                  isLoaded ? styles.loaded : ""
+                }`}
+              >
                 <div className={styles.diagramContainer}>
                   {/* Diagram Type Selector */}
                   <div className={styles.diagramSelector}>
                     <button
-                      className={`${styles.diagramBtn} ${activeDiagram === 'architecture' ? styles.active : ''}`}
-                      onClick={() => setActiveDiagram('architecture')}
+                      className={`${styles.diagramBtn} ${
+                        activeDiagram === "architecture" ? styles.active : ""
+                      }`}
+                      onClick={() => setActiveDiagram("architecture")}
                     >
                       🏗️ Arquitetura
                     </button>
                     <button
-                      className={`${styles.diagramBtn} ${activeDiagram === 'classes' ? styles.active : ''}`}
-                      onClick={() => setActiveDiagram('classes')}
+                      className={`${styles.diagramBtn} ${
+                        activeDiagram === "classes" ? styles.active : ""
+                      }`}
+                      onClick={() => setActiveDiagram("classes")}
                     >
                       📐 Classes
                     </button>
                     <button
-                      className={`${styles.diagramBtn} ${activeDiagram === 'sequence' ? styles.active : ''}`}
-                      onClick={() => setActiveDiagram('sequence')}
+                      className={`${styles.diagramBtn} ${
+                        activeDiagram === "sequence" ? styles.active : ""
+                      }`}
+                      onClick={() => setActiveDiagram("sequence")}
                     >
                       🔄 Sequência
                     </button>
                   </div>
 
                   {/* Diagram Display */}
-                  <Card variant="elevated" padding="lg" className={styles.diagramCard}>
+                  <Card
+                    variant='elevated'
+                    padding='lg'
+                    className={styles.diagramCard}
+                  >
                     <div className={styles.diagramHeader}>
-                      <h2 className={styles.diagramTitle}>{getDiagramTitle()}</h2>
+                      <h2 className={styles.diagramTitle}>
+                        {getDiagramTitle()}
+                      </h2>
                       <div className={styles.diagramActions}>
-                        <button className={styles.diagramAction} title="Zoom In">🔍+</button>
-                        <button className={styles.diagramAction} title="Zoom Out">🔍-</button>
-                        <button className={styles.diagramAction} title="Download">⬇️</button>
-                        <button className={styles.diagramAction} title="Fullscreen">⛶</button>
+                        <button
+                          className={styles.diagramAction}
+                          title='Zoom In'
+                        >
+                          🔍+
+                        </button>
+                        <button
+                          className={styles.diagramAction}
+                          title='Zoom Out'
+                        >
+                          🔍-
+                        </button>
+                        <button
+                          className={styles.diagramAction}
+                          title='Download'
+                        >
+                          ⬇️
+                        </button>
+                        <button
+                          className={styles.diagramAction}
+                          title='Fullscreen'
+                        >
+                          ⛶
+                        </button>
                       </div>
                     </div>
-                    
+
                     <div className={styles.diagramWrapper} ref={diagramRef}>
                       {/* Visual Diagram Representation */}
                       <div className={styles.diagramVisual}>
-                        {activeDiagram === 'architecture' && (
+                        {activeDiagram === "architecture" && (
                           <div className={styles.archDiagram}>
                             <div className={styles.archLayer}>
-                              <div className={styles.archLabel}>Frontend (React)</div>
+                              <div className={styles.archLabel}>
+                                Frontend (React)
+                              </div>
                               <div className={styles.archBoxes}>
-                                <div className={styles.archBox}>UI Components</div>
+                                <div className={styles.archBox}>
+                                  UI Components
+                                </div>
                                 <div className={styles.archBox}>Pages</div>
                                 <div className={styles.archBox}>Hooks</div>
                                 <div className={styles.archBox}>Services</div>
                               </div>
                             </div>
-                            <div className={styles.archArrow}>↓ HTTP/REST ↓</div>
+                            <div className={styles.archArrow}>
+                              ↓ HTTP/REST ↓
+                            </div>
                             <div className={styles.archLayer}>
-                              <div className={styles.archLabel}>Backend (Node.js)</div>
+                              <div className={styles.archLabel}>
+                                Backend (Node.js)
+                              </div>
                               <div className={styles.archBoxes}>
                                 <div className={styles.archBox}>REST API</div>
                                 <div className={styles.archBox}>Auth</div>
-                                <div className={styles.archBox}>Controllers</div>
+                                <div className={styles.archBox}>
+                                  Controllers
+                                </div>
                                 <div className={styles.archBox}>Models</div>
                               </div>
                             </div>
@@ -508,13 +797,15 @@ export function RepoAnalysis() {
                               <div className={styles.archLabel}>Database</div>
                               <div className={styles.archBoxes}>
                                 <div className={styles.archBox}>PostgreSQL</div>
-                                <div className={styles.archBox}>Redis Cache</div>
+                                <div className={styles.archBox}>
+                                  Redis Cache
+                                </div>
                               </div>
                             </div>
                           </div>
                         )}
-                        
-                        {activeDiagram === 'classes' && (
+
+                        {activeDiagram === "classes" && (
                           <div className={styles.classDiagram}>
                             <div className={styles.classCard}>
                               <div className={styles.className}>User</div>
@@ -528,7 +819,9 @@ export function RepoAnalysis() {
                                 <div>+logout()</div>
                               </div>
                             </div>
-                            <div className={styles.classRelation}>1 ──────► *</div>
+                            <div className={styles.classRelation}>
+                              1 ──────► *
+                            </div>
                             <div className={styles.classCard}>
                               <div className={styles.className}>Repository</div>
                               <div className={styles.classProps}>
@@ -541,9 +834,13 @@ export function RepoAnalysis() {
                                 <div>+getMetrics()</div>
                               </div>
                             </div>
-                            <div className={styles.classRelation}>1 ──────► 1</div>
+                            <div className={styles.classRelation}>
+                              1 ──────► 1
+                            </div>
                             <div className={styles.classCard}>
-                              <div className={styles.className}>AnalysisResult</div>
+                              <div className={styles.className}>
+                                AnalysisResult
+                              </div>
                               <div className={styles.classProps}>
                                 <div>+summary: String</div>
                                 <div>+metrics: Object</div>
@@ -554,15 +851,25 @@ export function RepoAnalysis() {
                             </div>
                           </div>
                         )}
-                        
-                        {activeDiagram === 'sequence' && (
+
+                        {activeDiagram === "sequence" && (
                           <div className={styles.seqDiagram}>
                             <div className={styles.seqParticipants}>
-                              <div className={styles.seqParticipant}>👤 Usuário</div>
-                              <div className={styles.seqParticipant}>🖥️ Frontend</div>
-                              <div className={styles.seqParticipant}>⚙️ API</div>
-                              <div className={styles.seqParticipant}>🤖 IA Engine</div>
-                              <div className={styles.seqParticipant}>🗄️ Database</div>
+                              <div className={styles.seqParticipant}>
+                                👤 Usuário
+                              </div>
+                              <div className={styles.seqParticipant}>
+                                🖥️ Frontend
+                              </div>
+                              <div className={styles.seqParticipant}>
+                                ⚙️ API
+                              </div>
+                              <div className={styles.seqParticipant}>
+                                🤖 IA Engine
+                              </div>
+                              <div className={styles.seqParticipant}>
+                                🗄️ Database
+                              </div>
                             </div>
                             <div className={styles.seqLines}>
                               <div className={styles.seqMessage}>
@@ -610,8 +917,12 @@ export function RepoAnalysis() {
             )}
 
             {/* Insights Tab */}
-            {activeTab === 'insights' && (
-              <div className={`${styles.tabContent} ${isLoaded ? styles.loaded : ''}`}>
+            {activeTab === "insights" && (
+              <div
+                className={`${styles.tabContent} ${
+                  isLoaded ? styles.loaded : ""
+                }`}
+              >
                 <div className={styles.insightsContainer}>
                   <div className={styles.insightsHeader}>
                     <h2 className={styles.insightsTitle}>
@@ -624,43 +935,64 @@ export function RepoAnalysis() {
 
                   <div className={styles.insightsList}>
                     {MOCK_ANALYSIS.insights.map((insight, index) => (
-                      <Card 
-                        key={index} 
-                        variant="outlined" 
-                        padding="lg" 
-                        className={`${styles.insightCard} ${styles[insight.type]}`}
+                      <Card
+                        key={index}
+                        variant='outlined'
+                        padding='lg'
+                        className={`${styles.insightCard} ${
+                          styles[insight.type]
+                        }`}
                       >
                         <div className={styles.insightIcon}>{insight.icon}</div>
                         <div className={styles.insightContent}>
-                          <h3 className={styles.insightTitle}>{insight.title}</h3>
-                          <p className={styles.insightDesc}>{insight.description}</p>
+                          <h3 className={styles.insightTitle}>
+                            {insight.title}
+                          </h3>
+                          <p className={styles.insightDesc}>
+                            {insight.description}
+                          </p>
                         </div>
                       </Card>
                     ))}
                   </div>
 
                   {/* File Structure */}
-                  <Card variant="elevated" padding="lg" className={styles.fileStructureCard}>
+                  <Card
+                    variant='elevated'
+                    padding='lg'
+                    className={styles.fileStructureCard}
+                  >
                     <h3 className={styles.fileStructureTitle}>
-                      <span>📁</span> Estrutura do Projeto
+                      <span>📁</span> Project Structure
                     </h3>
                     <div className={styles.fileTree}>
                       {MOCK_ANALYSIS.fileTree.map((item, idx) => (
                         <div key={idx} className={styles.fileTreeItem}>
                           <div className={styles.fileTreeFolder}>
                             <span className={styles.folderIcon}>📂</span>
-                            <span className={styles.folderName}>{item.name}</span>
+                            <span className={styles.folderName}>
+                              {item.name}
+                            </span>
                             {item.files && (
-                              <span className={styles.fileCount}>{item.files} arquivos</span>
+                              <span className={styles.fileCount}>
+                                {item.files} files
+                              </span>
                             )}
                           </div>
                           {item.children && (
                             <div className={styles.fileTreeChildren}>
                               {item.children.map((child, childIdx) => (
-                                <div key={childIdx} className={styles.fileTreeChild}>
+                                <div
+                                  key={childIdx}
+                                  className={styles.fileTreeChild}
+                                >
                                   <span className={styles.folderIcon}>📁</span>
-                                  <span className={styles.folderName}>{child.name}</span>
-                                  <span className={styles.fileCount}>{child.files} arquivos</span>
+                                  <span className={styles.folderName}>
+                                    {child.name}
+                                  </span>
+                                  <span className={styles.fileCount}>
+                                    {child.files} files
+                                  </span>
                                 </div>
                               ))}
                             </div>
@@ -670,17 +1002,98 @@ export function RepoAnalysis() {
                     </div>
                   </Card>
 
+                  {/* Podcast Section */}
+                  <Card className={styles.analysisCard}>
+                    <div className={styles.cardHeader}>
+                      <div className={styles.cardHeaderLeft}>
+                        <span className={styles.cardIcon}>🎙️</span>
+                        <h3 className={styles.cardTitle}>
+                          AI-Generated Podcast
+                        </h3>
+                      </div>
+                    </div>
+                    <div className={styles.cardContent}>
+                      <p className={styles.podcastDescription}>
+                        Generate an AI-narrated podcast that explains this
+                        repository in detail, including architecture,
+                        technologies, structure and main features.
+                      </p>
+
+                      {!podcastState.audioUrl && !podcastState.isGenerating && (
+                        <button
+                          className={styles.generatePodcastButton}
+                          onClick={handleGeneratePodcast}
+                        >
+                          🎧 Generate Podcast
+                        </button>
+                      )}
+
+                      {podcastState.isGenerating && (
+                        <div className={styles.podcastLoading}>
+                          <div className={styles.spinner}></div>
+                          <p>
+                            Generating AI podcast... This may take a few
+                            seconds.
+                          </p>
+                        </div>
+                      )}
+
+                      {podcastState.error && (
+                        <div className={styles.podcastError}>
+                          <span className={styles.errorIcon}>⚠️</span>
+                          <p>{podcastState.error}</p>
+                          <button
+                            className={styles.retryButton}
+                            onClick={handleGeneratePodcast}
+                          >
+                            🔄 Try Again
+                          </button>
+                        </div>
+                      )}
+
+                      {podcastState.audioUrl && (
+                        <div className={styles.podcastPlayer}>
+                          <div className={styles.playerHeader}>
+                            <span className={styles.successIcon}>✓</span>
+                            <span>Podcast generated successfully!</span>
+                          </div>
+                          <audio
+                            ref={audioRef}
+                            controls
+                            className={styles.audioPlayer}
+                            src={podcastState.audioUrl}
+                          >
+                            Seu navegador não suporta o elemento de áudio.
+                          </audio>
+                          <div className={styles.playerActions}>
+                            <a
+                              href={podcastState.audioUrl}
+                              download
+                              className={styles.downloadButton}
+                            >
+                              📥 Download MP3
+                            </a>
+                            <button
+                              className={styles.regenerateButton}
+                              onClick={handleGeneratePodcast}
+                            >
+                              🔄 Generate Again
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </Card>
+
                   {/* Action Buttons */}
                   <div className={styles.actions}>
                     <button className={styles.primaryAction}>
-                      📥 Exportar Relatório
+                      📥 Export Report
                     </button>
                     <button className={styles.secondaryAction}>
-                      🔄 Nova Análise
+                      🔄 New Analysis
                     </button>
-                    <button className={styles.secondaryAction}>
-                      📤 Compartilhar
-                    </button>
+                    <button className={styles.secondaryAction}>📤 Share</button>
                   </div>
                 </div>
               </div>

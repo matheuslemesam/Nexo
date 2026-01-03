@@ -1,7 +1,7 @@
-import { Container } from '../../ui';
-import styles from './Hero.module.css';
-import { useRef, useEffect, useState, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { Container } from "../../ui";
+import styles from "./Hero.module.css";
+import { useRef, useEffect, useState, useCallback } from "react";
+import { Link } from "react-router-dom";
 
 // Grid configuration
 const GRID_COLS = 20;
@@ -44,18 +44,21 @@ export function Hero() {
         const rect = sectionRef.current.getBoundingClientRect();
         const x = (e.clientX - rect.left) / rect.width;
         const y = (e.clientY - rect.top) / rect.height;
-        setMousePosition({ x: Math.max(0, Math.min(1, x)), y: Math.max(0, Math.min(1, y)) });
+        setMousePosition({
+          x: Math.max(0, Math.min(1, x)),
+          y: Math.max(0, Math.min(1, y)),
+        });
       }
     };
 
     const section = sectionRef.current;
     if (section) {
-      section.addEventListener('mousemove', handleMouseMove);
+      section.addEventListener("mousemove", handleMouseMove);
     }
 
     return () => {
       if (section) {
-        section.removeEventListener('mousemove', handleMouseMove);
+        section.removeEventListener("mousemove", handleMouseMove);
       }
     };
   }, []);
@@ -68,25 +71,30 @@ export function Hero() {
       #f093fb ${60 + mousePosition.y * 20}%,
       #667eea 100%
     )`,
-    backgroundSize: '200% 200%',
+    backgroundSize: "200% 200%",
     backgroundPosition: `${mousePosition.x * 100}% ${mousePosition.y * 100}%`,
   };
 
   // Generate grid squares
-  const gridSquares = Array.from({ length: GRID_COLS * GRID_ROWS }, (_, index) => {
-    const isActive = activeSquares.includes(index);
-    return (
-      <div
-        key={index}
-        className={`${styles.gridSquare} ${isActive ? styles.gridSquareActive : ''}`}
-      />
-    );
-  });
+  const gridSquares = Array.from(
+    { length: GRID_COLS * GRID_ROWS },
+    (_, index) => {
+      const isActive = activeSquares.includes(index);
+      return (
+        <div
+          key={index}
+          className={`${styles.gridSquare} ${
+            isActive ? styles.gridSquareActive : ""
+          }`}
+        />
+      );
+    }
+  );
 
   return (
     <section className={styles.hero} ref={sectionRef}>
       <div className={styles.gradientBg}></div>
-      <div 
+      <div
         className={styles.gridBackground}
         style={{
           gridTemplateColumns: `repeat(${GRID_COLS}, 1fr)`,
@@ -95,20 +103,28 @@ export function Hero() {
       >
         {gridSquares}
       </div>
-      <Container size="lg">
+      <Container size='lg'>
         <div className={styles.content}>
           <h1 className={styles.title}>
-            Código <span className={styles.highlight} style={gradientStyle}>Vivo</span>,
+            <span className={styles.highlight} style={gradientStyle}>
+              Living
+            </span>{" "}
+            Code,
             <br />
-            Documentação <span className={styles.highlight} style={gradientStyle}>Falada</span>
+            <span className={styles.highlight} style={gradientStyle}>
+              Spoken
+            </span>{" "}
+            Documentation
           </h1>
           <p className={styles.subtitle}>
-            Transforme seu código técnico em documentação interativa que fala por si. 
-            Chega de sofrer para entender projetos legados.
+            Transform your technical code into interactive documentation that
+            speaks for itself. Stop struggling to understand legacy projects.
           </p>
           <div className={styles.actions}>
-            <Link to="/comecar" className={styles.primaryBtn}>Começar Agora</Link>
-            <button className={styles.secondaryBtn}>Ver Demo</button>
+            <Link to='/comecar' className={styles.primaryBtn}>
+              Get Started
+            </Link>
+            <button className={styles.secondaryBtn}>Watch Demo</button>
           </div>
         </div>
       </Container>

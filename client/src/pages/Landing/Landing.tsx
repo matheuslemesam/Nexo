@@ -1,4 +1,4 @@
-import { Navbar } from '../../components/layout';
+import { Navbar } from "../../components/layout";
 import {
   Hero,
   MCPServer,
@@ -6,10 +6,11 @@ import {
   AgentOwlbert,
   AILinter,
   DocsAudit,
+  PodcastDemo,
   TrustedBy,
   Footer,
-} from '../../components/sections';
-import styles from './Landing.module.css';
+} from "../../components/sections";
+import styles from "./Landing.module.css";
 
 /**
  * Landing page - Main marketing page for the application
@@ -25,6 +26,7 @@ export function Landing() {
         <AgentOwlbert />
         <AILinter />
         <DocsAudit />
+        <PodcastDemo />
         <TrustedBy />
       </main>
       <Footer />

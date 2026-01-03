@@ -175,6 +175,72 @@
       "_type": "workspace"
     },
     {
+      "_id": "fld_podcast",
+      "parentId": "wrk_nexo",
+      "modified": 1735862400000,
+      "created": 1735862400000,
+      "name": "Podcast",
+      "description": "Endpoints para geração de podcasts explicativos de repositórios",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1704153200000,
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_podcast_general",
+      "parentId": "fld_podcast",
+      "modified": 1735862400000,
+      "created": 1735862400000,
+      "url": "{{ _.base_url }}/api/v1/podcast/generate/general",
+      "name": "Gerar Podcast Geral",
+      "description": "Gera um podcast explicando o repositório por completo",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"repository_url\": \"https://github.com/facebook/react\",\n  \"save_to_file\": true\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1735862400000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_podcast_audio",
+      "parentId": "fld_podcast",
+      "modified": 1735862400000,
+      "created": 1735862400000,
+      "url": "{{ _.base_url }}/api/v1/podcast/audio/abc12345",
+      "name": "Download Podcast Audio",
+      "description": "Faz download do arquivo de áudio do podcast gerado",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -1735862300000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
       "_id": "env_base",
       "parentId": "wrk_nexo",
       "modified": 1704153600000,

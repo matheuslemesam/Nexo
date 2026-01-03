@@ -1,68 +1,98 @@
-import { Container } from '../../ui';
-import styles from './Footer.module.css';
+import { Container } from "../../ui";
+import styles from "./Footer.module.css";
 
 export function Footer() {
   return (
     <footer className={styles.footer}>
-      <Container size="xl">
+      <Container size='xl'>
         <div className={styles.cta}>
           <div className={styles.logo}>
             <span className={styles.logoIcon}>🔗</span>
             <span className={styles.logoText}>Nexo</span>
           </div>
           <h2 className={styles.ctaTitle}>
-            Código documentado,
+            Documented code,
             <br />
-            time <span className={styles.highlight}>produtivo</span>
+            <span className={styles.highlight}>productive</span> team
           </h2>
           <div className={styles.ctaButtons}>
-            <button className={styles.primaryBtn}>Começar agora</button>
-            <button className={styles.secondaryBtn}>Ver documentação</button>
+            <button className={styles.primaryBtn}>Get started now</button>
+            <button className={styles.secondaryBtn}>View documentation</button>
           </div>
         </div>
 
         <div className={styles.links}>
           <div className={styles.column}>
-            <h3 className={styles.columnTitle}>Produto</h3>
+            <h3 className={styles.columnTitle}>Product</h3>
             <ul>
-              <li><a href="#">Funcionalidades</a></li>
-              <li><a href="#">Dashboard</a></li>
-              <li><a href="#">Integrações</a></li>
-              <li><a href="#">API</a></li>
-              <li><a href="#">Enterprise</a></li>
-              <li><a href="#">Preços</a></li>
+              <li>
+                <a href='#'>Features</a>
+              </li>
+              <li>
+                <a href='#'>Dashboard</a>
+              </li>
+              <li>
+                <a href='#'>Integrations</a>
+              </li>
+              <li>
+                <a href='#'>API</a>
+              </li>
+              <li>
+                <a href='#'>Enterprise</a>
+              </li>
+              <li>
+                <a href='#'>Pricing</a>
+              </li>
             </ul>
           </div>
 
           <div className={styles.column}>
-            <h3 className={styles.columnTitle}>Recursos</h3>
+            <h3 className={styles.columnTitle}>Resources</h3>
             <ul>
-              <li><a href="#">Casos de Uso</a></li>
-              <li><a href="#">Tutoriais</a></li>
-              <li><a href="#">Changelog</a></li>
-              <li><a href="#">Blog</a></li>
-              <li><a href="#">Documentação</a></li>
+              <li>
+                <a href='#'>Use Cases</a>
+              </li>
+              <li>
+                <a href='#'>Tutorials</a>
+              </li>
+              <li>
+                <a href='#'>Changelog</a>
+              </li>
+              <li>
+                <a href='#'>Blog</a>
+              </li>
+              <li>
+                <a href='#'>Documentation</a>
+              </li>
             </ul>
           </div>
 
           <div className={styles.column}>
-            <h3 className={styles.columnTitle}>Empresa</h3>
+            <h3 className={styles.columnTitle}>Company</h3>
             <ul>
-              <li><a href="#">Sobre Nós</a></li>
-              <li><a href="#">Carreiras</a></li>
-              <li><a href="#">Contato</a></li>
-              <li><a href="#">Suporte</a></li>
+              <li>
+                <a href='#'>About Us</a>
+              </li>
+              <li>
+                <a href='#'>Careers</a>
+              </li>
+              <li>
+                <a href='#'>Contact</a>
+              </li>
+              <li>
+                <a href='#'>Support</a>
+              </li>
             </ul>
           </div>
         </div>
 
         <div className={styles.bottom}>
           <p className={styles.copyright}>
-            © {new Date().getFullYear()} Nexo. Todos os direitos reservados.
+            © {new Date().getFullYear()} Nexo. All rights reserved.
           </p>
           <div className={styles.legal}>
-            <a href="#">Política de Privacidade</a>
-            <a href="#">Termos de Uso</a>
+            <a href='#'>Privacy Policy</a>
+            <a href='#'>Terms of Use</a>
           </div>
         </div>
       </Container>

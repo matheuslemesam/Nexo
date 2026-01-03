@@ -1,26 +1,27 @@
-import { Container } from '../../ui';
-import styles from './TrustedBy.module.css';
+import { Container } from "../../ui";
+import styles from "./TrustedBy.module.css";
 
 const companies = [
-  { name: 'Startups', icon: '🚀' },
-  { name: 'Enterprise', icon: '🏢' },
-  { name: 'Agências', icon: '💼' },
-  { name: 'Open Source', icon: '🌐' },
-  { name: 'DevOps', icon: '⚙️' },
+  { name: "Startups", icon: "🚀" },
+  { name: "Enterprise", icon: "🏢" },
+  { name: "Agencies", icon: "💼" },
+  { name: "Open Source", icon: "🌐" },
+  { name: "DevOps", icon: "⚙️" },
 ];
 
 export function TrustedBy() {
   return (
     <section className={styles.section}>
-      <Container size="xl">
+      <Container size='xl'>
         <div className={styles.header}>
           <h2 className={styles.title}>
-            Quer escalar sua
+            Want to scale your
             <br />
-            documentação?
+            documentation?
           </h2>
           <p className={styles.subtitle}>
-            Times de todos os tamanhos usam Nexo para transformar código legado em conhecimento acessível.
+            Teams of all sizes use Nexo to transform legacy code into accessible
+            knowledge.
           </p>
         </div>
 
