@@ -44,7 +44,7 @@ export function Navbar() {
             >
               Contato
             </a>
-            <a href="#login" className={styles.link}>Entrar</a>
+            <Link to="/login" className={styles.link}>Entrar</Link>
             <Link to="/comecar" className={styles.tryButton}>Experimente</Link>
             <a 
               href="https://github.com/Hacktown-BSB/Nexo" 
