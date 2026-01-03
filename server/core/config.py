@@ -28,17 +28,13 @@ class Settings(BaseSettings):
     GEMINI_MODEL: str = "gemini-2.0-flash-lite"
     GEMINI_MAX_TOKENS: int = 8192
 
+    # ElevenLabs API (for podcast generation)
+    ELEVENLABS_API_KEY: str = ""
+
     # App
     API_V1_PREFIX: str = "/api/v1"
     PROJECT_NAME: str = "Nexo API"
-<<<<<<< HEAD
-    
-    # ElevenLabs API
-    ELEVENLABS_API_KEY: str = ""  # Add your ElevenLabs API key here
-    
-=======
 
->>>>>>> ec96063973d7efb9d5c2d1205292297fa2937184
     # CORS - Segurança
     ALLOWED_ORIGINS: list = [
         "http://localhost:5173",
