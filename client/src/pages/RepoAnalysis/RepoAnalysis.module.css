@@ -1267,3 +1267,253 @@
 :global(.dark) .audioPlayer {
   filter: invert(1) hue-rotate(180deg);
 }
+
+/* Loading Section */
+.loadingSection {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 70px);
+  margin-top: 70px;
+}
+
+.loadingContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  text-align: center;
+}
+
+.loadingContent p {
+  color: var(--text-primary);
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.loadingSubtext {
+  color: var(--text-secondary) !important;
+  font-size: 0.875rem !important;
+  font-weight: 400 !important;
+}
+
+/* Error Section */
+.errorSection {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 70px);
+  margin-top: 70px;
+}
+
+.errorContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+  max-width: 500px;
+}
+
+.errorContent .errorIcon {
+  font-size: 3rem;
+}
+
+.errorContent h2 {
+  color: var(--text-primary);
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.errorContent p {
+  color: var(--text-secondary);
+  font-size: 1rem;
+}
+
+.errorButton {
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.errorButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+/* AI Overview Card */
+.aiOverviewCard {
+  grid-column: 1 / -1;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+}
+
+.aiOverviewCard .cardHeader {
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.markdownContent {
+  color: var(--text-primary);
+  line-height: 1.8;
+}
+
+.markdownContent h1,
+.markdownContent h2,
+.markdownContent h3 {
+  color: var(--text-primary);
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.markdownContent h1 {
+  font-size: 1.75rem;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.5rem;
+}
+
+.markdownContent h2 {
+  font-size: 1.35rem;
+}
+
+.markdownContent h3 {
+  font-size: 1.15rem;
+}
+
+.markdownContent p {
+  margin-bottom: 1rem;
+  color: var(--text-secondary);
+}
+
+.markdownContent ul,
+.markdownContent ol {
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+}
+
+.markdownContent li {
+  margin-bottom: 0.5rem;
+  color: var(--text-secondary);
+}
+
+.markdownContent strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.markdownContent code {
+  background: var(--bg-tertiary);
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.875em;
+}
+
+.markdownContent pre {
+  background: var(--bg-tertiary);
+  padding: 1rem;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+
+.markdownContent a {
+  color: #667eea;
+  text-decoration: none;
+}
+
+.markdownContent a:hover {
+  text-decoration: underline;
+}
+
+/* Classes específicas do HTML gerado pela IA */
+.markdownContent :global(.overview-title) {
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.markdownContent :global(.overview-section) {
+  margin-bottom: 1.5rem;
+}
+
+.markdownContent :global(.overview-section) h3 {
+  font-size: 1.15rem;
+  color: var(--text-primary);
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.markdownContent :global(.feature-list) {
+  list-style: none;
+  padding-left: 0;
+  margin: 1rem 0;
+}
+
+.markdownContent :global(.feature-list) li {
+  padding: 0.5rem 0;
+  padding-left: 0.5rem;
+  border-left: 3px solid #667eea;
+  margin-bottom: 0.75rem;
+  background: var(--bg-tertiary);
+  border-radius: 0 8px 8px 0;
+  transition: all 0.2s ease;
+}
+
+.markdownContent :global(.feature-list) li:hover {
+  background: var(--bg-secondary);
+  border-left-color: #764ba2;
+  padding-left: 1rem;
+}
+
+.markdownContent :global(.steps-list) {
+  counter-reset: step-counter;
+  list-style: none;
+  padding-left: 0;
+  margin: 1rem 0;
+}
+
+.markdownContent :global(.steps-list) li {
+  counter-increment: step-counter;
+  position: relative;
+  padding-left: 3rem;
+  margin-bottom: 1rem;
+  min-height: 2rem;
+}
+
+.markdownContent :global(.steps-list) li::before {
+  content: counter(step-counter);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 2rem;
+  height: 2rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+/* Estilização extra para elementos HTML comuns */
+.markdownContent h2:first-child {
+  margin-top: 0;
+}
+
+.markdownContent em {
+  color: var(--text-secondary);
+  font-style: italic;
+}
