@@ -1,0 +1,141 @@
+.section {
+  padding: 5rem 0 8rem 0;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  background: white;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+  margin-bottom: 3rem;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.title {
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: #111827;
+  line-height: 1.1;
+}
+
+.description {
+  font-size: 1.125rem;
+  color: #6b7280;
+  line-height: 1.6;
+  max-width: 400px;
+}
+
+.link {
+  color: #ef4444;
+  font-weight: 500;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.link:hover {
+  opacity: 0.8;
+}
+
+.imageWrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.previewCard {
+  width: 100%;
+  max-width: 400px;
+}
+
+.mcpPreview {
+  background: #1a1a2e;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  aspect-ratio: 16/10;
+}
+
+.terminalHeader {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: #0f0f1a;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.mcpContent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.mcpLabel {
+  font-size: 2rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3, #54a0ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.features {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+}
+
+.featureCard {
+  transition: transform 0.2s;
+}
+
+.featureCard:hover {
+  transform: translateY(-2px);
+}
+
+.featureIcon {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.featureTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 0.5rem;
+}
+
+.featureDesc {
+  font-size: 0.9375rem;
+  color: #6b7280;
+  line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .title {
+    font-size: 2.5rem;
+  }
+
+  .features {
+    grid-template-columns: 1fr;
+  }
+}

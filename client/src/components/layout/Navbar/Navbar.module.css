@@ -1,0 +1,114 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.headerScrolled {
+  top: 0.75rem;
+  left: 1rem;
+  right: 1rem;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 0;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.1rem;
+}
+
+.logoIcon {
+  width: 55px;
+  height: 65px;
+  object-fit: contain;
+}
+
+.logoText {
+  width: 55px;
+  height: 55px;
+  object-fit: contain;
+}
+
+.links {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.link {
+  color: #4b5563;
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.link:hover {
+  color: #111827;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.tryButton {
+  background: #111827;
+  color: white;
+  padding: 0.4rem 1rem;
+  border-radius: 0.5rem;
+  border: none;
+  font-weight: 500;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background 0.2s;
+  text-decoration: none;
+}
+
+.tryButton:hover {
+  background: #374151;
+}
+
+.githubLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4b5563;
+  transition: color 0.2s;
+}
+
+.githubLink:hover {
+  color: #111827;
+}
+
+@media (max-width: 768px) {
+  .links {
+    display: none;
+  }
+
+  .actions .link {
+    display: none;
+  }
+
+  .headerScrolled {
+    left: 0.5rem;
+    right: 0.5rem;
+  }
+}

@@ -2,4 +2,6 @@
  * Exportações centralizadas das páginas
  */
 
-export { Home } from './Home';
+export { Landing } from './Landing';
+export { GetStarted } from './GetStarted';
+export { Login, Register, ForgotPassword } from './Auth';
