@@ -1,8 +1,9 @@
 /* Page Container */
 .page {
   min-height: 100vh;
-  background: white;
+  background: var(--bg-primary);
   overflow-x: hidden;
+  transition: background 0.3s ease;
 }
 
 /* Hero Section */
@@ -14,7 +15,8 @@
   display: flex;
   align-items: center;
   width: 100%;
-  background: #fafafa;
+  background: var(--bg-secondary);
+  transition: background 0.3s ease;
 }
 
 .gradientBg {
@@ -23,10 +25,21 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: 
-    radial-gradient(ellipse at 20% 30%, rgba(255, 200, 150, 0.3) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 20%, rgba(200, 220, 255, 0.4) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 80%, rgba(220, 255, 220, 0.3) 0%, transparent 50%);
+  background: radial-gradient(
+      ellipse at 20% 30%,
+      rgba(255, 200, 150, 0.3) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse at 80% 20%,
+      rgba(200, 220, 255, 0.4) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse at 50% 80%,
+      rgba(220, 255, 220, 0.3) 0%,
+      transparent 50%
+    );
   z-index: 0;
 }
 
@@ -65,17 +78,19 @@
 
 /* Auth Card */
 .authCard {
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--card-bg);
   backdrop-filter: blur(20px);
   border-radius: 1.5rem;
   padding: 2.5rem;
   width: 100%;
   max-width: 440px;
-  box-shadow: 
-    0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06),
-    0 20px 25px -5px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+}
+
+:global(.dark) .authCard {
+  background: rgba(31, 41, 55, 0.95);
 }
 
 .cardHeader {
@@ -87,8 +102,10 @@
   font-size: 2rem;
   font-weight: 700;
   line-height: 1.2;
-  color: #111827;
+  color: var(--text-primary);
   margin-bottom: 0.5rem;
+  transition: color 0.3s ease;
+}
 }
 
 .highlight {
@@ -102,8 +119,9 @@
 
 .subtitle {
   font-size: 1rem;
-  color: #6b7280;
+  color: var(--text-secondary);
   line-height: 1.5;
+  transition: color 0.3s ease;
 }
 
 /* Social Login */
@@ -120,20 +138,20 @@
   justify-content: center;
   gap: 0.75rem;
   padding: 0.75rem 1rem;
-  background: white;
-  border: 1px solid #e5e7eb;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   border-radius: 0.75rem;
   font-size: 0.9375rem;
   font-weight: 500;
-  color: #374151;
+  color: var(--text-primary);
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .socialBtn:hover:not(:disabled) {
-  background: #f9fafb;
-  border-color: #d1d5db;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  background: var(--bg-secondary);
+  border-color: var(--border-hover);
+  box-shadow: var(--shadow-sm);
 }
 
 .socialBtn:disabled {
@@ -151,17 +169,19 @@
 
 .divider::before,
 .divider::after {
-  content: '';
+  content: "";
   flex: 1;
   height: 1px;
-  background: #e5e7eb;
+  background: var(--border-color);
+  transition: background 0.3s ease;
 }
 
 .divider span {
   font-size: 0.875rem;
-  color: #9ca3af;
+  color: var(--text-tertiary);
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  transition: color 0.3s ease;
 }
 
 /* Form */
@@ -180,7 +200,8 @@
 .label {
   font-size: 0.875rem;
   font-weight: 500;
-  color: #374151;
+  color: var(--text-primary);
+  transition: color 0.3s ease;
 }
 
 .labelRow {
@@ -204,15 +225,15 @@
 .inputWrapper {
   display: flex;
   align-items: center;
-  background: white;
-  border: 1.5px solid #e5e7eb;
+  background: var(--bg-primary);
+  border: 1.5px solid var(--border-color);
   border-radius: 0.75rem;
   transition: all 0.2s;
   overflow: hidden;
 }
 
 .inputWrapper:focus-within {
-  border-color: #667eea;
+  border-color: var(--accent-primary);
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
@@ -221,7 +242,8 @@
   align-items: center;
   justify-content: center;
   padding: 0 0.75rem 0 1rem;
-  color: #9ca3af;
+  color: var(--text-tertiary);
+  transition: color 0.3s ease;
 }
 
 .input {
@@ -230,12 +252,13 @@
   border: none;
   background: transparent;
   font-size: 0.9375rem;
-  color: #111827;
+  color: var(--text-primary);
   outline: none;
+  transition: color 0.3s ease;
 }
 
 .input::placeholder {
-  color: #9ca3af;
+  color: var(--text-tertiary);
 }
 
 .input:disabled {
@@ -250,13 +273,13 @@
   padding: 0.5rem 1rem;
   background: transparent;
   border: none;
-  color: #9ca3af;
+  color: var(--text-tertiary);
   cursor: pointer;
   transition: color 0.2s;
 }
 
 .togglePassword:hover {
-  color: #6b7280;
+  color: var(--text-secondary);
 }
 
 /* Password Strength */
@@ -283,8 +306,21 @@
 .strengthLabel {
   font-size: 0.75rem;
   font-weight: 500;
-  min-width: 40px;
+  min-width: 60px;
   text-align: right;
+}
+
+/* Password Errors */
+.passwordErrors {
+  margin-top: 0.5rem;
+}
+
+.passwordError {
+  font-size: 0.75rem;
+  color: #ef4444;
+  margin: 0.25rem 0;
+  padding-left: 0.5rem;
+  border-left: 2px solid #ef4444;
 }
 
 /* Field Error */
@@ -318,11 +354,12 @@
   width: 18px;
   height: 18px;
   min-width: 18px;
-  border: 2px solid #d1d5db;
+  border: 2px solid var(--border-color);
   border-radius: 4px;
   transition: all 0.2s;
   position: relative;
   margin-top: 2px;
+  background: var(--bg-primary);
 }
 
 .checkbox:checked + .checkboxCustom {
@@ -331,7 +368,7 @@
 }
 
 .checkbox:checked + .checkboxCustom::after {
-  content: '';
+  content: "";
   position: absolute;
   left: 5px;
   top: 1px;
@@ -348,8 +385,9 @@
 
 .checkboxText {
   font-size: 0.875rem;
-  color: #6b7280;
+  color: var(--text-secondary);
   line-height: 1.4;
+  transition: color 0.3s ease;
 }
 
 .termsLink {
@@ -369,10 +407,16 @@
   font-size: 0.875rem;
   text-align: center;
   padding: 0.75rem;
-  background: #fef2f2;
+  background: var(--error-bg);
   border-radius: 0.5rem;
-  border: 1px solid #fecaca;
+  border: 1px solid var(--error-border);
   margin: 0;
+  transition: all 0.3s ease;
+}
+
+:global(.dark) .error {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.3);
 }
 
 /* Submit Button */
@@ -425,7 +469,8 @@
   text-align: center;
   margin-top: 1.5rem;
   font-size: 0.9375rem;
-  color: #6b7280;
+  color: var(--text-secondary);
+  transition: color 0.3s ease;
 }
 
 .switchLink {
@@ -485,25 +530,28 @@
 .successTitle {
   font-size: 1.75rem;
   font-weight: 700;
-  color: #111827;
+  color: var(--text-primary);
   margin-bottom: 1rem;
+  transition: color 0.3s ease;
 }
 
 .successText {
   font-size: 1rem;
-  color: #6b7280;
+  color: var(--text-secondary);
   line-height: 1.6;
   margin-bottom: 1rem;
+  transition: color 0.3s ease;
 }
 
 .successText strong {
-  color: #374151;
+  color: var(--text-primary);
 }
 
 .successNote {
   font-size: 0.875rem;
-  color: #9ca3af;
+  color: var(--text-tertiary);
   margin-bottom: 2rem;
+  transition: color 0.3s ease;
 }
 
 .resendBtn {

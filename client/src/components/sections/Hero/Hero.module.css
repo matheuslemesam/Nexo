@@ -6,7 +6,8 @@
   display: flex;
   align-items: center;
   width: 100%;
-  background: #fafafa;
+  background: var(--bg-secondary);
+  transition: background 0.3s ease;
 }
 
 .gradientBg {
@@ -15,10 +16,21 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: 
-    radial-gradient(ellipse at 20% 30%, rgba(255, 200, 150, 0.3) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 20%, rgba(200, 220, 255, 0.4) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 80%, rgba(220, 255, 220, 0.3) 0%, transparent 50%);
+  background: radial-gradient(
+      ellipse at 20% 30%,
+      rgba(255, 200, 150, 0.3) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse at 80% 20%,
+      rgba(200, 220, 255, 0.4) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse at 50% 80%,
+      rgba(220, 255, 220, 0.3) 0%,
+      transparent 50%
+    );
   z-index: 0;
 }
 
@@ -57,8 +69,9 @@
   font-size: 4rem;
   font-weight: 700;
   line-height: 1.1;
-  color: #111827;
+  color: var(--text-primary);
   margin-bottom: 1.5rem;
+  transition: color 0.3s ease;
 }
 
 .highlight {
@@ -72,9 +85,10 @@
 
 .subtitle {
   font-size: 1.25rem;
-  color: #6b7280;
+  color: var(--text-secondary);
   margin-bottom: 2.5rem;
   line-height: 1.6;
+  transition: color 0.3s ease;
 }
 
 .actions {
@@ -88,8 +102,8 @@
   align-items: center;
   justify-content: center;
   padding: 0.875rem 2rem;
-  background: #111827;
-  color: white;
+  background: var(--text-primary);
+  color: var(--bg-primary);
   border: none;
   border-radius: 0.5rem;
   font-size: 1rem;
@@ -100,15 +114,15 @@
 }
 
 .primaryBtn:hover {
-  background: #374151;
+  opacity: 0.9;
   transform: translateY(-1px);
 }
 
 .secondaryBtn {
   padding: 0.875rem 2rem;
-  background: white;
-  color: #111827;
-  border: 1px solid #e5e7eb;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
   border-radius: 0.5rem;
   font-size: 1rem;
   font-weight: 500;
@@ -117,8 +131,8 @@
 }
 
 .secondaryBtn:hover {
-  border-color: #d1d5db;
-  background: #f9fafb;
+  border-color: var(--border-hover);
+  background: var(--bg-secondary);
 }
 
 @media (max-width: 768px) {

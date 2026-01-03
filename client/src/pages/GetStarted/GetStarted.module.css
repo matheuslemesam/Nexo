@@ -1,8 +1,9 @@
 /* Page Container */
 .page {
   min-height: 100vh;
-  background: white;
+  background: var(--bg-primary);
   overflow-x: hidden;
+  transition: background 0.3s ease;
 }
 
 /* Hero Section - Same as Landing */
@@ -14,7 +15,8 @@
   display: flex;
   align-items: center;
   width: 100%;
-  background: #fafafa;
+  background: var(--bg-secondary);
+  transition: background 0.3s ease;
 }
 
 .gradientBg {
@@ -23,10 +25,21 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: 
-    radial-gradient(ellipse at 20% 30%, rgba(255, 200, 150, 0.3) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 20%, rgba(200, 220, 255, 0.4) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 80%, rgba(220, 255, 220, 0.3) 0%, transparent 50%);
+  background: radial-gradient(
+      ellipse at 20% 30%,
+      rgba(255, 200, 150, 0.3) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse at 80% 20%,
+      rgba(200, 220, 255, 0.4) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse at 50% 80%,
+      rgba(220, 255, 220, 0.3) 0%,
+      transparent 50%
+    );
   z-index: 0;
 }
 
@@ -66,8 +79,9 @@
   font-size: 3.5rem;
   font-weight: 700;
   line-height: 1.1;
-  color: #111827;
+  color: var(--text-primary);
   margin-bottom: 1.5rem;
+  transition: color 0.3s ease;
 }
 
 .highlight {
@@ -81,9 +95,10 @@
 
 .subtitle {
   font-size: 1.25rem;
-  color: #6b7280;
+  color: var(--text-secondary);
   margin-bottom: 2.5rem;
   line-height: 1.6;
+  transition: color 0.3s ease;
 }
 
 /* Form */
@@ -97,17 +112,17 @@
 .inputWrapper {
   display: flex;
   align-items: center;
-  background: white;
-  border: 2px solid #e5e7eb;
+  background: var(--bg-primary);
+  border: 2px solid var(--border-color);
   border-radius: 0.75rem;
   padding: 0.25rem;
   transition: all 0.2s;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-md);
 }
 
 .inputWrapper:focus-within {
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1), 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1), var(--shadow-md);
 }
 
 .inputIcon {
@@ -115,7 +130,8 @@
   align-items: center;
   justify-content: center;
   padding: 0 1rem;
-  color: #6b7280;
+  color: var(--text-secondary);
+  transition: color 0.3s ease;
 }
 
 .input {
@@ -124,12 +140,13 @@
   border: none;
   background: transparent;
   font-size: 1rem;
-  color: #111827;
+  color: var(--text-primary);
   outline: none;
+  transition: color 0.3s ease;
 }
 
 .input::placeholder {
-  color: #9ca3af;
+  color: var(--text-tertiary);
 }
 
 .input:disabled {
@@ -180,8 +197,9 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: #6b7280;
+  color: var(--text-secondary);
   font-size: 0.9375rem;
+  transition: color 0.3s ease;
 }
 
 .featureIcon {

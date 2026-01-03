@@ -1,5 +1,6 @@
 .landing {
   min-height: 100vh;
-  background: white;
+  background: var(--bg-primary);
   overflow-x: hidden;
+  transition: background 0.3s ease;
 }

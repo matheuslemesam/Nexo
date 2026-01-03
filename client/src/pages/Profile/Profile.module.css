@@ -1,0 +1,249 @@
+/* Page Container */
+.page {
+  min-height: 100vh;
+  background: var(--bg-primary, #fafafa);
+  transition: background 0.3s ease;
+}
+
+.main {
+  padding: 8rem 0 3rem;
+}
+
+.content {
+  max-width: 100%;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary, #111827);
+  margin: 0 0 2rem 0;
+}
+
+.loading {
+  text-align: center;
+  padding: 4rem 0;
+  color: var(--text-secondary, #6b7280);
+}
+
+/* Profile Card */
+.profileCard {
+  background: var(--card-bg, white);
+  border-radius: 1.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border-color, rgba(0, 0, 0, 0.05));
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.profileHeader {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 2.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
+  font-size: 1.75rem;
+  background: rgba(255, 255, 255, 0.2);
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  letter-spacing: 1px;
+}
+
+.headerInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.userName {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: white;
+  margin: 0 0 0.25rem 0;
+}
+
+.userEmail {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0;
+}
+
+/* Info Section */
+.infoSection {
+  padding: 2.5rem;
+}
+
+.sectionTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary, #111827);
+  margin: 0 0 1.5rem 0;
+}
+
+.infoGrid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.infoItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.infoLabel {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary, #6b7280);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.infoValue {
+  font-size: 1rem;
+  color: var(--text-primary, #111827);
+  font-weight: 500;
+}
+
+.infoValueMono {
+  font-size: 0.875rem;
+  color: var(--text-secondary, #6b7280);
+  font-family: "Courier New", monospace;
+  background: var(--bg-secondary, #f3f4f6);
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.375rem;
+  display: inline-block;
+}
+
+.infoBadge {
+  display: inline-flex;
+}
+
+.badgeActive {
+  background: #d1fae5;
+  color: #065f46;
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.badgeInactive {
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+/* Actions */
+.actions {
+  display: flex;
+  gap: 1rem;
+  padding: 0 2.5rem 2.5rem 2.5rem;
+  border-top: 1px solid var(--border-color, rgba(0, 0, 0, 0.05));
+  padding-top: 2rem;
+  margin-top: 1rem;
+}
+
+.primaryButton,
+.secondaryButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.primaryButton {
+  background: #111827;
+  color: white;
+  flex: 1;
+}
+
+.primaryButton:hover {
+  background: #374151;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.secondaryButton {
+  background: transparent;
+  color: var(--text-primary, #111827);
+  border: 2px solid var(--border-color, #e5e7eb);
+  flex: 1;
+}
+
+.secondaryButton:hover {
+  background: var(--bg-secondary, #f3f4f6);
+  border-color: #d1d5db;
+}
+
+/* Dark Mode */
+:global(.dark) .page {
+  --bg-primary: #111827;
+  --bg-secondary: #1f2937;
+  --card-bg: #1f2937;
+  --text-primary: #f9fafb;
+  --text-secondary: #9ca3af;
+  --border-color: rgba(255, 255, 255, 0.1);
+}
+
+:global(.dark) .primaryButton {
+  background: white;
+  color: #111827;
+}
+
+:global(.dark) .primaryButton:hover {
+  background: #f3f4f6;
+}
+
+:global(.dark) .secondaryButton {
+  color: #f9fafb;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+:global(.dark) .secondaryButton:hover {
+  background: #374151;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .main {
+    padding: 6rem 0 2rem;
+  }
+
+  .profileHeader {
+    flex-direction: column;
+    text-align: center;
+    padding: 2rem 1.5rem;
+  }
+
+  .userName {
+    font-size: 1.5rem;
+  }
+
+  .infoSection {
+    padding: 1.5rem;
+  }
+
+  .actions {
+    flex-direction: column;
+    padding: 0 1.5rem 1.5rem 1.5rem;
+  }
+}

@@ -4,10 +4,14 @@
   left: 0;
   right: 0;
   z-index: 50;
-  background: rgba(255, 255, 255, 0.7);
+  background: var(--card-bg, rgba(255, 255, 255, 0.7));
   backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid var(--border-color);
   transition: all 0.3s ease;
+}
+
+:global(.dark) .header {
+  background: rgba(31, 41, 55, 0.7);
 }
 
 .headerScrolled {
@@ -15,9 +19,13 @@
   left: 1rem;
   right: 1rem;
   border-radius: 1rem;
-  background: rgba(255, 255, 255, 0.85);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  background: var(--card-bg, rgba(255, 255, 255, 0.85));
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-color);
+}
+
+:global(.dark) .headerScrolled {
+  background: rgba(31, 41, 55, 0.95);
 }
 
 .nav {
@@ -52,7 +60,7 @@
 }
 
 .link {
-  color: #4b5563;
+  color: var(--text-secondary);
   text-decoration: none;
   font-size: 0.875rem;
   font-weight: 500;
@@ -60,7 +68,7 @@
 }
 
 .link:hover {
-  color: #111827;
+  color: var(--text-primary);
 }
 
 .actions {
@@ -70,32 +78,202 @@
 }
 
 .tryButton {
-  background: #111827;
-  color: white;
+  background: var(--text-primary);
+  color: var(--bg-primary);
   padding: 0.4rem 1rem;
   border-radius: 0.5rem;
   border: none;
   font-weight: 500;
   font-size: 0.875rem;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.2s;
   text-decoration: none;
 }
 
 .tryButton:hover {
-  background: #374151;
+  opacity: 0.9;
+  transform: translateY(-1px);
 }
 
 .githubLink {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #4b5563;
+  color: var(--text-secondary);
   transition: color 0.2s;
 }
 
 .githubLink:hover {
-  color: #111827;
+  color: var(--text-primary);
+}
+
+/* User Menu */
+.userMenu {
+  position: relative;
+}
+
+.avatarButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 0.5rem;
+  transition: background 0.2s;
+}
+
+.avatarButton:hover {
+  background: var(--bg-secondary);
+}
+
+:global(.dark) .avatarButton:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+}
+
+.userName {
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: color 0.3s ease;
+}
+
+.dropdownIcon {
+  color: var(--text-secondary);
+  transition: transform 0.2s, color 0.3s ease;
+}
+
+.avatarButton:hover .dropdownIcon {
+  transform: translateY(2px);
+}
+
+.dropdownOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 40;
+}
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  background: var(--card-bg);
+  border-radius: 0.75rem;
+  box-shadow: var(--shadow-xl);
+  border: 1px solid var(--border-color);
+  min-width: 240px;
+  z-index: 50;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+:global(.dark) .dropdown {
+  background: rgba(31, 41, 55, 0.98);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.dropdownHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.dropdownAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  font-size: 0.875rem;
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.dropdownUserInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.dropdownUserName {
+  color: white;
+  font-weight: 600;
+  font-size: 0.875rem;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dropdownUserEmail {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.75rem;
+  margin: 0.125rem 0 0 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dropdownDivider {
+  height: 1px;
+  background: var(--border-color);
+  margin: 0.25rem 0;
+  transition: background 0.3s ease;
+}
+
+.dropdownItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  border: none;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.dropdownItem:hover {
+  background: var(--bg-secondary);
+}
+
+:global(.dark) .dropdownItem:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.dropdownItem svg {
+  color: var(--text-secondary);
+  transition: color 0.3s ease;
 }
 
 @media (max-width: 768px) {
@@ -110,5 +288,13 @@
   .headerScrolled {
     left: 0.5rem;
     right: 0.5rem;
+  }
+
+  .userName {
+    display: none;
+  }
+
+  .dropdown {
+    right: -0.5rem;
   }
 }

@@ -1,8 +1,10 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Navbar } from '../../components/layout';
-import { Container } from '../../components/ui';
-import styles from './Auth.module.css';
+import { useState, useRef, useEffect, useCallback } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Navbar } from "../../components/layout";
+import { Container } from "../../components/ui";
+import { useAuth } from "../../hooks";
+import { validatePassword, getPasswordStrengthDisplay } from "../../utils";
+import styles from "./Auth.module.css";
 
 // Grid configuration
 const GRID_COLS = 20;
@@ -14,21 +16,32 @@ const ACTIVE_SQUARES = 6;
  */
 export function Register() {
   const navigate = useNavigate();
+  const { register, isAuthenticated } = useAuth();
   const sectionRef = useRef<HTMLElement>(null);
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [activeSquares, setActiveSquares] = useState<number[]>([]);
   const [mousePosition, setMousePosition] = useState({ x: 0.5, y: 0.5 });
 
-  // Password strength
-  const [passwordStrength, setPasswordStrength] = useState(0);
+  // Password validation
+  const passwordValidation = validatePassword(password);
+  const strengthDisplay = getPasswordStrengthDisplay(
+    passwordValidation.strength
+  );
+
+  // Redireciona se já estiver autenticado
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/");
+    }
+  }, [isAuthenticated, navigate]);
 
   // Generate random active squares
   const generateActiveSquares = useCallback(() => {
@@ -57,32 +70,24 @@ export function Register() {
         const rect = sectionRef.current.getBoundingClientRect();
         const x = (e.clientX - rect.left) / rect.width;
         const y = (e.clientY - rect.top) / rect.height;
-        setMousePosition({ x: Math.max(0, Math.min(1, x)), y: Math.max(0, Math.min(1, y)) });
+        setMousePosition({
+          x: Math.max(0, Math.min(1, x)),
+          y: Math.max(0, Math.min(1, y)),
+        });
       }
     };
 
     const section = sectionRef.current;
     if (section) {
-      section.addEventListener('mousemove', handleMouseMove);
+      section.addEventListener("mousemove", handleMouseMove);
     }
 
     return () => {
       if (section) {
-        section.removeEventListener('mousemove', handleMouseMove);
+        section.removeEventListener("mousemove", handleMouseMove);
       }
     };
   }, []);
-
-  // Calculate password strength
-  useEffect(() => {
-    let strength = 0;
-    if (password.length >= 6) strength++;
-    if (password.length >= 10) strength++;
-    if (/[A-Z]/.test(password)) strength++;
-    if (/[0-9]/.test(password)) strength++;
-    if (/[^A-Za-z0-9]/.test(password)) strength++;
-    setPasswordStrength(strength);
-  }, [password]);
 
   const gradientStyle = {
     backgroundImage: `linear-gradient(
@@ -92,7 +97,7 @@ export function Register() {
       #f093fb ${60 + mousePosition.y * 20}%,
       #667eea 100%
     )`,
-    backgroundSize: '200% 200%',
+    backgroundSize: "200% 200%",
     backgroundPosition: `${mousePosition.x * 100}% ${mousePosition.y * 100}%`,
   };
 
@@ -101,75 +106,63 @@ export function Register() {
     return emailPattern.test(email);
   };
 
-  const getStrengthLabel = () => {
-    if (passwordStrength <= 1) return { label: 'Fraca', color: '#ef4444' };
-    if (passwordStrength <= 2) return { label: 'Média', color: '#f59e0b' };
-    if (passwordStrength <= 3) return { label: 'Boa', color: '#10b981' };
-    return { label: 'Forte', color: '#059669' };
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError("");
 
-    if (!username.trim()) {
-      setError('Por favor, insira seu username');
+    if (!name.trim()) {
+      setError("Por favor, insira seu nome");
       return;
     }
 
-    if (username.trim().length < 3) {
-      setError('O username deve ter pelo menos 3 caracteres');
-      return;
-    }
-
-    if (!/^[a-zA-Z0-9_]+$/.test(username)) {
-      setError('O username deve conter apenas letras, números e underscores');
+    if (name.trim().length < 3) {
+      setError("O nome deve ter pelo menos 3 caracteres");
       return;
     }
 
     if (!email.trim()) {
-      setError('Por favor, insira seu e-mail');
+      setError("Por favor, insira seu e-mail");
       return;
     }
 
     if (!validateEmail(email)) {
-      setError('Por favor, insira um e-mail válido');
+      setError("Por favor, insira um e-mail válido");
       return;
     }
 
     if (!password) {
-      setError('Por favor, insira uma senha');
+      setError("Por favor, insira uma senha");
       return;
     }
 
-    if (password.length < 6) {
-      setError('A senha deve ter pelo menos 6 caracteres');
+    // Usa validação do backend
+    if (!passwordValidation.isValid) {
+      setError(passwordValidation.errors[0]);
       return;
     }
 
     if (password !== confirmPassword) {
-      setError('As senhas não coincidem');
+      setError("As senhas não coincidem");
       return;
     }
 
     if (!acceptedTerms) {
-      setError('Você precisa aceitar os termos de uso');
+      setError("Você precisa aceitar os termos de uso");
       return;
     }
 
     setIsLoading(true);
 
     try {
-      // Simulating API call - replace with actual API endpoint
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // TODO: Implement actual registration logic
-      console.log('Register:', { username, email, password });
-      
-      // Redirect to login or dashboard
-      navigate('/login');
+      await register({ name, email, password });
+
+      // Navegação será feita automaticamente pelo useEffect quando isAuthenticated mudar
     } catch (err) {
-      setError('Erro ao criar conta. Tente novamente.');
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Erro ao criar conta. Tente novamente.");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -177,24 +170,24 @@ export function Register() {
 
   const handleGitHubRegister = () => {
     // TODO: Implement GitHub OAuth
-    console.log('GitHub register');
+    console.log("GitHub register");
   };
 
   const handleGoogleRegister = () => {
     // TODO: Implement Google OAuth
-    console.log('Google register');
+    console.log("Google register");
   };
 
   return (
     <div className={styles.page}>
       <Navbar />
-      
+
       <section ref={sectionRef} className={styles.hero}>
         {/* Gradient Background */}
         <div className={styles.gradientBg} />
-        
+
         {/* Animated Grid */}
-        <div 
+        <div
           className={styles.gridBackground}
           style={{
             gridTemplateColumns: `repeat(${GRID_COLS}, 1fr)`,
@@ -204,17 +197,22 @@ export function Register() {
           {Array.from({ length: GRID_COLS * GRID_ROWS }).map((_, index) => (
             <div
               key={index}
-              className={`${styles.gridSquare} ${activeSquares.includes(index) ? styles.gridSquareActive : ''}`}
+              className={`${styles.gridSquare} ${
+                activeSquares.includes(index) ? styles.gridSquareActive : ""
+              }`}
             />
           ))}
         </div>
 
-        <Container size="sm">
+        <Container size='sm'>
           <div className={styles.content}>
             <div className={styles.authCard}>
               <div className={styles.cardHeader}>
                 <h1 className={styles.title}>
-                  Criar sua <span className={styles.highlight} style={gradientStyle}>conta</span>
+                  Criar sua{" "}
+                  <span className={styles.highlight} style={gradientStyle}>
+                    conta
+                  </span>
                 </h1>
                 <p className={styles.subtitle}>
                   Comece a analisar seus repositórios hoje
@@ -223,28 +221,45 @@ export function Register() {
 
               {/* Social Login */}
               <div className={styles.socialLogin}>
-                <button 
-                  type="button" 
+                <button
+                  type='button'
                   className={styles.socialBtn}
                   onClick={handleGitHubRegister}
                   disabled={isLoading}
                 >
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                  <svg
+                    width='20'
+                    height='20'
+                    viewBox='0 0 24 24'
+                    fill='currentColor'
+                  >
+                    <path d='M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z' />
                   </svg>
                   Continuar com GitHub
                 </button>
-                <button 
-                  type="button" 
+                <button
+                  type='button'
                   className={styles.socialBtn}
                   onClick={handleGoogleRegister}
                   disabled={isLoading}
                 >
-                  <svg width="20" height="20" viewBox="0 0 24 24">
-                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                  <svg width='20' height='20' viewBox='0 0 24 24'>
+                    <path
+                      fill='#4285F4'
+                      d='M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z'
+                    />
+                    <path
+                      fill='#34A853'
+                      d='M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z'
+                    />
+                    <path
+                      fill='#FBBC05'
+                      d='M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z'
+                    />
+                    <path
+                      fill='#EA4335'
+                      d='M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z'
+                    />
                   </svg>
                   Continuar com Google
                 </button>
@@ -257,83 +272,131 @@ export function Register() {
               {/* Register Form */}
               <form className={styles.form} onSubmit={handleSubmit}>
                 <div className={styles.inputGroup}>
-                  <label htmlFor="username" className={styles.label}>Username</label>
+                  <label htmlFor='name' className={styles.label}>
+                    Nome Completo
+                  </label>
                   <div className={styles.inputWrapper}>
                     <span className={styles.inputIcon}>
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                        <circle cx="12" cy="7" r="4"/>
+                      <svg
+                        width='20'
+                        height='20'
+                        viewBox='0 0 24 24'
+                        fill='none'
+                        stroke='currentColor'
+                        strokeWidth='2'
+                      >
+                        <path d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2' />
+                        <circle cx='12' cy='7' r='4' />
                       </svg>
                     </span>
                     <input
-                      type="text"
-                      id="username"
+                      type='text'
+                      id='name'
                       className={styles.input}
-                      placeholder="seu_username"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
+                      placeholder='João Silva'
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
                       disabled={isLoading}
-                      autoComplete="username"
+                      autoComplete='name'
                     />
                   </div>
                 </div>
 
                 <div className={styles.inputGroup}>
-                  <label htmlFor="email" className={styles.label}>E-mail</label>
+                  <label htmlFor='email' className={styles.label}>
+                    E-mail
+                  </label>
                   <div className={styles.inputWrapper}>
                     <span className={styles.inputIcon}>
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                        <polyline points="22,6 12,13 2,6"/>
+                      <svg
+                        width='20'
+                        height='20'
+                        viewBox='0 0 24 24'
+                        fill='none'
+                        stroke='currentColor'
+                        strokeWidth='2'
+                      >
+                        <path d='M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z' />
+                        <polyline points='22,6 12,13 2,6' />
                       </svg>
                     </span>
                     <input
-                      type="email"
-                      id="email"
+                      type='email'
+                      id='email'
                       className={styles.input}
-                      placeholder="seu@email.com"
+                      placeholder='seu@email.com'
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       disabled={isLoading}
-                      autoComplete="email"
+                      autoComplete='email'
                     />
                   </div>
                 </div>
 
                 <div className={styles.inputGroup}>
-                  <label htmlFor="password" className={styles.label}>Senha</label>
+                  <label htmlFor='password' className={styles.label}>
+                    Senha
+                  </label>
                   <div className={styles.inputWrapper}>
                     <span className={styles.inputIcon}>
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                      <svg
+                        width='20'
+                        height='20'
+                        viewBox='0 0 24 24'
+                        fill='none'
+                        stroke='currentColor'
+                        strokeWidth='2'
+                      >
+                        <rect
+                          x='3'
+                          y='11'
+                          width='18'
+                          height='11'
+                          rx='2'
+                          ry='2'
+                        />
+                        <path d='M7 11V7a5 5 0 0 1 10 0v4' />
                       </svg>
                     </span>
                     <input
-                      type={showPassword ? 'text' : 'password'}
-                      id="password"
+                      type={showPassword ? "text" : "password"}
+                      id='password'
                       className={styles.input}
-                      placeholder="••••••••"
+                      placeholder='••••••••'
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       disabled={isLoading}
-                      autoComplete="new-password"
+                      autoComplete='new-password'
                     />
                     <button
-                      type="button"
+                      type='button'
                       className={styles.togglePassword}
                       onClick={() => setShowPassword(!showPassword)}
                       tabIndex={-1}
                     >
                       {showPassword ? (
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
-                          <line x1="1" y1="1" x2="23" y2="23"/>
+                        <svg
+                          width='20'
+                          height='20'
+                          viewBox='0 0 24 24'
+                          fill='none'
+                          stroke='currentColor'
+                          strokeWidth='2'
+                        >
+                          <path d='M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24' />
+                          <line x1='1' y1='1' x2='23' y2='23' />
                         </svg>
                       ) : (
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                          <circle cx="12" cy="12" r="3"/>
+                        <svg
+                          width='20'
+                          height='20'
+                          viewBox='0 0 24 24'
+                          fill='none'
+                          stroke='currentColor'
+                          strokeWidth='2'
+                        >
+                          <path d='M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z' />
+                          <circle cx='12' cy='12' r='3' />
                         </svg>
                       )}
                     </button>
@@ -341,60 +404,105 @@ export function Register() {
                   {password && (
                     <div className={styles.passwordStrength}>
                       <div className={styles.strengthBars}>
-                        {[1, 2, 3, 4, 5].map((level) => (
+                        {[1, 2, 3, 4].map((level) => (
                           <div
                             key={level}
                             className={styles.strengthBar}
                             style={{
-                              backgroundColor: passwordStrength >= level ? getStrengthLabel().color : '#e5e7eb'
+                              backgroundColor:
+                                strengthDisplay.percentage >= level * 25
+                                  ? strengthDisplay.color
+                                  : "#e5e7eb",
                             }}
                           />
                         ))}
                       </div>
-                      <span 
+                      <span
                         className={styles.strengthLabel}
-                        style={{ color: getStrengthLabel().color }}
+                        style={{ color: strengthDisplay.color }}
                       >
-                        {getStrengthLabel().label}
+                        {strengthDisplay.label}
                       </span>
+                      {!passwordValidation.isValid &&
+                        passwordValidation.errors.length > 0 && (
+                          <div className={styles.passwordErrors}>
+                            {passwordValidation.errors.map((error, index) => (
+                              <p key={index} className={styles.passwordError}>
+                                {error}
+                              </p>
+                            ))}
+                          </div>
+                        )}
                     </div>
                   )}
                 </div>
 
                 <div className={styles.inputGroup}>
-                  <label htmlFor="confirmPassword" className={styles.label}>Confirmar senha</label>
+                  <label htmlFor='confirmPassword' className={styles.label}>
+                    Confirmar senha
+                  </label>
                   <div className={styles.inputWrapper}>
                     <span className={styles.inputIcon}>
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                      <svg
+                        width='20'
+                        height='20'
+                        viewBox='0 0 24 24'
+                        fill='none'
+                        stroke='currentColor'
+                        strokeWidth='2'
+                      >
+                        <rect
+                          x='3'
+                          y='11'
+                          width='18'
+                          height='11'
+                          rx='2'
+                          ry='2'
+                        />
+                        <path d='M7 11V7a5 5 0 0 1 10 0v4' />
                       </svg>
                     </span>
                     <input
-                      type={showConfirmPassword ? 'text' : 'password'}
-                      id="confirmPassword"
+                      type={showConfirmPassword ? "text" : "password"}
+                      id='confirmPassword'
                       className={styles.input}
-                      placeholder="••••••••"
+                      placeholder='••••••••'
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       disabled={isLoading}
-                      autoComplete="new-password"
+                      autoComplete='new-password'
                     />
                     <button
-                      type="button"
+                      type='button'
                       className={styles.togglePassword}
-                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      onClick={() =>
+                        setShowConfirmPassword(!showConfirmPassword)
+                      }
                       tabIndex={-1}
                     >
                       {showConfirmPassword ? (
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
-                          <line x1="1" y1="1" x2="23" y2="23"/>
+                        <svg
+                          width='20'
+                          height='20'
+                          viewBox='0 0 24 24'
+                          fill='none'
+                          stroke='currentColor'
+                          strokeWidth='2'
+                        >
+                          <path d='M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24' />
+                          <line x1='1' y1='1' x2='23' y2='23' />
                         </svg>
                       ) : (
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                          <circle cx="12" cy="12" r="3"/>
+                        <svg
+                          width='20'
+                          height='20'
+                          viewBox='0 0 24 24'
+                          fill='none'
+                          stroke='currentColor'
+                          strokeWidth='2'
+                        >
+                          <path d='M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z' />
+                          <circle cx='12' cy='12' r='3' />
                         </svg>
                       )}
                     </button>
@@ -407,7 +515,7 @@ export function Register() {
                 <div className={styles.checkboxGroup}>
                   <label className={styles.checkboxLabel}>
                     <input
-                      type="checkbox"
+                      type='checkbox'
                       className={styles.checkbox}
                       checked={acceptedTerms}
                       onChange={(e) => setAcceptedTerms(e.target.checked)}
@@ -415,18 +523,22 @@ export function Register() {
                     />
                     <span className={styles.checkboxCustom}></span>
                     <span className={styles.checkboxText}>
-                      Eu concordo com os{' '}
-                      <Link to="/termos" className={styles.termsLink}>Termos de Uso</Link>
-                      {' '}e{' '}
-                      <Link to="/privacidade" className={styles.termsLink}>Política de Privacidade</Link>
+                      Eu concordo com os{" "}
+                      <Link to='/termos' className={styles.termsLink}>
+                        Termos de Uso
+                      </Link>{" "}
+                      e{" "}
+                      <Link to='/privacidade' className={styles.termsLink}>
+                        Política de Privacidade
+                      </Link>
                     </span>
                   </label>
                 </div>
 
                 {error && <p className={styles.error}>{error}</p>}
 
-                <button 
-                  type="submit" 
+                <button
+                  type='submit'
                   className={styles.submitBtn}
                   disabled={isLoading}
                 >
@@ -436,14 +548,14 @@ export function Register() {
                       Criando conta...
                     </>
                   ) : (
-                    'Criar conta'
+                    "Criar conta"
                   )}
                 </button>
               </form>
 
               <p className={styles.switchAuth}>
-                Já tem uma conta?{' '}
-                <Link to="/login" className={styles.switchLink}>
+                Já tem uma conta?{" "}
+                <Link to='/login' className={styles.switchLink}>
                   Entrar
                 </Link>
               </p>

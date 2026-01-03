@@ -23,3 +23,6 @@ export interface ApiError {
   code?: string;
   status?: number;
 }
+
+// Re-exporta tipos de autenticação
+export * from "./auth";

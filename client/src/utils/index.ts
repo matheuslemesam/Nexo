@@ -6,17 +6,17 @@
  * Formata uma data para o padrão brasileiro
  */
 export const formatDate = (date: Date | string): string => {
-  const dateObj = typeof date === 'string' ? new Date(date) : date;
-  return dateObj.toLocaleDateString('pt-BR');
+  const dateObj = typeof date === "string" ? new Date(date) : date;
+  return dateObj.toLocaleDateString("pt-BR");
 };
 
 /**
  * Formata um valor para moeda brasileira
  */
 export const formatCurrency = (value: number): string => {
-  return new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
+  return new Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: "BRL",
   }).format(value);
 };
 
@@ -58,6 +58,12 @@ export const generateId = (): string => {
  * Capitaliza a primeira letra de uma string
  */
 export const capitalize = (str: string): string => {
-  if (!str) return '';
+  if (!str) return "";
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 };
+
+// Exporta validador de senha
+export {
+  validatePassword,
+  getPasswordStrengthDisplay,
+} from "./passwordValidator";

@@ -2,7 +2,7 @@
  * Configuração base do cliente HTTP para chamadas à API
  */
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
 
 interface RequestConfig extends RequestInit {
   params?: Record<string, string>;
@@ -18,7 +18,10 @@ class ApiClient {
     this.baseURL = baseURL;
   }
 
-  private async request<T>(endpoint: string, config: RequestConfig = {}): Promise<T> {
+  private async request<T>(
+    endpoint: string,
+    config: RequestConfig = {}
+  ): Promise<T> {
     const { params, ...requestConfig } = config;
 
     let url = `${this.baseURL}${endpoint}`;
@@ -31,43 +34,55 @@ class ApiClient {
     const response = await fetch(url, {
       ...requestConfig,
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         ...requestConfig.headers,
       },
     });
 
     if (!response.ok) {
       const error = await response.json().catch(() => ({
-        message: 'Erro desconhecido',
+        detail: "Erro desconhecido",
       }));
-      throw new Error(error.message || `HTTP Error: ${response.status}`);
+
+      // Backend FastAPI retorna erro em 'detail'
+      const message =
+        error.detail || error.message || `HTTP Error: ${response.status}`;
+      throw new Error(message);
     }
 
     return response.json();
   }
 
   async get<T>(endpoint: string, config?: RequestConfig): Promise<T> {
-    return this.request<T>(endpoint, { ...config, method: 'GET' });
+    return this.request<T>(endpoint, { ...config, method: "GET" });
   }
 
-  async post<T>(endpoint: string, data?: unknown, config?: RequestConfig): Promise<T> {
+  async post<T>(
+    endpoint: string,
+    data?: unknown,
+    config?: RequestConfig
+  ): Promise<T> {
     return this.request<T>(endpoint, {
       ...config,
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify(data),
     });
   }
 
-  async put<T>(endpoint: string, data?: unknown, config?: RequestConfig): Promise<T> {
+  async put<T>(
+    endpoint: string,
+    data?: unknown,
+    config?: RequestConfig
+  ): Promise<T> {
     return this.request<T>(endpoint, {
       ...config,
-      method: 'PUT',
+      method: "PUT",
       body: JSON.stringify(data),
     });
   }
 
   async delete<T>(endpoint: string, config?: RequestConfig): Promise<T> {
-    return this.request<T>(endpoint, { ...config, method: 'DELETE' });
+    return this.request<T>(endpoint, { ...config, method: "DELETE" });
   }
 }
 
