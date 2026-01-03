@@ -49,6 +49,8 @@ async def extract_repo_context(payload: RepoRequest):
                 "total_files": result["file_stats"]["total_files"],
                 "total_lines": result["file_stats"]["total_lines"],
                 "total_size": result["file_stats"]["total_size_human"],
+                "files_in_context": result["file_stats"].get("files_in_context", 0),
+                "total_analyzed": result["file_stats"].get("total_files_analyzed", 0),
             },
             "by_category": result["file_stats"]["by_category"],
             "top_extensions": result["file_stats"]["by_extension"],
@@ -57,11 +59,15 @@ async def extract_repo_context(payload: RepoRequest):
         "dependencies": result["dependencies"],
         # Estrutura de pastas
         "directory_structure": result["directory_structure"],
-        # Contexto para IA
+        # Contexto para IA (OTIMIZADO COM PRIORIZAÇÃO)
         "context": {
             "payload": result["payload"],
             "total_chars": result["payload_chars"],
+            "max_chars": result.get("payload_max_chars", 48000),
             "estimated_tokens": int(result["payload_chars"] / 4),
+            "files_in_context": result["file_stats"].get("files_in_context", 0),
+            "total_analyzed": result["file_stats"].get("total_files_analyzed", 0),
+            "included_files": result.get("included_files", []),
         },
         # Erros (se houver)
         "errors": result["errors"],
