@@ -84,6 +84,12 @@ class FileSummarySchema(BaseModel):
     total_files: int = Field(..., description="Total de arquivos processados")
     total_lines: int = Field(..., description="Total de linhas de código")
     total_size: str = Field(..., description="Tamanho total (formatado)")
+    files_in_context: Optional[int] = Field(
+        None, description="Arquivos incluídos no contexto IA"
+    )
+    total_analyzed: Optional[int] = Field(
+        None, description="Total de arquivos analisados"
+    )
 
 
 class FileAnalysisSchema(BaseModel):
@@ -120,6 +126,17 @@ class ContextSchema(BaseModel):
     payload: str = Field(..., description="Conteúdo formatado dos arquivos")
     total_chars: int = Field(..., description="Total de caracteres")
     estimated_tokens: int = Field(..., description="Estimativa de tokens (chars/4)")
+    max_chars: int = Field(..., description="Limite máximo de caracteres configurado")
+    files_in_context: int = Field(
+        ..., description="Número de arquivos incluídos no payload"
+    )
+    total_analyzed: int = Field(
+        ..., description="Total de arquivos analisados no repositório"
+    )
+    included_files: List[str] = Field(
+        default_factory=list,
+        description="Lista de arquivos incluídos no contexto (em ordem de prioridade)",
+    )
 
 
 # === Schema de Resposta Principal ===
@@ -209,6 +226,10 @@ class ExtractResponseSchema(BaseModel):
                     "payload": "<file path='src/main.py'>...</file>",
                     "total_chars": 50000,
                     "estimated_tokens": 12500,
+                    "max_chars": 48000,
+                    "files_in_context": 15,
+                    "total_analyzed": 50,
+                    "included_files": ["README.md", "requirements.txt", "src/main.py"],
                 },
                 "errors": None,
             }
