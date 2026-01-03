@@ -4,6 +4,13 @@ import { Navbar } from "../../components/layout";
 import { Container, Card, Badge } from "../../components/ui";
 import styles from "./RepoAnalysis.module.css";
 import api from "../../services/api";
+import {
+  analyzeRepository,
+  getLanguagesPercentage,
+  formatDate,
+  formatNumber,
+  type AnalyzeResponse,
+} from "../../services/repoAnalysisService";
 
 // Mock data for repository analysis
 const MOCK_REPO_DATA = {
@@ -199,6 +206,13 @@ const MOCK_SEQUENCE_DIAGRAM = `sequenceDiagram
 
 type DiagramType = "architecture" | "classes" | "sequence";
 
+// Estado de loading da análise
+interface AnalysisState {
+  isLoading: boolean;
+  data: AnalyzeResponse | null;
+  error: string | null;
+}
+
 /**
  * RepoAnalysis page - Displays repository analysis results
  */
@@ -213,9 +227,6 @@ export function RepoAnalysis() {
   const [activeDiagram, setActiveDiagram] =
     useState<DiagramType>("architecture");
   const [isLoaded, setIsLoaded] = useState(false);
-  const [expandedSection, setExpandedSection] = useState<string | null>(
-    "summary"
-  );
   const [podcastState, setPodcastState] = useState<{
     isGenerating: boolean;
     audioUrl: string | null;
@@ -225,6 +236,14 @@ export function RepoAnalysis() {
     audioUrl: null,
     error: null,
   });
+
+  // Estado da análise do repositório (dados reais da API)
+  const [analysisState, setAnalysisState] = useState<AnalysisState>({
+    isLoading: true,
+    data: null,
+    error: null,
+  });
+
   const diagramRef = useRef<HTMLDivElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
 
@@ -232,11 +251,67 @@ export function RepoAnalysis() {
   const repoFromUrl = repoUrl.replace("https://github.com/", "");
   const displayRepoName = repoFromUrl || MOCK_REPO_DATA.fullName;
 
+  // Dados extraídos da análise (com fallback para mock)
+  const repoData = analysisState.data?.repository?.info;
+  const fileAnalysis = analysisState.data?.file_analysis;
+  const dependencies = analysisState.data?.dependencies || [];
+  const overview = analysisState.data?.overview;
+  const languages = analysisState.data?.repository?.languages || {};
+
+  // Converte linguagens para porcentagens
+  const languagesWithPercentage = getLanguagesPercentage(languages);
+
   interface PodcastResponse {
     success: boolean;
     audio_url: string;
     [key: string]: unknown;
   }
+
+  // Carrega dados da análise ao montar o componente
+  useEffect(() => {
+    const loadAnalysis = async () => {
+      if (!repoUrl || repoUrl === "https://github.com/usuario/awesome-project") {
+        // URL padrão/mock - não faz chamada real
+        setAnalysisState({
+          isLoading: false,
+          data: null,
+          error: null,
+        });
+        setIsLoaded(true);
+        return;
+      }
+
+      setAnalysisState({ isLoading: true, data: null, error: null });
+
+      try {
+        const fullRepoUrl = repoUrl.startsWith("http")
+          ? repoUrl
+          : `https://github.com/${repoUrl}`;
+
+        const result = await analyzeRepository({
+          github_url: fullRepoUrl,
+          branch: "main",
+        });
+
+        setAnalysisState({
+          isLoading: false,
+          data: result,
+          error: result.status === "error" ? (result.errors?.[0] || "Erro na análise") : null,
+        });
+      } catch (error) {
+        const err = error as Error;
+        setAnalysisState({
+          isLoading: false,
+          data: null,
+          error: err.message || "Erro ao analisar repositório",
+        });
+      } finally {
+        setIsLoaded(true);
+      }
+    };
+
+    loadAnalysis();
+  }, [repoUrl]);
 
   // Generate podcast
   const handleGeneratePodcast = async () => {
@@ -289,12 +364,6 @@ export function RepoAnalysis() {
     }
   };
 
-  // Simulate loading animation
-  useEffect(() => {
-    const timer = setTimeout(() => setIsLoaded(true), 500);
-    return () => clearTimeout(timer);
-  }, []);
-
   // Render Mermaid diagram as SVG simulation
   useEffect(() => {
     if (diagramRef.current && activeTab === "diagram") {
@@ -334,115 +403,184 @@ export function RepoAnalysis() {
       <Navbar />
 
       <main className={styles.main}>
-        {/* Header Section */}
-        <section className={styles.header}>
-          <Container size='xl'>
-            <div className={styles.headerContent}>
-              <div className={styles.breadcrumb}>
-                <Link to='/comecar' className={styles.breadcrumbLink}>
-                  ← Voltar
+        {/* Loading State */}
+        {analysisState.isLoading && (
+          <section className={styles.loadingSection}>
+            <Container size='xl'>
+              <div className={styles.loadingContent}>
+                <div className={styles.spinner}></div>
+                <p>Analisando repositório...</p>
+                <p className={styles.loadingSubtext}>
+                  Extraindo dados e gerando overview com IA
+                </p>
+              </div>
+            </Container>
+          </section>
+        )}
+
+        {/* Error State */}
+        {analysisState.error && !analysisState.isLoading && (
+          <section className={styles.errorSection}>
+            <Container size='xl'>
+              <div className={styles.errorContent}>
+                <span className={styles.errorIcon}>⚠️</span>
+                <h2>Erro na análise</h2>
+                <p>{analysisState.error}</p>
+                <Link to='/comecar' className={styles.errorButton}>
+                  ← Voltar e tentar novamente
                 </Link>
               </div>
+            </Container>
+          </section>
+        )}
 
-              <div className={styles.repoInfo}>
-                <div className={styles.repoIcon}>
-                  <svg
-                    width='32'
-                    height='32'
-                    viewBox='0 0 24 24'
-                    fill='currentColor'
-                  >
-                    <path d='M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z' />
-                  </svg>
+        {/* Header Section */}
+        {!analysisState.isLoading && (
+          <section className={styles.header}>
+            <Container size='xl'>
+              <div className={styles.headerContent}>
+                <div className={styles.breadcrumb}>
+                  <Link to='/comecar' className={styles.breadcrumbLink}>
+                    ← Voltar
+                  </Link>
                 </div>
-                <div className={styles.repoDetails}>
-                  <h1 className={styles.repoName}>{displayRepoName}</h1>
-                  <p className={styles.repoDescription}>
-                    {MOCK_REPO_DATA.description}
-                  </p>
-                  <div className={styles.repoMeta}>
-                    <Badge variant='primary'>{MOCK_REPO_DATA.language}</Badge>
-                    <span className={styles.metaItem}>
-                      ⭐ {MOCK_REPO_DATA.stars}
-                    </span>
-                    <span className={styles.metaItem}>
-                      🍴 {MOCK_REPO_DATA.forks}
-                    </span>
-                    <span className={styles.metaItem}>
-                      📋 {MOCK_REPO_DATA.issues} issues
-                    </span>
+
+                <div className={styles.repoInfo}>
+                  <div className={styles.repoIcon}>
+                    <svg
+                      width='32'
+                      height='32'
+                      viewBox='0 0 24 24'
+                      fill='currentColor'
+                    >
+                      <path d='M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z' />
+                    </svg>
+                  </div>
+                  <div className={styles.repoDetails}>
+                    <h1 className={styles.repoName}>
+                      {repoData?.full_name || displayRepoName}
+                    </h1>
+                    <p className={styles.repoDescription}>
+                      {repoData?.description || MOCK_REPO_DATA.description}
+                    </p>
+                    <div className={styles.repoMeta}>
+                      <Badge variant='primary'>
+                        {repoData?.language || MOCK_REPO_DATA.language}
+                      </Badge>
+                      <span className={styles.metaItem}>
+                        ⭐ {formatNumber(repoData?.stars ?? MOCK_REPO_DATA.stars)}
+                      </span>
+                      <span className={styles.metaItem}>
+                        🍴 {formatNumber(repoData?.forks ?? MOCK_REPO_DATA.forks)}
+                      </span>
+                      <span className={styles.metaItem}>
+                        📋 {repoData?.open_issues ?? MOCK_REPO_DATA.issues} issues
+                      </span>
+                      {repoData?.updated_at && (
+                        <span className={styles.metaItem}>
+                          🕐 {formatDate(repoData.updated_at)}
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </Container>
-        </section>
+            </Container>
+          </section>
+        )}
 
         {/* Tabs Navigation */}
-        <section className={styles.tabsSection}>
-          <Container size='xl'>
-            <div className={styles.tabs}>
-              <button
-                className={`${styles.tab} ${
-                  activeTab === "overview" ? styles.tabActive : ""
-                }`}
-                onClick={() => setActiveTab("overview")}
-              >
-                <span className={styles.tabIcon}>📊</span>
-                Overview
-              </button>
-              <button
-                className={`${styles.tab} ${
-                  activeTab === "diagram" ? styles.tabActive : ""
-                }`}
-                onClick={() => setActiveTab("diagram")}
-              >
-                <span className={styles.tabIcon}>🔀</span>
-                Diagrams
-              </button>
-              <button
-                className={`${styles.tab} ${
-                  activeTab === "insights" ? styles.tabActive : ""
-                }`}
-                onClick={() => setActiveTab("insights")}
-              >
-                <span className={styles.tabIcon}>💡</span>
-                Insights
-              </button>
-            </div>
-          </Container>
-        </section>
+        {!analysisState.isLoading && (
+          <section className={styles.tabsSection}>
+            <Container size='xl'>
+              <div className={styles.tabs}>
+                <button
+                  className={`${styles.tab} ${
+                    activeTab === "overview" ? styles.tabActive : ""
+                  }`}
+                  onClick={() => setActiveTab("overview")}
+                >
+                  <span className={styles.tabIcon}>📊</span>
+                  Overview
+                </button>
+                <button
+                  className={`${styles.tab} ${
+                    activeTab === "diagram" ? styles.tabActive : ""
+                  }`}
+                  onClick={() => setActiveTab("diagram")}
+                >
+                  <span className={styles.tabIcon}>🔀</span>
+                  Diagrams
+                </button>
+                <button
+                  className={`${styles.tab} ${
+                    activeTab === "insights" ? styles.tabActive : ""
+                  }`}
+                  onClick={() => setActiveTab("insights")}
+                >
+                  <span className={styles.tabIcon}>💡</span>
+                  Insights
+                </button>
+              </div>
+            </Container>
+          </section>
+        )}
 
         {/* Content Section */}
-        <section className={styles.content}>
-          <Container size='xl'>
-            {/* Overview Tab */}
-            {activeTab === "overview" && (
-              <div
-                className={`${styles.tabContent} ${
-                  isLoaded ? styles.loaded : ""
-                }`}
-              >
-                <div className={styles.overviewGrid}>
-                  {/* Podcast Section - Main Feature */}
-                  <Card className={styles.analysisCard}>
-                    <div className={styles.cardHeader}>
-                      <div className={styles.cardHeaderLeft}>
-                        <span className={styles.cardIcon}>🎙️</span>
-                        <h3 className={styles.cardTitle}>
-                          AI-Generated Podcast
-                        </h3>
-                      </div>
-                    </div>
-                    <div className={styles.cardContent}>
-                      <p className={styles.podcastDescription}>
-                        Generate an AI-narrated podcast that explains this
-                        repository in detail, including architecture,
-                        technologies, structure and main features.
-                      </p>
+        {!analysisState.isLoading && (
+          <section className={styles.content}>
+            <Container size='xl'>
+              {/* Overview Tab */}
+              {activeTab === "overview" && (
+                <div
+                  className={`${styles.tabContent} ${
+                    isLoaded ? styles.loaded : ""
+                  }`}
+                >
+                  <div className={styles.overviewGrid}>
+                    {/* AI Overview Card - Mostrar overview gerado pela IA */}
+                    {overview && (
+                      <Card
+                        variant='elevated'
+                        padding='lg'
+                        className={styles.aiOverviewCard}
+                      >
+                        <div className={styles.cardHeader}>
+                          <div className={styles.cardHeaderLeft}>
+                            <span className={styles.cardIcon}>🤖</span>
+                            <h3 className={styles.cardTitle}>
+                              Overview gerado por IA
+                            </h3>
+                          </div>
+                        </div>
+                        <div className={styles.cardContent}>
+                          <div
+                            className={styles.markdownContent}
+                            dangerouslySetInnerHTML={{ __html: overview }}
+                          />
+                        </div>
+                      </Card>
+                    )}
 
-                      {!podcastState.audioUrl && !podcastState.isGenerating && (
-                        <button
+                    {/* Podcast Section - Main Feature */}
+                    <Card className={styles.analysisCard}>
+                      <div className={styles.cardHeader}>
+                        <div className={styles.cardHeaderLeft}>
+                          <span className={styles.cardIcon}>🎙️</span>
+                          <h3 className={styles.cardTitle}>
+                            AI-Generated Podcast
+                          </h3>
+                        </div>
+                      </div>
+                      <div className={styles.cardContent}>
+                        <p className={styles.podcastDescription}>
+                          Generate an AI-narrated podcast that explains this
+                          repository in detail, including architecture,
+                          technologies, structure and main features.
+                        </p>
+
+                        {!podcastState.audioUrl && !podcastState.isGenerating && (
+                          <button
                           className={styles.generatePodcastButton}
                           onClick={handleGeneratePodcast}
                         >
@@ -507,48 +645,7 @@ export function RepoAnalysis() {
                     </div>
                   </Card>
 
-                  {/* Summary Card */}
-                  <Card
-                    variant='elevated'
-                    padding='lg'
-                    className={styles.summaryCard}
-                  >
-                    <div
-                      className={styles.sectionHeader}
-                      onClick={() =>
-                        setExpandedSection(
-                          expandedSection === "summary" ? null : "summary"
-                        )
-                      }
-                    >
-                      <h2 className={styles.sectionTitle}>
-                        <span className={styles.sectionIcon}>📝</span>
-                        Analysis Summary
-                      </h2>
-                      <span className={styles.expandIcon}>
-                        {expandedSection === "summary" ? "−" : "+"}
-                      </span>
-                    </div>
-                    {expandedSection === "summary" && (
-                      <div className={styles.summaryContent}>
-                        {MOCK_ANALYSIS.summary
-                          .split("\n\n")
-                          .map((paragraph, idx) => (
-                            <p key={idx} className={styles.paragraph}>
-                              {paragraph
-                                .split("**")
-                                .map((part, i) =>
-                                  i % 2 === 1 ? (
-                                    <strong key={i}>{part}</strong>
-                                  ) : (
-                                    part
-                                  )
-                                )}
-                            </p>
-                          ))}
-                      </div>
-                    )}
-                  </Card>
+                  {/* Summary Card - removido pois o overview da IA substitui */}
 
                   {/* Metrics Card */}
                   <Card
@@ -563,40 +660,40 @@ export function RepoAnalysis() {
                     <div className={styles.metricsGrid}>
                       <div className={styles.metricItem}>
                         <span className={styles.metricValue}>
-                          {MOCK_ANALYSIS.metrics.files}
+                          {fileAnalysis?.summary.total_files ?? MOCK_ANALYSIS.metrics.files}
                         </span>
                         <span className={styles.metricLabel}>Files</span>
                       </div>
                       <div className={styles.metricItem}>
                         <span className={styles.metricValue}>
-                          {MOCK_ANALYSIS.metrics.lines.toLocaleString()}
+                          {(fileAnalysis?.summary.total_lines ?? MOCK_ANALYSIS.metrics.lines).toLocaleString()}
                         </span>
                         <span className={styles.metricLabel}>Lines</span>
                       </div>
                       <div className={styles.metricItem}>
                         <span className={styles.metricValue}>
-                          {MOCK_ANALYSIS.metrics.functions}
+                          {fileAnalysis?.summary.total_size ?? "N/A"}
                         </span>
-                        <span className={styles.metricLabel}>Functions</span>
+                        <span className={styles.metricLabel}>Size</span>
                       </div>
                       <div className={styles.metricItem}>
                         <span className={styles.metricValue}>
-                          {MOCK_ANALYSIS.metrics.classes}
+                          {fileAnalysis?.summary.files_in_context ?? 0}
                         </span>
-                        <span className={styles.metricLabel}>Classes</span>
+                        <span className={styles.metricLabel}>Analisados</span>
                       </div>
                       <div className={styles.metricItem}>
                         <span className={styles.metricValue}>
-                          {MOCK_ANALYSIS.metrics.coverage}%
+                          {Object.keys(languages).length}
                         </span>
-                        <span className={styles.metricLabel}>Coverage</span>
+                        <span className={styles.metricLabel}>Linguagens</span>
                       </div>
                       <div className={styles.metricItem}>
                         <span className={styles.metricValue}>
-                          {MOCK_ANALYSIS.metrics.maintainability}
+                          {dependencies.reduce((sum, d) => sum + d.count, 0)}
                         </span>
                         <span className={styles.metricLabel}>
-                          Maintainability
+                          Dependências
                         </span>
                       </div>
                     </div>
@@ -613,7 +710,10 @@ export function RepoAnalysis() {
                       Tech Stack
                     </h2>
                     <div className={styles.techStack}>
-                      {MOCK_ANALYSIS.techStack.map((tech) => (
+                      {(languagesWithPercentage.length > 0
+                        ? languagesWithPercentage.slice(0, 6)
+                        : MOCK_ANALYSIS.techStack
+                      ).map((tech) => (
                         <div key={tech.name} className={styles.techItem}>
                           <div className={styles.techInfo}>
                             <span className={styles.techName}>{tech.name}</span>
@@ -626,7 +726,7 @@ export function RepoAnalysis() {
                               className={styles.techProgress}
                               style={{
                                 width: `${tech.percentage}%`,
-                                background: tech.color,
+                                background: "color" in tech ? tech.color : "#3178c6",
                               }}
                             />
                           </div>
@@ -648,32 +748,33 @@ export function RepoAnalysis() {
                     <div className={styles.depsStats}>
                       <div className={styles.depsStat}>
                         <span className={styles.depsValue}>
-                          {MOCK_ANALYSIS.dependencies.total}
+                          {dependencies.length > 0
+                            ? dependencies.reduce((sum, d) => sum + d.count, 0)
+                            : MOCK_ANALYSIS.dependencies.total}
                         </span>
                         <span className={styles.depsLabel}>Total</span>
                       </div>
                       <div className={styles.depsStat}>
-                        <span
-                          className={`${styles.depsValue} ${styles.warning}`}
-                        >
-                          {MOCK_ANALYSIS.dependencies.outdated}
+                        <span className={styles.depsValue}>
+                          {dependencies.filter(d => d.dependencies.length > 0).length}
                         </span>
-                        <span className={styles.depsLabel}>Desatualizadas</span>
+                        <span className={styles.depsLabel}>Arquivos</span>
                       </div>
                       <div className={styles.depsStat}>
-                        <span
-                          className={`${styles.depsValue} ${styles.success}`}
-                        >
-                          {MOCK_ANALYSIS.dependencies.vulnerable}
+                        <span className={styles.depsValue}>
+                          {dependencies.reduce((sum, d) => sum + d.dev_dependencies.length, 0)}
                         </span>
-                        <span className={styles.depsLabel}>Vulneráveis</span>
+                        <span className={styles.depsLabel}>Dev Deps</span>
                       </div>
                     </div>
                     <div className={styles.mainDeps}>
                       <span className={styles.depsTitle}>Principais:</span>
                       <div className={styles.depsTags}>
-                        {MOCK_ANALYSIS.dependencies.main.map((dep) => (
-                          <span key={dep} className={styles.depTag}>
+                        {(dependencies.length > 0
+                          ? dependencies.flatMap(d => d.dependencies).slice(0, 8)
+                          : MOCK_ANALYSIS.dependencies.main
+                        ).map((dep, idx) => (
+                          <span key={`${dep}-${idx}`} className={styles.depTag}>
                             {dep}
                           </span>
                         ))}
@@ -1100,6 +1201,7 @@ export function RepoAnalysis() {
             )}
           </Container>
         </section>
+        )}
       </main>
     </div>
   );

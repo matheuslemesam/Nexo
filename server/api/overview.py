@@ -14,10 +14,10 @@ from services.gemini import gemini_service
 router = APIRouter(prefix="/overview", tags=["Overview IA"])
 
 
-# Prompt otimizado para gerar overview de onboarding
+# Prompt otimizado para gerar overview de onboarding em HTML
 OVERVIEW_PROMPT_TEMPLATE = """Você é um especialista em análise de código e comunicação técnica.
 
-Analise o seguinte repositório e gere um **overview contextual** em Markdown.
+Analise o seguinte repositório e gere um **overview contextual** em HTML puro (para renderizar em React).
 
 ## Informações do Repositório:
 - **Nome:** {repo_name}
@@ -31,44 +31,50 @@ Analise o seguinte repositório e gere um **overview contextual** em Markdown.
 ---
 
 ## Sua Tarefa:
-Gere um **overview claro e bem estruturado** em Markdown, focado no CONTEXTO GERAL do projeto.
+Gere um **overview claro e bem estruturado** em HTML, focado no CONTEXTO GERAL do projeto.
 
-### Estrutura do texto (use parágrafos bem separados):
+### Estrutura do HTML (use tags semânticas):
 
 1. **Título e Introdução**
-   - Um título chamativo com emoji
-   - Um parágrafo de boas-vindas explicando o que é o projeto de forma envolvente
+   - Use <h2> para o título chamativo com emoji
+   - Use <p> para um parágrafo de boas-vindas explicando o que é o projeto
 
 2. **O Problema e a Solução**
-   - Um parágrafo explicando qual problema o projeto resolve
-   - Um parágrafo explicando COMO ele resolve (a abordagem/solução)
+   - Use <h3> para subtítulos de seção
+   - Use <p> para parágrafos explicando o problema e a solução
 
 3. **Principais Funcionalidades**
-   - Liste as funcionalidades principais em formato de lista com emojis
-   - Seja específico sobre o que cada feature faz
+   - Use <h3> para o título da seção
+   - Use <ul> e <li> para listar funcionalidades com emojis
 
 4. **Para Quem é Este Projeto?**
-   - Um parágrafo descrevendo o público-alvo
-   - Casos de uso típicos
+   - Use <h3> para o título
+   - Use <p> para descrever público-alvo e casos de uso
 
 5. **Como Começar** (SE houver informação sobre instalação/uso)
-   - Passos simples para usar o projeto
+   - Use <h3> para o título
+   - Use <ol> e <li> para passos numerados
    - Apenas se houver informação clara no README ou configs
 
 6. **Considerações Finais**
-   - Um parágrafo de fechamento
-   - Pode incluir status do projeto, próximos passos ou convite para contribuir
+   - Use <h3> para o título
+   - Use <p> para fechamento
 
-### Regras IMPORTANTES:
+### Regras IMPORTANTES de formatação HTML:
+- Use <strong> para texto em negrito importante
+- Use <em> para ênfase
+- Use <code> para termos técnicos inline
+- Use classes CSS para estilização: class="overview-title", class="overview-section", class="feature-list", class="steps-list"
+- NÃO inclua tags <html>, <head>, <body> - apenas o conteúdo interno
+- NÃO use atributos style inline
 - NÃO liste linguagens, frameworks ou bibliotecas técnicas
 - NÃO mostre estrutura de diretórios ou pastas
 - NÃO faça análise técnica de arquitetura
 - FOQUE no contexto geral, propósito e valor do projeto
-- Use parágrafos bem separados e fluidos
 - Seja informativo mas acessível (não muito técnico)
 - Use emojis com moderação para deixar visual agradável
 - Baseie-se APENAS nos dados fornecidos
-- Retorne APENAS o Markdown, sem explicações adicionais
+- Retorne APENAS o HTML, sem explicações adicionais ou blocos de código
 """
 
 
