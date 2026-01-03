@@ -1,0 +1,44 @@
+version: "3.9"
+
+services:
+  api:
+    container_name: nexo-api
+    build:
+      context: server/
+      containerfile: Containerfile
+    image: nexo-api:latest
+    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+    depends_on:
+      - mongo
+
+  mongo:
+    container_name: nexo-mongo
+    image: docker.io/mongodb/mongodb-community-server:latest
+    environment:
+      MONGODB_INITDB_ROOT_USERNAME: nexo
+      MONGODB_INITDB_ROOT_PASSWORD: senha123
+      MONGODB_INITDB_DATABASE: nexo_db
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    restart: unless-stopped
+
+  mcp-mongodb:
+    container_name: nexo-mcp-mongodb
+    image: docker.io/mongodb/mongodb-mcp-server:latest
+    environment:
+      MDB_MCP_CONNECTION_STRING: mongodb://nexo:senha123@mongo:27017/nexo_db
+      #MDB_MCP_API_CLIENT_ID: seu-client-id
+      #MDB_MCP_API_CLIENT_SECRET: seu-client-secret
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
+    restart: unless-stopped
+
+volumes:
+  mongo_data:
