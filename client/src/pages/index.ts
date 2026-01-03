@@ -2,4 +2,4 @@
  * Exportações centralizadas das páginas
  */
 
-export { Home } from './Home';
+export { Landing } from './Landing';
