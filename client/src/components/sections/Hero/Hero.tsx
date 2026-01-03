@@ -12,7 +12,6 @@ const ACTIVE_SQUARES = 6; // Number of highlighted squares at a time
 export function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0.5, y: 0.5 });
-  const [activeSquares, setActiveSquares] = useState<number[]>([]);
 
   const handleWatchDemo = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
@@ -35,10 +34,12 @@ export function Hero() {
     return newActive;
   }, []);
 
-  useEffect(() => {
-    // Initialize active squares
-    setActiveSquares(generateActiveSquares());
+  // Initialize with lazy initialization to avoid synchronous setState in effect
+  const [activeSquares, setActiveSquares] = useState<number[]>(() =>
+    generateActiveSquares()
+  );
 
+  useEffect(() => {
     // Update active squares periodically
     const interval = setInterval(() => {
       setActiveSquares(generateActiveSquares());
