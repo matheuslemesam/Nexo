@@ -1,0 +1,232 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2026-01-02T00:00:00.000Z",
+  "__export_source": "insomnia.desktop.app:v2023.5.8",
+  "resources": [
+    {
+      "_id": "req_register",
+      "parentId": "fld_auth",
+      "modified": 1704153600000,
+      "created": 1704153600000,
+      "url": "{{ _.base_url }}/api/v1/auth/register",
+      "name": "Registrar Usuário",
+      "description": "Cria um novo usuário no sistema",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"email\": \"joao.silva@exemplo.com\",\n  \"name\": \"João Silva\",\n  \"password\": \"senhaSegura123\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1704153600000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_login",
+      "parentId": "fld_auth",
+      "modified": 1704153600000,
+      "created": 1704153600000,
+      "url": "{{ _.base_url }}/api/v1/auth/login",
+      "name": "Login",
+      "description": "Realiza login e retorna token JWT",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"email\": \"joao.silva@exemplo.com\",\n  \"password\": \"senhaSegura123\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1704153500000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_me",
+      "parentId": "fld_auth",
+      "modified": 1704153600000,
+      "created": 1704153600000,
+      "url": "{{ _.base_url }}/api/v1/auth/me",
+      "name": "Dados do Usuário Autenticado",
+      "description": "Retorna informações do usuário logado (requer token)",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.access_token }}"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1704153400000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_health",
+      "parentId": "fld_system",
+      "modified": 1704153600000,
+      "created": 1704153600000,
+      "url": "{{ _.base_url }}/health",
+      "name": "Health Check",
+      "description": "Verifica se a API está funcionando",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -1704153300000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_root",
+      "parentId": "fld_system",
+      "modified": 1704153600000,
+      "created": 1704153600000,
+      "url": "{{ _.base_url }}/",
+      "name": "Root Endpoint",
+      "description": "Endpoint raiz da API",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -1704153200000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "fld_auth",
+      "parentId": "wrk_nexo",
+      "modified": 1704153600000,
+      "created": 1704153600000,
+      "name": "🔐 Autenticação",
+      "description": "Endpoints de autenticação (registro, login, dados do usuário)",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1704153600000,
+      "_type": "request_group"
+    },
+    {
+      "_id": "fld_system",
+      "parentId": "wrk_nexo",
+      "modified": 1704153600000,
+      "created": 1704153600000,
+      "name": "⚙️ Sistema",
+      "description": "Endpoints de sistema (health check, root)",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1704153500000,
+      "_type": "request_group"
+    },
+    {
+      "_id": "wrk_nexo",
+      "parentId": null,
+      "modified": 1704153600000,
+      "created": 1704153600000,
+      "name": "Nexo API",
+      "description": "API de autenticação do sistema Nexo",
+      "scope": "collection",
+      "_type": "workspace"
+    },
+    {
+      "_id": "env_base",
+      "parentId": "wrk_nexo",
+      "modified": 1704153600000,
+      "created": 1704153600000,
+      "name": "Base Environment",
+      "data": {
+        "base_url": "http://127.0.0.1:8000",
+        "access_token": ""
+      },
+      "dataPropertyOrder": {
+        "&": ["base_url", "access_token"]
+      },
+      "color": null,
+      "isPrivate": false,
+      "metaSortKey": 1704153600000,
+      "_type": "environment"
+    },
+    {
+      "_id": "env_dev",
+      "parentId": "env_base",
+      "modified": 1704153600000,
+      "created": 1704153600000,
+      "name": "Development",
+      "data": {
+        "base_url": "http://localhost:8000",
+        "access_token": ""
+      },
+      "dataPropertyOrder": {
+        "&": ["base_url", "access_token"]
+      },
+      "color": "#7d69cb",
+      "isPrivate": false,
+      "metaSortKey": 1704153600000,
+      "_type": "environment"
+    },
+    {
+      "_id": "env_prod",
+      "parentId": "env_base",
+      "modified": 1704153600000,
+      "created": 1704153600000,
+      "name": "Production",
+      "data": {
+        "base_url": "https://api.nexo.com",
+        "access_token": ""
+      },
+      "dataPropertyOrder": {
+        "&": ["base_url", "access_token"]
+      },
+      "color": "#d9534f",
+      "isPrivate": false,
+      "metaSortKey": 1704153700000,
+      "_type": "environment"
+    }
+  ]
+}

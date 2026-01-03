@@ -2,5 +2,18 @@
 fastapi>=0.109.0
 uvicorn[standard]>=0.27.0
 
+# MongoDB - Async driver
+motor>=3.6.0
+pymongo>=4.8.0
+
+# Authentication & Security
+python-jose[cryptography]>=3.3.0
+bcrypt>=4.0.0
+python-multipart>=0.0.6
+
+# Data validation
+pydantic[email]>=2.5.0
+pydantic-settings>=2.1.0
+
 # Environment variables
 python-dotenv>=1.0.0
