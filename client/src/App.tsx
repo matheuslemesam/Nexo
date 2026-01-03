@@ -1,4 +1,4 @@
-import { Landing } from './pages';
+import { Landing, GetStarted } from './pages';
 import './App.css';
 import { Routes, Route } from "react-router-dom"
 
@@ -10,6 +10,7 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<Landing />} />
+      <Route path="/comecar" element={<GetStarted />} />
     </Routes>
   );
 }

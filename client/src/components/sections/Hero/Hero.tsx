@@ -1,6 +1,7 @@
 import { Container } from '../../ui';
 import styles from './Hero.module.css';
 import { useRef, useEffect, useState, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 
 // Grid configuration
 const GRID_COLS = 20;
@@ -106,7 +107,7 @@ export function Hero() {
             Chega de sofrer para entender projetos legados.
           </p>
           <div className={styles.actions}>
-            <button className={styles.primaryBtn}>Começar Agora</button>
+            <Link to="/comecar" className={styles.primaryBtn}>Começar Agora</Link>
             <button className={styles.secondaryBtn}>Ver Demo</button>
           </div>
         </div>

@@ -3,3 +3,4 @@
  */
 
 export { Landing } from './Landing';
+export { GetStarted } from './GetStarted';
