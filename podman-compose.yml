@@ -1,23 +1,16 @@
 version: "3.9"
 
 services:
-  mongo:
-    container_name: nexo-mongo
-    image: docker.io/library/mongo:7
-    environment:
-      MONGO_INITDB_DATABASE: nexo_db
+  front:
+    container_name: nexo-front
+    build:
+      context: client/
+      containerfile: Containerfile
+    image: nexo-front:latest
+    command: ["npm", "run", "dev", "--", "--host"]
     ports:
-      - "27017:27017"
-    volumes:
-      - mongo_data:/data/db
-    healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      - "5173:5173"
     restart: unless-stopped
-    networks:
-      - nexo-network
 
   api:
     container_name: nexo-api
@@ -32,27 +25,33 @@ services:
       - "8000:8000"
     restart: unless-stopped
     depends_on:
-      mongo:
-        condition: service_healthy
-    networks:
-      - nexo-network
+      - mongo
 
-  front:
-    container_name: nexo-front
-    build:
-      context: client/
-      containerfile: Containerfile
-    image: nexo-front:latest
-    command: ["npm", "run", "dev", "--", "--host"]
+  mongo:
+    container_name: nexo-mongo
+    image: docker.io/mongodb/mongodb-community-server:latest
+    environment:
+      #MONGODB_INITDB_ROOT_USERNAME: nexo
+      #MONGODB_INITDB_ROOT_PASSWORD: senha123
+      MONGODB_INITDB_DATABASE: nexo_db
     ports:
-      - "5173:5173"
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
     restart: unless-stopped
-    networks:
-      - nexo-network
+
+  mcp-mongodb:
+    container_name: nexo-mcp-mongodb
+    image: docker.io/mongodb/mongodb-mcp-server:latest
+    environment:
+      MDB_MCP_CONNECTION_STRING: mongodb://mongo:27017/nexo_db
+      #MDB_MCP_API_CLIENT_ID: seu-client-id
+      #MDB_MCP_API_CLIENT_SECRET: seu-client-secret
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
+    restart: unless-stopped
 
 volumes:
   mongo_data:
-
-networks:
-  nexo-network:
-    driver: bridge

@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Navbar } from '../../components/layout';
 import { Container } from '../../components/ui';
 import styles from './GetStarted.module.css';
@@ -12,6 +13,7 @@ const ACTIVE_SQUARES = 6;
  * GetStarted page - Page for analyzing GitHub repositories
  */
 export function GetStarted() {
+  const navigate = useNavigate();
   const sectionRef = useRef<HTMLElement>(null);
   const [repoUrl, setRepoUrl] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -99,8 +101,8 @@ export function GetStarted() {
       // Simulating API call - replace with actual API endpoint
       await new Promise(resolve => setTimeout(resolve, 3000));
       
-      // TODO: Handle successful analysis
-      console.log('Analyzing repository:', repoUrl);
+      // Navigate to analysis page with repo URL
+      navigate(`/analise?repo=${encodeURIComponent(repoUrl)}`);
       
     } catch {
       setError('Erro ao analisar o repositório. Tente novamente.');

@@ -1,6 +1,7 @@
 import {
   Landing,
   GetStarted,
+  RepoAnalysis,
   Login,
   Register,
   ForgotPassword,
@@ -19,6 +20,7 @@ function App() {
     <Routes>
       <Route path='/' element={<Landing />} />
       <Route path='/comecar' element={<GetStarted />} />
+      <Route path='/analise' element={<RepoAnalysis />} />
       <Route path='/login' element={<Login />} />
       <Route path='/register' element={<Register />} />
       <Route path='/cadastro' element={<Register />} />
