@@ -1,0 +1,13 @@
+version: "3.9"
+
+services:
+  api:
+    container_name: nexo-api
+    build:
+      context: .
+      containerfile: Containerfile
+    image: nexo-api:latest
+    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
