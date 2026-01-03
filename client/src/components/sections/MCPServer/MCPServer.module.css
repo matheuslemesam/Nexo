@@ -4,7 +4,7 @@
   display: flex;
   align-items: center;
   width: 100%;
-  background: white;
+  background: #0f172a;
 }
 
 .grid {
@@ -25,19 +25,19 @@
 .title {
   font-size: 3.5rem;
   font-weight: 700;
-  color: #111827;
+  color: #fff;
   line-height: 1.1;
 }
 
 .description {
   font-size: 1.125rem;
-  color: #6b7280;
+  color: #8e93a0;
   line-height: 1.6;
   max-width: 400px;
 }
 
 .link {
-  color: #ef4444;
+  color: #667eea;
   font-weight: 500;
   text-decoration: none;
   transition: opacity 0.2s;
@@ -87,6 +87,7 @@
 .mcpLabel {
   font-size: 2rem;
   font-weight: 700;
+  padding-top: 1rem;
   background: linear-gradient(135deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3, #54a0ff);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -115,14 +116,14 @@
 .featureTitle {
   font-size: 1.125rem;
   font-weight: 600;
-  color: #111827;
+  color: #667eea;
   margin-bottom: 0.5rem;
 }
 
 .featureDesc {
   font-size: 0.9375rem;
-  color: #6b7280;
-  line-height: 1.5;
+  color: #ffffff;
+  line-height: 2;
 }
 
 @media (max-width: 768px) {

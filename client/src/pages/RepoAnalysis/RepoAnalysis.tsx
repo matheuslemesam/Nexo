@@ -425,7 +425,9 @@ export function RepoAnalysis() {
               >
                 <div className={styles.overviewGrid}>
                   {/* Podcast Section - Main Feature */}
-                  <Card className={styles.analysisCard}>
+                  <Card
+                    className={`${styles.analysisCard} ${styles.podcastCard}`}
+                  >
                     <div className={styles.cardHeader}>
                       <div className={styles.cardHeaderLeft}>
                         <span className={styles.cardIcon}>🎙️</span>
