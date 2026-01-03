@@ -1,0 +1,63 @@
+services:
+  mongo:
+    container_name: nexo-mongo
+    image: docker.io/library/mongo:7
+    environment:
+      MONGO_INITDB_DATABASE: nexo_db
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - nexo-network
+
+  api:
+    container_name: nexo-api
+    build:
+      context: server/
+      dockerfile: Containerfile
+    image: nexo-api:latest
+    command:
+      ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+    env_file:
+      - server/.env
+    environment:
+      - MONGODB_URL=mongodb://mongo:27017
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+    depends_on:
+      mongo:
+        condition: service_healthy
+    networks:
+      - nexo-network
+
+  front:
+    container_name: nexo-front
+    build:
+      context: client/
+      dockerfile: Containerfile
+    image: nexo-front:latest
+    command: ["npm", "run", "dev", "--", "--host"]
+    environment:
+      - VITE_API_URL=http://localhost:8000
+    ports:
+      - "5173:5173"
+    restart: unless-stopped
+    depends_on:
+      - api
+    networks:
+      - nexo-network
+
+volumes:
+  mongo_data:
+
+networks:
+  nexo-network:
+    driver: bridge
