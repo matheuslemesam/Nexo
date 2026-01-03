@@ -1,6 +1,17 @@
 version: "3.9"
 
 services:
+  front:
+    container_name: nexo-front
+    build:
+      context: client/
+      containerfile: Containerfile
+    image: nexo-front:latest
+    command: ["npm", "run", "dev", "--", "--host"]
+    ports:
+      - "5173:5173"
+    restart: unless-stopped
+
   api:
     container_name: nexo-api
     build:
