@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Container } from "../../ui";
 import styles from "./PodcastDemo.module.css";
 
@@ -8,6 +8,25 @@ import styles from "./PodcastDemo.module.css";
 export function PodcastDemo() {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [playbackRate, setPlaybackRate] = useState(1);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const updateTime = () => setCurrentTime(audio.currentTime);
+    const updateDuration = () => setDuration(audio.duration);
+
+    audio.addEventListener("timeupdate", updateTime);
+    audio.addEventListener("loadedmetadata", updateDuration);
+
+    return () => {
+      audio.removeEventListener("timeupdate", updateTime);
+      audio.removeEventListener("loadedmetadata", updateDuration);
+    };
+  }, []);
 
   const handlePlayPause = () => {
     if (audioRef.current) {
@@ -20,12 +39,48 @@ export function PodcastDemo() {
     }
   };
 
+  const handleReset = () => {
+    if (audioRef.current) {
+      audioRef.current.currentTime = 0;
+      audioRef.current.pause();
+      setIsPlaying(false);
+      setCurrentTime(0);
+    }
+  };
+
+  const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!audioRef.current) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const percentage = x / rect.width;
+    const newTime = percentage * duration;
+    audioRef.current.currentTime = newTime;
+    setCurrentTime(newTime);
+  };
+
+  const handleSpeedChange = () => {
+    const speeds = [0.5, 0.75, 1, 1.25, 1.5, 2];
+    const currentIndex = speeds.indexOf(playbackRate);
+    const nextSpeed = speeds[(currentIndex + 1) % speeds.length];
+    setPlaybackRate(nextSpeed);
+    if (audioRef.current) {
+      audioRef.current.playbackRate = nextSpeed;
+    }
+  };
+
+  const formatTime = (time: number) => {
+    if (isNaN(time)) return "0:00";
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+  };
+
   const handleAudioEnded = () => {
     setIsPlaying(false);
   };
 
   return (
-    <section className={styles.podcastDemo}>
+    <section className={styles.podcastDemo} id='podcast-demo'>
       <Container size='lg'>
         <div className={styles.content}>
           <div className={styles.textContent}>
@@ -70,33 +125,81 @@ export function PodcastDemo() {
                 AI-generated podcast example
               </p>
 
-              <button
-                className={styles.playButton}
-                onClick={handlePlayPause}
-                aria-label={isPlaying ? "Pause" : "Play"}
-              >
-                {isPlaying ? (
+              {/* Progress Bar */}
+              <div className={styles.progressContainer}>
+                <span className={styles.timeLabel}>
+                  {formatTime(currentTime)}
+                </span>
+                <div className={styles.progressBar} onClick={handleSeek}>
+                  <div
+                    className={styles.progressFill}
+                    style={{ width: `${(currentTime / duration) * 100}%` }}
+                  />
+                  <div
+                    className={styles.progressThumb}
+                    style={{ left: `${(currentTime / duration) * 100}%` }}
+                  />
+                </div>
+                <span className={styles.timeLabel}>{formatTime(duration)}</span>
+              </div>
+
+              {/* Controls */}
+              <div className={styles.controls}>
+                <button
+                  className={styles.controlButton}
+                  onClick={handleReset}
+                  aria-label='Reset'
+                  title='Reset to start'
+                >
                   <svg
-                    width='24'
-                    height='24'
+                    width='20'
+                    height='20'
                     viewBox='0 0 24 24'
-                    fill='currentColor'
+                    fill='none'
+                    stroke='currentColor'
+                    strokeWidth='2'
                   >
-                    <rect x='6' y='4' width='4' height='16' />
-                    <rect x='14' y='4' width='4' height='16' />
+                    <path d='M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8' />
+                    <path d='M3 3v5h5' />
                   </svg>
-                ) : (
-                  <svg
-                    width='24'
-                    height='24'
-                    viewBox='0 0 24 24'
-                    fill='currentColor'
-                  >
-                    <path d='M8 5v14l11-7z' />
-                  </svg>
-                )}
-                <span>{isPlaying ? "Pause Podcast" : "Listen to Demo"}</span>
-              </button>
+                </button>
+
+                <button
+                  className={styles.playButton}
+                  onClick={handlePlayPause}
+                  aria-label={isPlaying ? "Pause" : "Play"}
+                >
+                  {isPlaying ? (
+                    <svg
+                      width='32'
+                      height='32'
+                      viewBox='0 0 24 24'
+                      fill='currentColor'
+                    >
+                      <rect x='6' y='4' width='4' height='16' rx='1' />
+                      <rect x='14' y='4' width='4' height='16' rx='1' />
+                    </svg>
+                  ) : (
+                    <svg
+                      width='32'
+                      height='32'
+                      viewBox='0 0 24 24'
+                      fill='currentColor'
+                    >
+                      <path d='M8 5v14l11-7z' />
+                    </svg>
+                  )}
+                </button>
+
+                <button
+                  className={styles.speedButton}
+                  onClick={handleSpeedChange}
+                  aria-label='Playback speed'
+                  title={`Speed: ${playbackRate}x`}
+                >
+                  {playbackRate}x
+                </button>
+              </div>
 
               <audio
                 ref={audioRef}

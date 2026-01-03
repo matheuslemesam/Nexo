@@ -21,12 +21,12 @@ export function Landing() {
       <Navbar />
       <main>
         <Hero />
+        <PodcastDemo />
         <MCPServer />
         <AskAI />
         <AgentOwlbert />
         <AILinter />
         <DocsAudit />
-        <PodcastDemo />
         <TrustedBy />
       </main>
       <Footer />

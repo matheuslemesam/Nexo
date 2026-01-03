@@ -563,7 +563,7 @@ export function RepoAnalysis() {
                     )}
 
                     {/* Podcast Section - Main Feature */}
-                    <Card className={styles.analysisCard}>
+                    <Card className={`${styles.analysisCard} ${styles.podcastCard}`}>
                       <div className={styles.cardHeader}>
                         <div className={styles.cardHeaderLeft}>
                           <span className={styles.cardIcon}>🎙️</span>

@@ -1,6 +1,6 @@
 .section {
   padding: 5rem 0 8rem 0;
-  background: #f3f4f6;
+  background: linear-gradient(180deg, #f9fafb 0%, #f3f4f6 50%, #e5e7eb 100%);
   min-height: 100vh;
   display: flex;
   align-items: center;
@@ -9,6 +9,7 @@
   margin-top: -3rem;
   position: relative;
   z-index: 1;
+  overflow: hidden;
 }
 
 .header {
@@ -19,7 +20,7 @@
 .title {
   font-size: 3rem;
   font-weight: 700;
-  color: #111827;
+  color: #1f2937;
   margin-bottom: 1rem;
 }
 
@@ -32,9 +33,10 @@
 }
 
 .link {
-  color: #3b82f6;
+  color: #8b5cf6;
   font-weight: 500;
   text-decoration: none;
+  text-shadow: 0 0 10px rgba(167, 139, 250, 0.5);
 }
 
 .link:hover {
@@ -50,6 +52,9 @@
 .chatCard {
   width: 100%;
   max-width: 600px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
 }
 
 .chatWindow {
@@ -62,9 +67,10 @@
   align-items: center;
   gap: 0.5rem;
   padding: 1rem 1.5rem;
-  background: #f3f4f6;
+  background: #f9fafb;
   border-bottom: 1px solid #e5e7eb;
   font-weight: 600;
+  color: #1f2937;
 }
 
 .aiIcon {
@@ -77,26 +83,28 @@
   flex-direction: column;
   gap: 1rem;
   min-height: 200px;
-  background: white;
+  background: #ffffff;
 }
 
 .messageUser {
   align-self: flex-end;
-  background: #3b82f6;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   padding: 0.75rem 1rem;
   border-radius: 1rem 1rem 0.25rem 1rem;
   max-width: 80%;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
 }
 
 .messageAI {
   align-self: flex-start;
   background: #f3f4f6;
-  color: #374151;
+  color: #1f2937;
   padding: 0.75rem 1rem;
   border-radius: 1rem 1rem 1rem 0.25rem;
   max-width: 80%;
   line-height: 1.5;
+  border: 1px solid #e5e7eb;
 }
 
 .chatInput {
@@ -108,15 +116,22 @@
 .chatInput input {
   width: 100%;
   padding: 0.75rem 1rem;
-  border: 1px solid #e5e7eb;
+  border: 1px solid #d1d5db;
   border-radius: 0.5rem;
   font-size: 0.9375rem;
   outline: none;
-  transition: border-color 0.2s;
+  transition: all 0.3s;
+  background: #ffffff;
+  color: #1f2937;
 }
 
 .chatInput input:focus {
-  border-color: #3b82f6;
+  border-color: #8b5cf6;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
+
+.chatInput input::placeholder {
+  color: #9ca3af;
 }
 
 .features {
@@ -127,6 +142,15 @@
 
 .featureCard {
   text-align: center;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  transition: all 0.3s;
+}
+
+.featureCard:hover {
+  border-color: #8b5cf6;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  transform: translateY(-5px);
 }
 
 .featureIcon {
@@ -137,7 +161,7 @@
 .featureTitle {
   font-size: 1.125rem;
   font-weight: 600;
-  color: #111827;
+  color: #1f2937;
   margin-bottom: 0.5rem;
 }
 

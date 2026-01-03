@@ -53,7 +53,6 @@ export function MCPServer() {
 
         <div className={styles.features}>
           <Card variant='outlined' padding='lg' className={styles.featureCard}>
-            <div className={styles.featureIcon}>🔍</div>
             <h3 className={styles.featureTitle}>Automatic Scanning</h3>
             <p className={styles.featureDesc}>
               Analyzes functions, classes and modules to extract context and
@@ -62,7 +61,6 @@ export function MCPServer() {
           </Card>
 
           <Card variant='outlined' padding='lg' className={styles.featureCard}>
-            <div className={styles.featureIcon}>📝</div>
             <h3 className={styles.featureTitle}>Generated Documentation</h3>
             <p className={styles.featureDesc}>
               Creates structured documentation that evolves along with your
