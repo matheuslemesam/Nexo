@@ -199,97 +199,6 @@ The project demonstrates excellent development practices:
   },
 };
 
-// Mock Mermaid diagram
-const MOCK_MERMAID_DIAGRAM = `graph TB
-    subgraph Client["🖥️ Frontend (React)"]
-        UI[UI Components]
-        Pages[Pages]
-        Hooks[Custom Hooks]
-        Services[API Services]
-    end
-    
-    subgraph Server["⚙️ Backend (Node.js)"]
-        API[REST API]
-        Auth[Auth Module]
-        Controllers[Controllers]
-        Models[Data Models]
-    end
-    
-    subgraph Database["🗄️ Database"]
-        PostgreSQL[(PostgreSQL)]
-        Redis[(Redis Cache)]
-    end
-    
-    UI --> Pages
-    Pages --> Hooks
-    Hooks --> Services
-    Services -->|HTTP/REST| API
-    API --> Auth
-    API --> Controllers
-    Controllers --> Models
-    Models --> PostgreSQL
-    Auth --> Redis
-    
-    style Client fill:#e8f4fd,stroke:#3178c6
-    style Server fill:#e8f5e9,stroke:#68a063
-    style Database fill:#fff3e0,stroke:#ff9800`;
-
-const MOCK_CLASS_DIAGRAM = `classDiagram
-    class User {
-        +String id
-        +String email
-        +String name
-        +Date createdAt
-        +login()
-        +logout()
-        +updateProfile()
-    }
-    
-    class AuthService {
-        +validateToken()
-        +generateToken()
-        +refreshToken()
-    }
-    
-    class Repository {
-        +String id
-        +String url
-        +String name
-        +analyze()
-        +getMetrics()
-    }
-    
-    class AnalysisResult {
-        +String summary
-        +Object metrics
-        +Array insights
-        +generateReport()
-    }
-    
-    User "1" --> "*" Repository : owns
-    Repository "1" --> "1" AnalysisResult : generates
-    AuthService --> User : authenticates`;
-
-const MOCK_SEQUENCE_DIAGRAM = `sequenceDiagram
-    participant U as Usuário
-    participant F as Frontend
-    participant A as API
-    participant AI as IA Engine
-    participant DB as Database
-    
-    U->>F: Submete URL do repo
-    F->>A: POST /analyze
-    A->>A: Valida URL
-    A->>AI: Solicita análise
-    AI->>AI: Processa código
-    AI-->>A: Retorna insights
-    A->>DB: Salva resultado
-    DB-->>A: Confirmação
-    A-->>F: Análise completa
-    F-->>U: Exibe dashboard`;
-
-type DiagramType = "architecture" | "classes" | "sequence";
-
 // Estado de loading da análise
 interface AnalysisState {
   isLoading: boolean;
@@ -309,10 +218,8 @@ export function RepoAnalysis() {
   const { isAuthenticated, user } = useAuth();
 
   const [activeTab, setActiveTab] = useState<
-    "overview" | "diagram" | "insights" | "learning"
+    "overview" | "structure" | "learning"
   >("overview");
-  const [activeDiagram, setActiveDiagram] =
-    useState<DiagramType>("architecture");
   const [isLoaded, setIsLoaded] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -345,7 +252,6 @@ export function RepoAnalysis() {
     error: null,
   });
 
-  const diagramRef = useRef<HTMLDivElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
 
   // Parse repo info from URL
@@ -688,40 +594,6 @@ export function RepoAnalysis() {
     }
   };
 
-  // Render Mermaid diagram as SVG simulation
-  useEffect(() => {
-    if (diagramRef.current && activeTab === "diagram") {
-      // In a real implementation, you would use mermaid.render() here
-      // For now, we'll display the diagram code with styling
-    }
-  }, [activeTab, activeDiagram]);
-
-  const getCurrentDiagram = () => {
-    switch (activeDiagram) {
-      case "architecture":
-        return MOCK_MERMAID_DIAGRAM;
-      case "classes":
-        return MOCK_CLASS_DIAGRAM;
-      case "sequence":
-        return MOCK_SEQUENCE_DIAGRAM;
-      default:
-        return MOCK_MERMAID_DIAGRAM;
-    }
-  };
-
-  const getDiagramTitle = () => {
-    switch (activeDiagram) {
-      case "architecture":
-        return "System Architecture";
-      case "classes":
-        return "Class Diagram";
-      case "sequence":
-        return "Analysis Flow";
-      default:
-        return "Diagram";
-    }
-  };
-
   return (
     <div className={styles.page}>
       <Navbar />
@@ -861,21 +733,12 @@ export function RepoAnalysis() {
                 </button>
                 <button
                   className={`${styles.tab} ${
-                    activeTab === "diagram" ? styles.tabActive : ""
+                    activeTab === "structure" ? styles.tabActive : ""
                   }`}
-                  onClick={() => setActiveTab("diagram")}
+                  onClick={() => setActiveTab("structure")}
                 >
-                  <span className={styles.tabIcon}>🔀</span>
-                  Diagrams
-                </button>
-                <button
-                  className={`${styles.tab} ${
-                    activeTab === "insights" ? styles.tabActive : ""
-                  }`}
-                  onClick={() => setActiveTab("insights")}
-                >
-                  <span className={styles.tabIcon}>💡</span>
-                  Insights
+                  <span className={styles.tabIcon}>📁</span>
+                  Structure
                 </button>
                 <button
                   className={`${styles.tab} ${
@@ -884,7 +747,7 @@ export function RepoAnalysis() {
                   onClick={() => setActiveTab("learning")}
                 >
                   <span className={styles.tabIcon}>📚</span>
-                  Recursos de Aprendizado
+                  Learning
                 </button>
               </div>
             </Container>
@@ -1175,244 +1038,8 @@ export function RepoAnalysis() {
                 </div>
               )}
 
-              {/* Diagram Tab */}
-              {activeTab === "diagram" && (
-                <div
-                  className={`${styles.tabContent} ${
-                    isLoaded ? styles.loaded : ""
-                  }`}
-                >
-                  <div className={styles.diagramContainer}>
-                    {/* Diagram Type Selector */}
-                    <div className={styles.diagramSelector}>
-                      <button
-                        className={`${styles.diagramBtn} ${
-                          activeDiagram === "architecture" ? styles.active : ""
-                        }`}
-                        onClick={() => setActiveDiagram("architecture")}
-                      >
-                        🏗️ Arquitetura
-                      </button>
-                      <button
-                        className={`${styles.diagramBtn} ${
-                          activeDiagram === "classes" ? styles.active : ""
-                        }`}
-                        onClick={() => setActiveDiagram("classes")}
-                      >
-                        📐 Classes
-                      </button>
-                      <button
-                        className={`${styles.diagramBtn} ${
-                          activeDiagram === "sequence" ? styles.active : ""
-                        }`}
-                        onClick={() => setActiveDiagram("sequence")}
-                      >
-                        🔄 Sequência
-                      </button>
-                    </div>
-
-                    {/* Diagram Display */}
-                    <Card
-                      variant='elevated'
-                      padding='lg'
-                      className={styles.diagramCard}
-                    >
-                      <div className={styles.diagramHeader}>
-                        <h2 className={styles.diagramTitle}>
-                          {getDiagramTitle()}
-                        </h2>
-                        <div className={styles.diagramActions}>
-                          <button
-                            className={styles.diagramAction}
-                            title='Zoom In'
-                          >
-                            🔍+
-                          </button>
-                          <button
-                            className={styles.diagramAction}
-                            title='Zoom Out'
-                          >
-                            🔍-
-                          </button>
-                          <button
-                            className={styles.diagramAction}
-                            title='Download'
-                          >
-                            ⬇️
-                          </button>
-                          <button
-                            className={styles.diagramAction}
-                            title='Fullscreen'
-                          >
-                            ⛶
-                          </button>
-                        </div>
-                      </div>
-
-                      <div className={styles.diagramWrapper} ref={diagramRef}>
-                        {/* Visual Diagram Representation */}
-                        <div className={styles.diagramVisual}>
-                          {activeDiagram === "architecture" && (
-                            <div className={styles.archDiagram}>
-                              <div className={styles.archLayer}>
-                                <div className={styles.archLabel}>
-                                  Frontend (React)
-                                </div>
-                                <div className={styles.archBoxes}>
-                                  <div className={styles.archBox}>
-                                    UI Components
-                                  </div>
-                                  <div className={styles.archBox}>Pages</div>
-                                  <div className={styles.archBox}>Hooks</div>
-                                  <div className={styles.archBox}>Services</div>
-                                </div>
-                              </div>
-                              <div className={styles.archArrow}>
-                                ↓ HTTP/REST ↓
-                              </div>
-                              <div className={styles.archLayer}>
-                                <div className={styles.archLabel}>
-                                  Backend (Node.js)
-                                </div>
-                                <div className={styles.archBoxes}>
-                                  <div className={styles.archBox}>REST API</div>
-                                  <div className={styles.archBox}>Auth</div>
-                                  <div className={styles.archBox}>
-                                    Controllers
-                                  </div>
-                                  <div className={styles.archBox}>Models</div>
-                                </div>
-                              </div>
-                              <div className={styles.archArrow}>↓ Query ↓</div>
-                              <div className={styles.archLayer}>
-                                <div className={styles.archLabel}>Database</div>
-                                <div className={styles.archBoxes}>
-                                  <div className={styles.archBox}>
-                                    PostgreSQL
-                                  </div>
-                                  <div className={styles.archBox}>
-                                    Redis Cache
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          )}
-
-                          {activeDiagram === "classes" && (
-                            <div className={styles.classDiagram}>
-                              <div className={styles.classCard}>
-                                <div className={styles.className}>User</div>
-                                <div className={styles.classProps}>
-                                  <div>+id: String</div>
-                                  <div>+email: String</div>
-                                  <div>+name: String</div>
-                                </div>
-                                <div className={styles.classMethods}>
-                                  <div>+login()</div>
-                                  <div>+logout()</div>
-                                </div>
-                              </div>
-                              <div className={styles.classRelation}>
-                                1 ──────► *
-                              </div>
-                              <div className={styles.classCard}>
-                                <div className={styles.className}>
-                                  Repository
-                                </div>
-                                <div className={styles.classProps}>
-                                  <div>+id: String</div>
-                                  <div>+url: String</div>
-                                  <div>+name: String</div>
-                                </div>
-                                <div className={styles.classMethods}>
-                                  <div>+analyze()</div>
-                                  <div>+getMetrics()</div>
-                                </div>
-                              </div>
-                              <div className={styles.classRelation}>
-                                1 ──────► 1
-                              </div>
-                              <div className={styles.classCard}>
-                                <div className={styles.className}>
-                                  AnalysisResult
-                                </div>
-                                <div className={styles.classProps}>
-                                  <div>+summary: String</div>
-                                  <div>+metrics: Object</div>
-                                </div>
-                                <div className={styles.classMethods}>
-                                  <div>+generateReport()</div>
-                                </div>
-                              </div>
-                            </div>
-                          )}
-
-                          {activeDiagram === "sequence" && (
-                            <div className={styles.seqDiagram}>
-                              <div className={styles.seqParticipants}>
-                                <div className={styles.seqParticipant}>
-                                  👤 Usuário
-                                </div>
-                                <div className={styles.seqParticipant}>
-                                  🖥️ Frontend
-                                </div>
-                                <div className={styles.seqParticipant}>
-                                  ⚙️ API
-                                </div>
-                                <div className={styles.seqParticipant}>
-                                  🤖 IA Engine
-                                </div>
-                                <div className={styles.seqParticipant}>
-                                  🗄️ Database
-                                </div>
-                              </div>
-                              <div className={styles.seqLines}>
-                                <div className={styles.seqMessage}>
-                                  <span className={styles.seqArrow}>→</span>
-                                  Submete URL do repo
-                                </div>
-                                <div className={styles.seqMessage}>
-                                  <span className={styles.seqArrow}>→</span>
-                                  POST /analyze
-                                </div>
-                                <div className={styles.seqMessage}>
-                                  <span className={styles.seqArrow}>→</span>
-                                  Solicita análise
-                                </div>
-                                <div className={styles.seqMessage}>
-                                  <span className={styles.seqArrow}>←</span>
-                                  Retorna insights
-                                </div>
-                                <div className={styles.seqMessage}>
-                                  <span className={styles.seqArrow}>→</span>
-                                  Salva resultado
-                                </div>
-                                <div className={styles.seqMessage}>
-                                  <span className={styles.seqArrow}>←</span>
-                                  Exibe dashboard
-                                </div>
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Mermaid Code (collapsible) */}
-                      <details className={styles.codeDetails}>
-                        <summary className={styles.codeSummary}>
-                          📄 Ver código Mermaid
-                        </summary>
-                        <pre className={styles.mermaidCode}>
-                          <code>{getCurrentDiagram()}</code>
-                        </pre>
-                      </details>
-                    </Card>
-                  </div>
-                </div>
-              )}
-
-              {/* Insights Tab */}
-              {activeTab === "insights" && (
+              {/* Structure Tab */}
+              {activeTab === "structure" && (
                 <div
                   className={`${styles.tabContent} ${
                     isLoaded ? styles.loaded : ""
@@ -1421,37 +1048,11 @@ export function RepoAnalysis() {
                   <div className={styles.insightsContainer}>
                     <div className={styles.insightsHeader}>
                       <h2 className={styles.insightsTitle}>
-                        💡 Insights da Análise
+                        � Project Structure
                       </h2>
                       <p className={styles.insightsSubtitle}>
-                        Recomendações baseadas na análise do código do
-                        repositório
+                        Estrutura de arquivos e diretórios do repositório
                       </p>
-                    </div>
-
-                    <div className={styles.insightsList}>
-                      {MOCK_ANALYSIS.insights.map((insight, index) => (
-                        <Card
-                          key={index}
-                          variant='outlined'
-                          padding='lg'
-                          className={`${styles.insightCard} ${
-                            styles[insight.type]
-                          }`}
-                        >
-                          <div className={styles.insightIcon}>
-                            {insight.icon}
-                          </div>
-                          <div className={styles.insightContent}>
-                            <h3 className={styles.insightTitle}>
-                              {insight.title}
-                            </h3>
-                            <p className={styles.insightDesc}>
-                              {insight.description}
-                            </p>
-                          </div>
-                        </Card>
-                      ))}
                     </div>
 
                     {/* File Structure */}
@@ -1529,103 +1130,6 @@ export function RepoAnalysis() {
                         </div>
                       </Card>
                     )}
-
-                    {/* Podcast Section */}
-                    <Card className={styles.analysisCard}>
-                      <div className={styles.cardHeader}>
-                        <div className={styles.cardHeaderLeft}>
-                          <span className={styles.cardIcon}>🎙️</span>
-                          <h3 className={styles.cardTitle}>
-                            AI-Generated Podcast
-                          </h3>
-                        </div>
-                      </div>
-                      <div className={styles.cardContent}>
-                        <p className={styles.podcastDescription}>
-                          Generate an AI-narrated podcast that explains this
-                          repository in detail, including architecture,
-                          technologies, structure and main features.
-                        </p>
-
-                        {!podcastState.audioUrl &&
-                          !podcastState.isGenerating && (
-                            <button
-                              className={styles.generatePodcastButton}
-                              onClick={handleGeneratePodcast}
-                            >
-                              🎧 Generate Podcast
-                            </button>
-                          )}
-
-                        {podcastState.isGenerating && (
-                          <div className={styles.podcastLoading}>
-                            <div className={styles.spinner}></div>
-                            <p>
-                              Generating AI podcast... This may take a few
-                              seconds.
-                            </p>
-                          </div>
-                        )}
-
-                        {podcastState.error && (
-                          <div className={styles.podcastError}>
-                            <span className={styles.errorIcon}>⚠️</span>
-                            <p>{podcastState.error}</p>
-                            <button
-                              className={styles.retryButton}
-                              onClick={handleGeneratePodcast}
-                            >
-                              🔄 Try Again
-                            </button>
-                          </div>
-                        )}
-
-                        {podcastState.audioUrl && (
-                          <div className={styles.podcastPlayer}>
-                            <div className={styles.playerHeader}>
-                              <span className={styles.successIcon}>✓</span>
-                              <span>Podcast generated successfully!</span>
-                            </div>
-                            <audio
-                              ref={audioRef}
-                              controls
-                              className={styles.audioPlayer}
-                              src={podcastState.audioUrl}
-                            >
-                              Seu navegador não suporta o elemento de áudio.
-                            </audio>
-                            <div className={styles.playerActions}>
-                              <a
-                                href={podcastState.audioUrl}
-                                download
-                                className={styles.downloadButton}
-                              >
-                                📥 Download MP3
-                              </a>
-                              <button
-                                className={styles.regenerateButton}
-                                onClick={handleGeneratePodcast}
-                              >
-                                🔄 Generate Again
-                              </button>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </Card>
-
-                    {/* Action Buttons */}
-                    <div className={styles.actions}>
-                      <button className={styles.primaryAction}>
-                        📥 Export Report
-                      </button>
-                      <button className={styles.secondaryAction}>
-                        🔄 New Analysis
-                      </button>
-                      <button className={styles.secondaryAction}>
-                        📤 Share
-                      </button>
-                    </div>
                   </div>
                 </div>
               )}
