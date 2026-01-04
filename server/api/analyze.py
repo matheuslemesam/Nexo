@@ -16,66 +16,69 @@ router = APIRouter(prefix="/analyze", tags=["Análise Unificada"])
 
 
 # Prompt otimizado para gerar overview de onboarding em HTML
-OVERVIEW_PROMPT_TEMPLATE = """Você é um especialista em análise de código e comunicação técnica.
+OVERVIEW_PROMPT_TEMPLATE = """You are an expert in code analysis and technical communication.
 
-Analise o seguinte repositório e gere um **overview contextual** em HTML puro (para renderizar em React).
+⚠️ CRITICAL LANGUAGE REQUIREMENT: Your ENTIRE output MUST be in ENGLISH. If the source content (README, description, etc.) is in Portuguese, Spanish, or any other language, you MUST TRANSLATE everything to English in your response. No exceptions.
 
-## Informações do Repositório:
-- **Nome:** {repo_name}
-- **Descrição:** {description}
-- **Estrelas:** {stars} ⭐ | **Forks:** {forks} 🍴
-- **Última Atualização:** {updated_at}
+Analyze the following repository and generate a **contextual overview** in pure HTML (to be rendered in React).
 
-## Arquivos de Contexto (README, configs, etc.):
+## Repository Information:
+- **Name:** {repo_name}
+- **Description:** {description}
+- **Stars:** {stars} ⭐ | **Forks:** {forks} 🍴
+- **Last Update:** {updated_at}
+
+## Context Files (README, configs, etc.):
 {context_payload}
 
 ---
 
-## Sua Tarefa:
-Gere um **overview claro e bem estruturado** em HTML, focado no CONTEXTO GERAL do projeto.
+## Your Task:
+Generate a **clear and well-structured overview** in HTML, focused on the GENERAL CONTEXT of the project.
+REMEMBER: Output must be 100% in English, translate any non-English content.
 
-### Estrutura do HTML (use tags semânticas):
+### HTML Structure (use semantic tags):
 
-1. **Título e Introdução**
-   - Use <h2> para o título chamativo com emoji
-   - Use <p> para um parágrafo de boas-vindas explicando o que é o projeto
+1. **Title and Introduction**
+   - Use <h2> for the catchy title with emoji
+   - Use <p> for a welcome paragraph explaining what the project is
 
-2. **O Problema e a Solução**
-   - Use <h3> para subtítulos de seção
-   - Use <p> para parágrafos explicando o problema e a solução
+2. **The Problem and the Solution**
+   - Use <h3> for section subtitles
+   - Use <p> for paragraphs explaining the problem and the solution
 
-3. **Principais Funcionalidades**
-   - Use <h3> para o título da seção
-   - Use <ul> e <li> para listar funcionalidades com emojis
+3. **Main Features**
+   - Use <h3> for the section title
+   - Use <ul> and <li> to list features with emojis
 
-4. **Para Quem é Este Projeto?**
-   - Use <h3> para o título
-   - Use <p> para descrever público-alvo e casos de uso
+4. **Who Is This Project For?**
+   - Use <h3> for the title
+   - Use <p> to describe target audience and use cases
 
-5. **Como Começar** (SE houver informação sobre instalação/uso)
-   - Use <h3> para o título
-   - Use <ol> e <li> para passos numerados
-   - Apenas se houver informação clara no README ou configs
+5. **Getting Started** (IF there is information about installation/usage)
+   - Use <h3> for the title
+   - Use <ol> and <li> for numbered steps
+   - Only if there is clear information in README or configs
 
-6. **Considerações Finais**
-   - Use <h3> para o título
-   - Use <p> para fechamento
+6. **Final Considerations**
+   - Use <h3> for the title
+   - Use <p> for closing
 
-### Regras IMPORTANTES de formatação HTML:
-- Use <strong> para texto em negrito importante
-- Use <em> para ênfase
-- Use <code> para termos técnicos inline
-- Use classes CSS para estilização: class="overview-title", class="overview-section", class="feature-list", class="steps-list"
-- NÃO inclua tags <html>, <head>, <body> - apenas o conteúdo interno
-- NÃO use atributos style inline
-- NÃO liste linguagens, frameworks ou bibliotecas técnicas
-- NÃO mostre estrutura de diretórios ou pastas
-- NÃO faça análise técnica de arquitetura
-- FOQUE no contexto geral, propósito e valor do projeto
-- Seja informativo mas acessível (não muito técnico)
-- Use emojis com moderação para deixar visual agradável
-- Baseie-se APENAS nos dados fornecidos
-- Retorne APENAS o HTML, sem explicações adicionais ou blocos de código
+### IMPORTANT HTML formatting rules:
+- Use <strong> for important bold text
+- Use <em> for emphasis
+- Use <code> for inline technical terms
+- Use CSS classes for styling: class="overview-title", class="overview-section", class="feature-list", class="steps-list"
+- DO NOT include <html>, <head>, <body> tags - only the internal content
+- DO NOT use inline style attributes
+- DO NOT list languages, frameworks, or technical libraries
+- DO NOT show directory structure or folders
+- DO NOT make technical architecture analysis
+- FOCUS on general context, purpose, and project value
+- Be informative but accessible (not too technical)
+- Use emojis moderately to make it visually pleasant
+- Base yourself ONLY on the provided data
+- Return ONLY the HTML, without additional explanations or code blocks
 """
 
 
@@ -103,16 +106,20 @@ async def analyze_repository(payload: RepoRequest):
 
     # Usa o token do payload ou o token do .env como fallback
     github_token = payload.token or settings.GITHUB_TOKEN
-    
+
     # Log para debug
     if github_token:
-        print(f"✅ Token GitHub encontrado (fonte: {'payload' if payload.token else '.env'})")
+        print(
+            f"✅ Token GitHub encontrado (fonte: {'payload' if payload.token else '.env'})"
+        )
     else:
         print("❌ ERRO: Nenhum token GitHub configurado!")
 
     # === ETAPA 1: Extração do Repositório ===
     try:
-        print(f"🚀 Iniciando extração de: {payload.github_url} (branch: {payload.branch})")
+        print(
+            f"🚀 Iniciando extração de: {payload.github_url} (branch: {payload.branch})"
+        )
         extract_result = await download_and_extract(
             github_url=payload.github_url,
             branch=payload.branch,
@@ -123,6 +130,7 @@ async def analyze_repository(payload: RepoRequest):
         print(f"❌ ERRO na extração: {str(e)}")
         print(f"❌ Tipo do erro: {type(e).__name__}")
         import traceback
+
         print(f"❌ Traceback: {traceback.format_exc()}")
         return AnalyzeResponseSchema(
             status="error",
@@ -225,7 +233,7 @@ async def analyze_repository(payload: RepoRequest):
         timeout=90.0,
     )
     print(f"✅ Gemini respondeu: success={gemini_result.get('success')}")
-    if not gemini_result.get('success'):
+    if not gemini_result.get("success"):
         print(f"❌ Erro do Gemini: {gemini_result.get('error')}")
 
     # Monta resultado do overview

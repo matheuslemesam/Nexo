@@ -29,7 +29,11 @@ TECH_DATABASE = {
     "express": {"icon": "🚂", "color": "#000000", "aliases": ["express", "expressjs"]},
     "docker": {"icon": "🐳", "color": "#2496ed", "aliases": ["docker"]},
     "kubernetes": {"icon": "☸️", "color": "#326ce5", "aliases": ["k8s", "kubernetes"]},
-    "postgresql": {"icon": "🐘", "color": "#336791", "aliases": ["postgres", "postgresql", "psql"]},
+    "postgresql": {
+        "icon": "🐘",
+        "color": "#336791",
+        "aliases": ["postgres", "postgresql", "psql"],
+    },
     "mongodb": {"icon": "🍃", "color": "#47a248", "aliases": ["mongo", "mongodb"]},
     "redis": {"icon": "🔴", "color": "#dc382d", "aliases": ["redis"]},
     "rust": {"icon": "🦀", "color": "#ce422b", "aliases": ["rust", "rs"]},
@@ -37,7 +41,11 @@ TECH_DATABASE = {
     "java": {"icon": "☕", "color": "#007396", "aliases": ["java"]},
     "spring": {"icon": "🍃", "color": "#6db33f", "aliases": ["spring", "springboot"]},
     "nextjs": {"icon": "▲", "color": "#000000", "aliases": ["next", "nextjs"]},
-    "tailwind": {"icon": "🌊", "color": "#06b6d4", "aliases": ["tailwind", "tailwindcss"]},
+    "tailwind": {
+        "icon": "🌊",
+        "color": "#06b6d4",
+        "aliases": ["tailwind", "tailwindcss"],
+    },
     "graphql": {"icon": "◈", "color": "#e10098", "aliases": ["graphql"]},
     "aws": {"icon": "☁️", "color": "#ff9900", "aliases": ["aws", "amazon"]},
     "azure": {"icon": "☁️", "color": "#0078d4", "aliases": ["azure"]},
@@ -48,25 +56,25 @@ TECH_DATABASE = {
 def normalize_tech_name(tech: str) -> str:
     """Normaliza o nome de uma tecnologia."""
     tech_lower = tech.lower().strip()
-    
+
     # Busca na base de conhecimento
     for canonical, data in TECH_DATABASE.items():
         if tech_lower in data["aliases"]:
             return canonical
-    
+
     return tech_lower
 
 
 def get_tech_metadata(tech: str) -> Dict[str, str]:
     """Retorna metadados de uma tecnologia (icon, color)."""
     normalized = normalize_tech_name(tech)
-    
+
     if normalized in TECH_DATABASE:
         return {
             "icon": TECH_DATABASE[normalized]["icon"],
             "color": TECH_DATABASE[normalized]["color"],
         }
-    
+
     # Fallback para tecnologias desconhecidas
     return {"icon": "📦", "color": "#6b7280"}
 
@@ -90,66 +98,69 @@ async def generate_learning_resources(
     # Limita a 10 tecnologias para não sobrecarregar
     technologies = technologies[:10]
 
-    prompt = f"""Você é um especialista em desenvolvimento de software e educação técnica.
+    prompt = f"""You are a software development and technical education expert.
 
-Tecnologias detectadas no repositório: {', '.join(technologies)}
-{f"Contexto do repositório: {repo_context}" if repo_context else ""}
+Language: Your ENTIRE response MUST be in ENGLISH. If any source content is in Portuguese or another language, TRANSLATE everything to English.
 
-Para CADA tecnologia listada acima, gere:
+Technologies detected in the repository: {", ".join(technologies)}
+{f"Repository context: {repo_context}" if repo_context else ""}
 
-1. **summary**: Um resumo técnico e objetivo (2-3 frases) explicando:
-   - O que é a tecnologia
-   - Para que serve
-   - Principal caso de uso
+For EACH technology listed above, generate:
 
-2. **resources**: Exatamente 3 recursos de aprendizado REAIS e ATUALIZADOS:
-   - 1 documentação oficial (tipo: "docs")
-   - 1 artigo/guia técnico respeitável (tipo: "article")  
-   - 1 vídeo tutorial de qualidade (tipo: "video")
+1. **summary**: A technical and objective summary (2-3 sentences) explaining:
+   - What the technology is
+   - What it is used for
+   - Main use case
 
-Para cada recurso, forneça:
-- type: "docs", "article" ou "video"
-- title: Título real do recurso
-- url: URL real e funcional
-- description: Breve descrição (1 frase)
+2. **resources**: Exactly 3 REAL and UP-TO-DATE learning resources:
+   - 1 official documentation (type: "docs")
+   - 1 reputable technical article/guide (type: "article")  
+   - 1 quality video tutorial (type: "video")
 
-IMPORTANTE:
-- Use URLs reais e atualizadas (documentações oficiais, artigos conhecidos, vídeos do YouTube)
-- Priorize fontes confiáveis e atualizadas
-- Para vídeos, use canais respeitados (freeCodeCamp, Traversy Media, Fireship, etc.)
-- Seja preciso nos títulos e URLs
+For each resource, provide:
+- type: "docs", "article" or "video"
+- title: Real title of the resource
+- url: Real and functional URL
+- description: Brief description (1 sentence)
 
-Retorne APENAS um JSON válido no seguinte formato:
+IMPORTANT:
+- Use real and up-to-date URLs (official documentation, well-known articles, YouTube videos)
+- Prioritize reliable and current sources
+- For videos, use reputable channels (freeCodeCamp, Traversy Media, Fireship, etc.)
+- Be accurate with titles and URLs
+- ALL content MUST be in English
+
+Return ONLY valid JSON in the following format:
 {{
   "technologies": [
     {{
-      "technology": "Nome da Tecnologia",
-      "summary": "Resumo técnico...",
+      "technology": "Technology Name",
+      "summary": "Technical summary...",
       "resources": [
         {{
           "type": "docs",
-          "title": "Título real",
+          "title": "Real title",
           "url": "https://...",
-          "description": "Descrição breve"
+          "description": "Brief description"
         }},
         {{
           "type": "article",
-          "title": "Título real",
+          "title": "Real title",
           "url": "https://...",
-          "description": "Descrição breve"
+          "description": "Brief description"
         }},
         {{
           "type": "video",
-          "title": "Título real",
+          "title": "Real title",
           "url": "https://...",
-          "description": "Descrição breve"
+          "description": "Brief description"
         }}
       ]
     }}
   ]
 }}
 
-Gere para TODAS as tecnologias: {', '.join(technologies)}"""
+Generate for ALL technologies: {", ".join(technologies)}"""
 
     # Chama o Gemini
     result = await gemini_service.generate_content(
@@ -172,7 +183,7 @@ Gere para TODAS as tecnologias: {', '.join(technologies)}"""
         # Parse do JSON retornado pela IA
         content = result["content"].strip()
         print(f"📄 Conteúdo bruto do Gemini (primeiros 500 chars): {content[:500]}")
-        
+
         # Remove markdown code blocks se existirem
         if content.startswith("```json"):
             content = content[7:]
@@ -180,32 +191,36 @@ Gere para TODAS as tecnologias: {', '.join(technologies)}"""
             content = content[3:]
         if content.endswith("```"):
             content = content[:-3]
-        
+
         content = content.strip()
-        
+
         print(f"📄 Conteúdo limpo (primeiros 500 chars): {content[:500]}")
         data = json.loads(content)
-        print(f"✅ JSON parseado com sucesso! {len(data.get('technologies', []))} tecnologias")
-        
+        print(
+            f"✅ JSON parseado com sucesso! {len(data.get('technologies', []))} tecnologias"
+        )
+
         # Adiciona metadados (icon, color) para cada tecnologia
         learning_resources = []
         for tech_data in data.get("technologies", []):
             tech_name = tech_data.get("technology", "")
             metadata = get_tech_metadata(tech_name)
-            
-            learning_resources.append({
-                "technology": tech_name,
-                "icon": metadata["icon"],
-                "color": metadata["color"],
-                "summary": tech_data.get("summary", ""),
-                "resources": tech_data.get("resources", []),
-            })
-        
+
+            learning_resources.append(
+                {
+                    "technology": tech_name,
+                    "icon": metadata["icon"],
+                    "color": metadata["color"],
+                    "summary": tech_data.get("summary", ""),
+                    "resources": tech_data.get("resources", []),
+                }
+            )
+
         return {
             "learning_resources": learning_resources,
             "detected_technologies": technologies,
         }
-    
+
     except json.JSONDecodeError as e:
         # Fallback: retorna vazio se não conseguir parsear
         print(f"❌ Erro ao parsear JSON: {str(e)}")
@@ -218,6 +233,7 @@ Gere para TODAS as tecnologias: {', '.join(technologies)}"""
     except Exception as e:
         print(f"❌ Erro inesperado ao processar: {str(e)}")
         import traceback
+
         print(f"❌ Traceback: {traceback.format_exc()}")
         return {
             "learning_resources": [],

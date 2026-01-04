@@ -4,7 +4,9 @@
 
 **Transform cold, static code into a living, breathing story you can see and hear.**
 
+
 <img src="client/public/logo-white.png" alt="Nexo Logo" width="200" style="border-radius: 20px;" />
+
 
 [![Made with React](https://img.shields.io/badge/Made%20with-React-61DAFB?style=for-the-badge&logo=react)](https://reactjs.org/)
 [![Powered by Gemini](https://img.shields.io/badge/Powered%20by-Gemini-4285F4?style=for-the-badge&logo=google)](https://ai.google.dev/)
