@@ -233,10 +233,9 @@ export async function getLearningResources(
     params.append("repo_context", repoContext);
   }
 
-  const response = await api.get(
+  return api.get<LearningResourcesResponse>(
     `/api/v1/learning-resources?${params.toString()}`
   );
-  return response.data;
 }
 
 export default {

@@ -466,7 +466,7 @@ export function RepoAnalysis() {
     };
 
     loadLearningResources();
-  }, [activeTab, languages, overview, displayRepoName]);
+  }, [activeTab, languages, overview, displayRepoName, learningState.data, learningState.isLoading]);
 
   // Generate podcast
   const handleGeneratePodcast = async () => {
@@ -934,7 +934,6 @@ export function RepoAnalysis() {
                           </span>
                           <span className={styles.depsLabel}>Total</span>
                         </div>
-<<<<<<< HEAD
                         <div className={styles.depsStat}>
                           <span className={styles.depsValue}>
                             {
@@ -1060,64 +1059,6 @@ export function RepoAnalysis() {
                               <div className={styles.archLayer}>
                                 <div className={styles.archLabel}>
                                   Frontend (React)
-=======
-                      </Card>
-                    ))}
-                  </div>
-
-                  {/* File Structure */}
-                  <Card
-                    variant='elevated'
-                    padding='lg'
-                    className={styles.fileStructureCard}
-                  >
-                    <h3 className={styles.fileStructureTitle}>
-                      <span>📁</span> Project Structure
-                    </h3>
-                    <div className={styles.fileTree}>
-                      {(fileTreeData || MOCK_ANALYSIS.fileTree.map(item => ({
-                        name: item.name,
-                        type: "folder" as const,
-                        fileCount: item.files,
-                        children: item.children?.map(child => ({
-                          name: child.name,
-                          type: "folder" as const,
-                          fileCount: child.files,
-                        })),
-                      }))).map((item, idx) => (
-                        <div key={idx} className={styles.fileTreeItem}>
-                          <div className={item.type === "folder" ? styles.fileTreeFolder : styles.fileTreeFile}>
-                            <span className={styles.folderIcon}>
-                              {item.type === "folder" ? "📂" : "📄"}
-                            </span>
-                            <span className={styles.folderName}>
-                              {item.name}
-                            </span>
-                            {item.type === "folder" && item.fileCount !== undefined && item.fileCount > 0 && (
-                              <span className={styles.fileCount}>
-                                {item.fileCount} files
-                              </span>
-                            )}
-                          </div>
-                          {item.children && item.children.length > 0 && (
-                            <div className={styles.fileTreeChildren}>
-                              {item.children.map((child, childIdx) => (
-                                <div
-                                  key={childIdx}
-                                  className={child.type === "folder" ? styles.fileTreeChild : styles.fileTreeChildFile}
-                                >
-                                  <span className={styles.folderIcon}>
-                                    {child.type === "folder" ? "📁" : "📄"}
-                                  </span>
-                                  <span className={styles.folderName}>
-                                    {child.name}
-                                  </span>
-                                  {child.type === "folder" && child.fileCount !== undefined && child.fileCount > 0 && (
-                                    <span className={styles.fileCount}>
-                                      {child.fileCount} files
-                                    </span>
-                                  )}
->>>>>>> dd0cbf0bffce844f3f894ca6e747e135c9aed368
                                 </div>
                                 <div className={styles.archBoxes}>
                                   <div className={styles.archBox}>
@@ -1316,52 +1257,62 @@ export function RepoAnalysis() {
                     </div>
 
                     {/* File Structure */}
-                    <Card
-                      variant='elevated'
-                      padding='lg'
-                      className={styles.fileStructureCard}
-                    >
-                      <h3 className={styles.fileStructureTitle}>
-                        <span>📁</span> Project Structure
-                      </h3>
-                      <div className={styles.fileTree}>
-                        {MOCK_ANALYSIS.fileTree.map((item, idx) => (
-                          <div key={idx} className={styles.fileTreeItem}>
-                            <div className={styles.fileTreeFolder}>
-                              <span className={styles.folderIcon}>📂</span>
-                              <span className={styles.folderName}>
-                                {item.name}
-                              </span>
-                              {item.files && (
-                                <span className={styles.fileCount}>
-                                  {item.files} files
+                    {(fileTreeData || MOCK_ANALYSIS.fileTree.length > 0) && (
+                      <Card
+                        variant='elevated'
+                        padding='lg'
+                        className={styles.fileStructureCard}
+                      >
+                        <h3 className={styles.fileStructureTitle}>
+                          <span>📁</span> Project Structure
+                        </h3>
+                        <div className={styles.fileTree}>
+                          {(fileTreeData || MOCK_ANALYSIS.fileTree).map((item, idx) => {
+                            const fileCount = 'fileCount' in item ? item.fileCount : 'files' in item ? item.files : undefined;
+                            return (
+                            <div key={idx} className={styles.fileTreeItem}>
+                              <div className={styles.fileTreeFolder}>
+                                <span className={styles.folderIcon}>
+                                  {item.type === "folder" ? "📂" : "📄"}
                                 </span>
+                                <span className={styles.folderName}>
+                                  {item.name}
+                                </span>
+                                {fileCount && (
+                                  <span className={styles.fileCount}>
+                                    {fileCount} files
+                                  </span>
+                                )}
+                              </div>
+                              {item.children && (
+                                <div className={styles.fileTreeChildren}>
+                                  {item.children.map((child, childIdx) => {
+                                    const childFileCount = 'fileCount' in child ? child.fileCount : 'files' in child ? child.files : undefined;
+                                    return (
+                                    <div
+                                      key={childIdx}
+                                      className={styles.fileTreeChild}
+                                    >
+                                      <span className={styles.folderIcon}>
+                                        {child.type === "folder" ? "📁" : "📄"}
+                                      </span>
+                                      <span className={styles.folderName}>
+                                        {child.name}
+                                      </span>
+                                      {childFileCount && (
+                                        <span className={styles.fileCount}>
+                                          {childFileCount} files
+                                        </span>
+                                      )}
+                                    </div>
+                                  )})}
+                                </div>
                               )}
                             </div>
-                            {item.children && (
-                              <div className={styles.fileTreeChildren}>
-                                {item.children.map((child, childIdx) => (
-                                  <div
-                                    key={childIdx}
-                                    className={styles.fileTreeChild}
-                                  >
-                                    <span className={styles.folderIcon}>
-                                      📁
-                                    </span>
-                                    <span className={styles.folderName}>
-                                      {child.name}
-                                    </span>
-                                    <span className={styles.fileCount}>
-                                      {child.files} files
-                                    </span>
-                                  </div>
-                                ))}
-                              </div>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    </Card>
+                          )})}
+                        </div>
+                      </Card>
+                    )}
 
                     {/* Podcast Section */}
                     <Card className={styles.analysisCard}>
@@ -1511,10 +1462,6 @@ export function RepoAnalysis() {
                       !learningState.error &&
                       learningState.data && (
                         <div className={styles.resourcesList}>
-                          {console.log(
-                            "🎯 Renderizando learning resources:",
-                            learningState.data.learning_resources
-                          )}
                           {learningState.data.learning_resources.map(
                             (tech, index) => (
                               <Card
