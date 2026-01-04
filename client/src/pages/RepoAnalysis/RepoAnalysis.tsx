@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { Navbar } from "../../components/layout";
 import { Container, Card, Badge } from "../../components/ui";
@@ -14,6 +14,11 @@ import {
   type LearningResourcesResponse,
 } from "../../services/repoAnalysisService";
 import { saveRepository, getSavedRepo } from "../../services/savedReposService";
+import {
+  getFromCache,
+  saveToCache,
+  cleanExpiredCache,
+} from "../../services/cacheService";
 import { useAuth } from "../../hooks";
 
 // Tipo para estrutura de diretórios da API
@@ -32,7 +37,9 @@ interface FileTreeItem {
 /**
  * Converte a estrutura de diretórios da API para o formato visual da árvore
  */
-function convertDirectoryStructure(structure: DirectoryStructure): FileTreeItem[] {
+function convertDirectoryStructure(
+  structure: DirectoryStructure
+): FileTreeItem[] {
   const items: FileTreeItem[] = [];
 
   for (const [key, value] of Object.entries(structure)) {
@@ -298,8 +305,8 @@ export function RepoAnalysis() {
   const repoUrl =
     searchParams.get("repo") || "https://github.com/usuario/awesome-project";
   const savedRepoId = searchParams.get("saved");
-  
-  const { isAuthenticated } = useAuth();
+
+  const { isAuthenticated, user } = useAuth();
 
   const [activeTab, setActiveTab] = useState<
     "overview" | "diagram" | "insights" | "learning"
@@ -356,14 +363,16 @@ export function RepoAnalysis() {
     () => analysisState.data?.repository?.languages || {},
     [analysisState.data?.repository?.languages]
   );
-  
-  const directoryStructure = analysisState.data?.directory_structure as DirectoryStructure | undefined;
+
+  const directoryStructure = analysisState.data?.directory_structure as
+    | DirectoryStructure
+    | undefined;
 
   // Converte linguagens para porcentagens
   const languagesWithPercentage = getLanguagesPercentage(languages);
 
   // Converte estrutura de diretórios para formato visual
-  const fileTreeData = directoryStructure 
+  const fileTreeData = directoryStructure
     ? convertDirectoryStructure(directoryStructure)
     : null;
 
@@ -373,6 +382,66 @@ export function RepoAnalysis() {
     [key: string]: unknown;
   }
 
+  // Função para salvar repositório manualmente
+  const handleSaveRepository = useCallback(async () => {
+    if (!isAuthenticated || !analysisState.data || isSaving) {
+      return;
+    }
+
+    const data = analysisState.data;
+    const repoInfo = data.repository?.info;
+
+    // Extrair nome do repo da URL se info não estiver disponível
+    const repoFromUrl = repoUrl
+      .replace("https://github.com/", "")
+      .replace(/\/$/, "");
+    const [, repoName] = repoFromUrl.split("/");
+
+    // Usar dados da API ou fallbacks da URL
+    const finalRepoName = repoInfo?.name || repoName || "unknown";
+    const finalFullName =
+      repoInfo?.full_name || repoFromUrl || "unknown/unknown";
+
+    setIsSaving(true);
+    setSaveError(null);
+
+    try {
+      console.log("🔄 Salvando repositório...", {
+        repo_url: repoUrl,
+        repo_name: finalRepoName,
+        repo_full_name: finalFullName,
+      });
+
+      await saveRepository({
+        repo_url: repoUrl,
+        repo_name: finalRepoName,
+        repo_full_name: finalFullName,
+        description: repoInfo?.description || null,
+        stars: repoInfo?.stars || 0,
+        forks: repoInfo?.forks || 0,
+        language:
+          repoInfo?.language ||
+          Object.keys(data.repository?.languages || {})[0] ||
+          null,
+        overview: data.overview,
+        repository_info: data.repository as unknown as Record<string, unknown>,
+        file_analysis: data.file_analysis as unknown as Record<string, unknown>,
+        dependencies: data.dependencies as unknown as Array<
+          Record<string, unknown>
+        >,
+      });
+
+      setIsSaved(true);
+      console.log("✅ Repositório salvo no perfil do usuário");
+    } catch (error) {
+      const err = error as Error;
+      console.error("❌ Erro ao salvar repositório:", err);
+      setSaveError(err.message || "Erro ao salvar repositório");
+    } finally {
+      setIsSaving(false);
+    }
+  }, [isAuthenticated, analysisState.data, isSaving, repoUrl]);
+
   // Carrega dados da análise ao montar o componente
   useEffect(() => {
     const loadAnalysis = async () => {
@@ -381,13 +450,17 @@ export function RepoAnalysis() {
         try {
           setAnalysisState({ isLoading: true, data: null, error: null });
           const savedRepo = await getSavedRepo(savedRepoId);
-          
+
           // Reconstrói a resposta AnalyzeResponse a partir dos dados salvos
           const reconstructedData: AnalyzeResponse = {
             status: "success",
-            repository: savedRepo.repository_info as unknown as AnalyzeResponse["repository"],
-            file_analysis: savedRepo.file_analysis as unknown as AnalyzeResponse["file_analysis"],
-            dependencies: (savedRepo.dependencies as unknown as AnalyzeResponse["dependencies"]) || [],
+            repository:
+              savedRepo.repository_info as unknown as AnalyzeResponse["repository"],
+            file_analysis:
+              savedRepo.file_analysis as unknown as AnalyzeResponse["file_analysis"],
+            dependencies:
+              (savedRepo.dependencies as unknown as AnalyzeResponse["dependencies"]) ||
+              [],
             directory_structure: {},
             overview: savedRepo.overview || null,
             overview_usage: null,
@@ -395,14 +468,14 @@ export function RepoAnalysis() {
             errors: null,
             overview_error: null,
           };
-          
+
           setAnalysisState({
             isLoading: false,
             data: reconstructedData,
             error: null,
           });
           setIsSaved(true);
-          
+
           // Carrega podcast se existir
           if (savedRepo.podcast_url) {
             setPodcastState({
@@ -411,7 +484,7 @@ export function RepoAnalysis() {
               error: null,
             });
           }
-          
+
           setIsLoaded(true);
           return;
         } catch (error) {
@@ -419,8 +492,11 @@ export function RepoAnalysis() {
           // Continua para fazer análise nova
         }
       }
-      
-      if (!repoUrl || repoUrl === "https://github.com/usuario/awesome-project") {
+
+      if (
+        !repoUrl ||
+        repoUrl === "https://github.com/usuario/awesome-project"
+      ) {
         // URL padrão/mock - não faz chamada real
         setAnalysisState({
           isLoading: false,
@@ -438,6 +514,22 @@ export function RepoAnalysis() {
           ? repoUrl
           : `https://github.com/${repoUrl}`;
 
+        // 1. Tenta carregar do cache primeiro
+        const cachedData = getFromCache(fullRepoUrl, user?._id || null);
+
+        if (cachedData) {
+          console.log("⚡ Usando dados do cache - análise instantânea!");
+          setAnalysisState({
+            isLoading: false,
+            data: cachedData,
+            error: null,
+          });
+          setIsLoaded(true);
+          return;
+        }
+
+        // 2. Se não estiver no cache, faz a requisição
+        console.log("🌐 Cache miss - fazendo análise completa...");
         const result = await analyzeRepository({
           github_url: fullRepoUrl,
           // Não especificamos a branch - deixa o backend usar a branch padrão do repo
@@ -451,6 +543,19 @@ export function RepoAnalysis() {
               ? result.errors?.[0] || "Erro na análise"
               : null,
         });
+
+        // 3. Salva no cache se a análise foi bem-sucedida
+        if (result.status !== "error") {
+          saveToCache(fullRepoUrl, result, user?._id || null);
+        }
+
+        // Salva automaticamente após análise bem-sucedida (se logado)
+        if (isAuthenticated && result.status !== "error" && !savedRepoId) {
+          console.log("💾 Auto-salvando repositório após análise...");
+          setTimeout(() => {
+            handleSaveRepository();
+          }, 1000); // Delay de 1s para garantir que o estado foi atualizado
+        }
       } catch (error) {
         const err = error as Error;
         setAnalysisState({
@@ -464,59 +569,15 @@ export function RepoAnalysis() {
     };
 
     loadAnalysis();
-  }, [repoUrl, savedRepoId, isAuthenticated]);
+  }, [repoUrl, savedRepoId, isAuthenticated, user, handleSaveRepository]);
 
-  // Função para salvar repositório manualmente
-  const handleSaveRepository = async () => {
-    if (!isAuthenticated || !analysisState.data || isSaving) {
-      return;
+  // Limpa cache expirado na inicialização
+  useEffect(() => {
+    const cleaned = cleanExpiredCache();
+    if (cleaned > 0) {
+      console.log(`🧹 ${cleaned} entradas de cache expiradas foram removidas`);
     }
-    
-    const data = analysisState.data;
-    const repoInfo = data.repository?.info;
-    
-    // Extrair nome do repo da URL se info não estiver disponível
-    const repoFromUrl = repoUrl.replace("https://github.com/", "").replace(/\/$/, "");
-    const [owner, repoName] = repoFromUrl.split("/");
-    
-    // Usar dados da API ou fallbacks da URL
-    const finalRepoName = repoInfo?.name || repoName || "unknown";
-    const finalFullName = repoInfo?.full_name || repoFromUrl || "unknown/unknown";
-    
-    setIsSaving(true);
-    setSaveError(null);
-    
-    try {
-      console.log("🔄 Salvando repositório...", {
-        repo_url: repoUrl,
-        repo_name: finalRepoName,
-        repo_full_name: finalFullName,
-      });
-      
-      await saveRepository({
-        repo_url: repoUrl,
-        repo_name: finalRepoName,
-        repo_full_name: finalFullName,
-        description: repoInfo?.description || null,
-        stars: repoInfo?.stars || 0,
-        forks: repoInfo?.forks || 0,
-        language: repoInfo?.language || Object.keys(data.repository?.languages || {})[0] || null,
-        overview: data.overview,
-        repository_info: data.repository as unknown as Record<string, unknown>,
-        file_analysis: data.file_analysis as unknown as Record<string, unknown>,
-        dependencies: data.dependencies as unknown as Array<Record<string, unknown>>,
-      });
-      
-      setIsSaved(true);
-      console.log("✅ Repositório salvo no perfil do usuário");
-    } catch (error) {
-      const err = error as Error;
-      console.error("❌ Erro ao salvar repositório:", err);
-      setSaveError(err.message || "Erro ao salvar repositório");
-    } finally {
-      setIsSaving(false);
-    }
-  };
+  }, []); // Executa apenas uma vez na montagem
 
   // Carregar recursos de aprendizado quando a aba for ativada
   useEffect(() => {
@@ -567,7 +628,14 @@ export function RepoAnalysis() {
     };
 
     loadLearningResources();
-  }, [activeTab, languages, overview, displayRepoName, learningState.data, learningState.isLoading]);
+  }, [
+    activeTab,
+    languages,
+    overview,
+    displayRepoName,
+    learningState.data,
+    learningState.isLoading,
+  ]);
 
   // Generate podcast
   const handleGeneratePodcast = async () => {
@@ -741,7 +809,7 @@ export function RepoAnalysis() {
                         </span>
                       )}
                     </div>
-                    
+
                     {/* Botão de Salvar */}
                     {isAuthenticated && analysisState.data && (
                       <div className={styles.saveButtonContainer}>
@@ -761,9 +829,7 @@ export function RepoAnalysis() {
                                 Salvando...
                               </>
                             ) : (
-                              <>
-                                💾 Salvar no Perfil
-                              </>
+                              <>💾 Salvar no Perfil</>
                             )}
                           </button>
                         )}
@@ -1399,49 +1465,67 @@ export function RepoAnalysis() {
                           <span>📁</span> Project Structure
                         </h3>
                         <div className={styles.fileTree}>
-                          {(fileTreeData || MOCK_ANALYSIS.fileTree).map((item, idx) => {
-                            const fileCount = 'fileCount' in item ? item.fileCount : 'files' in item ? item.files : undefined;
-                            return (
-                            <div key={idx} className={styles.fileTreeItem}>
-                              <div className={styles.fileTreeFolder}>
-                                <span className={styles.folderIcon}>
-                                  {item.type === "folder" ? "📂" : "📄"}
-                                </span>
-                                <span className={styles.folderName}>
-                                  {item.name}
-                                </span>
-                                {fileCount && (
-                                  <span className={styles.fileCount}>
-                                    {fileCount} files
-                                  </span>
-                                )}
-                              </div>
-                              {item.children && (
-                                <div className={styles.fileTreeChildren}>
-                                  {item.children.map((child, childIdx) => {
-                                    const childFileCount = 'fileCount' in child ? child.fileCount : 'files' in child ? child.files : undefined;
-                                    return (
-                                    <div
-                                      key={childIdx}
-                                      className={styles.fileTreeChild}
-                                    >
-                                      <span className={styles.folderIcon}>
-                                        {child.type === "folder" ? "📁" : "📄"}
+                          {(fileTreeData || MOCK_ANALYSIS.fileTree).map(
+                            (item, idx) => {
+                              const fileCount =
+                                "fileCount" in item
+                                  ? item.fileCount
+                                  : "files" in item
+                                  ? item.files
+                                  : undefined;
+                              return (
+                                <div key={idx} className={styles.fileTreeItem}>
+                                  <div className={styles.fileTreeFolder}>
+                                    <span className={styles.folderIcon}>
+                                      {item.type === "folder" ? "📂" : "📄"}
+                                    </span>
+                                    <span className={styles.folderName}>
+                                      {item.name}
+                                    </span>
+                                    {fileCount && (
+                                      <span className={styles.fileCount}>
+                                        {fileCount} files
                                       </span>
-                                      <span className={styles.folderName}>
-                                        {child.name}
-                                      </span>
-                                      {childFileCount && (
-                                        <span className={styles.fileCount}>
-                                          {childFileCount} files
-                                        </span>
-                                      )}
+                                    )}
+                                  </div>
+                                  {item.children && (
+                                    <div className={styles.fileTreeChildren}>
+                                      {item.children.map((child, childIdx) => {
+                                        const childFileCount =
+                                          "fileCount" in child
+                                            ? child.fileCount
+                                            : "files" in child
+                                            ? child.files
+                                            : undefined;
+                                        return (
+                                          <div
+                                            key={childIdx}
+                                            className={styles.fileTreeChild}
+                                          >
+                                            <span className={styles.folderIcon}>
+                                              {child.type === "folder"
+                                                ? "📁"
+                                                : "📄"}
+                                            </span>
+                                            <span className={styles.folderName}>
+                                              {child.name}
+                                            </span>
+                                            {childFileCount && (
+                                              <span
+                                                className={styles.fileCount}
+                                              >
+                                                {childFileCount} files
+                                              </span>
+                                            )}
+                                          </div>
+                                        );
+                                      })}
                                     </div>
-                                  )})}
+                                  )}
                                 </div>
-                              )}
-                            </div>
-                          )})}
+                              );
+                            }
+                          )}
                         </div>
                       </Card>
                     )}
