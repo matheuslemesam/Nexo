@@ -22,12 +22,12 @@ import {
 } from "../../services/cacheService";
 import { useAuth } from "../../hooks";
 
-// Tipo para estrutura de diretórios da API
+// Type for API directory structure
 interface DirectoryStructure {
   [key: string]: DirectoryStructure | null | string;
 }
 
-// Tipo para item da árvore de arquivos visual
+// Type for visual file tree item
 interface FileTreeItem {
   name: string;
   type: "folder" | "file";
@@ -36,7 +36,7 @@ interface FileTreeItem {
 }
 
 /**
- * Converte a estrutura de diretórios da API para o formato visual da árvore
+ * Converts API directory structure to visual tree format
  */
 function convertDirectoryStructure(
   structure: DirectoryStructure
@@ -44,7 +44,7 @@ function convertDirectoryStructure(
   const items: FileTreeItem[] = [];
 
   for (const [key, value] of Object.entries(structure)) {
-    // Chave terminando com "/" é diretório
+    // Key ending with "/" is a directory
     if (key.endsWith("/")) {
       const name = key;
       const isDict = value !== null && typeof value === "object";
@@ -62,15 +62,15 @@ function convertDirectoryStructure(
         items.push({ name, type: "folder" });
       }
     } else if (key === "...") {
-      // Indicador de mais arquivos
+      // Indicator for more files
       items.push({ name: value as string, type: "file" });
     } else {
-      // Arquivo normal (valor é null)
+      // Normal file (value is null)
       items.push({ name: key, type: "file" });
     }
   }
 
-  // Ordena: pastas primeiro, depois arquivos
+  // Sort: folders first, then files
   return items.sort((a, b) => {
     if (a.type === "folder" && b.type !== "folder") return -1;
     if (a.type !== "folder" && b.type === "folder") return 1;
@@ -79,13 +79,13 @@ function convertDirectoryStructure(
 }
 
 /**
- * Conta arquivos em uma estrutura de diretório
+ * Counts files in a directory structure
  */
 function countFilesInStructure(structure: DirectoryStructure): number {
   let count = 0;
   for (const [key, value] of Object.entries(structure)) {
     if (key === "...") {
-      // Extrai número do texto como "+15 more files"
+      // Extract number from text like "+15 more files"
       const match = (value as string).match(/\d+/);
       if (match) count += parseInt(match[0], 10);
     } else if (key.endsWith("/") && value && typeof value === "object") {
@@ -200,7 +200,7 @@ The project demonstrates excellent development practices:
   },
 };
 
-// Estado de loading da análise
+// Analysis loading state
 interface AnalysisState {
   isLoading: boolean;
   data: AnalyzeResponse | null;
@@ -220,7 +220,6 @@ export function RepoAnalysis() {
 
   const [activeTab, setActiveTab] = useState<
     "overview" | "structure" | "learning" | "contributors"
-
   >("overview");
   const [isLoaded, setIsLoaded] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
@@ -236,14 +235,14 @@ export function RepoAnalysis() {
     error: null,
   });
 
-  // Estado da análise do repositório (dados reais da API)
+  // Repository analysis state (real API data)
   const [analysisState, setAnalysisState] = useState<AnalysisState>({
     isLoading: true,
     data: null,
     error: null,
   });
 
-  // Estado para recursos de aprendizado
+  // State for learning resources
   const [learningState, setLearningState] = useState<{
     isLoading: boolean;
     data: LearningResourcesResponse | null;
@@ -260,14 +259,15 @@ export function RepoAnalysis() {
   const repoFromUrl = repoUrl.replace("https://github.com/", "");
   const displayRepoName = repoFromUrl || MOCK_REPO_DATA.fullName;
 
-  // Dados extraídos da análise (com fallback para mock)
+  // Data extracted from analysis (with fallback to mock)
   const repoData = analysisState.data?.repository?.info;
   const fileAnalysis = analysisState.data?.file_analysis;
   const dependencies = analysisState.data?.dependencies || [];
   const overview = analysisState.data?.overview;
-  const contributors: Contributor[] = analysisState.data?.repository?.contributors || [];
+  const contributors: Contributor[] =
+    analysisState.data?.repository?.contributors || [];
 
-  // Usa useMemo para evitar recriação do objeto languages em cada render
+  // Use useMemo to avoid recreating the languages object on each render
   const languages = useMemo(
     () => analysisState.data?.repository?.languages || {},
     [analysisState.data?.repository?.languages]
@@ -277,10 +277,10 @@ export function RepoAnalysis() {
     | DirectoryStructure
     | undefined;
 
-  // Converte linguagens para porcentagens
+  // Convert languages to percentages
   const languagesWithPercentage = getLanguagesPercentage(languages);
 
-  // Converte estrutura de diretórios para formato visual
+  // Convert directory structure to visual format
   const fileTreeData = directoryStructure
     ? convertDirectoryStructure(directoryStructure)
     : null;
@@ -291,7 +291,7 @@ export function RepoAnalysis() {
     [key: string]: unknown;
   }
 
-  // Função para salvar repositório manualmente
+  // Function to manually save repository
   const handleSaveRepository = useCallback(async () => {
     if (!isAuthenticated || !analysisState.data || isSaving) {
       return;
@@ -300,13 +300,13 @@ export function RepoAnalysis() {
     const data = analysisState.data;
     const repoInfo = data.repository?.info;
 
-    // Extrair nome do repo da URL se info não estiver disponível
+    // Extract repo name from URL if info not available
     const repoFromUrl = repoUrl
       .replace("https://github.com/", "")
       .replace(/\/$/, "");
     const [, repoName] = repoFromUrl.split("/");
 
-    // Usar dados da API ou fallbacks da URL
+    // Use API data or URL fallbacks
     const finalRepoName = repoInfo?.name || repoName || "unknown";
     const finalFullName =
       repoInfo?.full_name || repoFromUrl || "unknown/unknown";
@@ -354,13 +354,13 @@ export function RepoAnalysis() {
   // Load analysis data on component mount
   useEffect(() => {
     const loadAnalysis = async () => {
-      // If has savedRepoId, load from user profile
+      // If savedRepoId exists, load from user profile
       if (savedRepoId && isAuthenticated) {
         try {
           setAnalysisState({ isLoading: true, data: null, error: null });
           const savedRepo = await getSavedRepo(savedRepoId);
 
-          // Reconstrói a resposta AnalyzeResponse a partir dos dados salvos
+          // Reconstruct AnalyzeResponse from saved data
           const reconstructedData: AnalyzeResponse = {
             status: "success",
             repository:
@@ -398,7 +398,7 @@ export function RepoAnalysis() {
           return;
         } catch (error) {
           console.error("Error loading saved repo:", error);
-          // Continue to do new analysis
+          // Continue to perform new analysis
         }
       }
 
@@ -406,7 +406,7 @@ export function RepoAnalysis() {
         !repoUrl ||
         repoUrl === "https://github.com/usuario/awesome-project"
       ) {
-        // Default/mock URL - doesn't make real call
+        // Default/mock URL - don't make real call
         setAnalysisState({
           isLoading: false,
           data: null,
@@ -423,7 +423,7 @@ export function RepoAnalysis() {
           ? repoUrl
           : `https://github.com/${repoUrl}`;
 
-        // 1. Try to load from cache first
+        // 1. Try loading from cache first
         const cachedData = getFromCache(fullRepoUrl, user?._id || null);
 
         if (cachedData) {
@@ -438,10 +438,10 @@ export function RepoAnalysis() {
         }
 
         // 2. If not in cache, make the request
-        console.log("🌐 Cache miss - doing full analysis...");
+        console.log("🌐 Cache miss - performing full analysis...");
         const result = await analyzeRepository({
           github_url: fullRepoUrl,
-          // Não especificamos a branch - deixa o backend usar a branch padrão do repo
+          // Don't specify branch - let backend use repo's default branch
         });
 
         setAnalysisState({
@@ -470,7 +470,7 @@ export function RepoAnalysis() {
         setAnalysisState({
           isLoading: false,
           data: null,
-          error: err.message || "Error analyzing repository",
+          error: err.message || "Erro ao analisar repositório",
         });
       } finally {
         setIsLoaded(true);
@@ -480,18 +480,18 @@ export function RepoAnalysis() {
     loadAnalysis();
   }, [repoUrl, savedRepoId, isAuthenticated, user, handleSaveRepository]);
 
-  // Clean expired cache on initialization
+  // Limpa cache expirado na inicialização
   useEffect(() => {
     const cleaned = cleanExpiredCache();
     if (cleaned > 0) {
-      console.log(`🧹 ${cleaned} expired cache entries were removed`);
+      console.log(`🧹 ${cleaned} entradas de cache expiradas foram removidas`);
     }
-  }, []); // Execute only once on mount
+  }, []); // Executa apenas uma vez na montagem
 
-  // Load learning resources when tab is activated
+  // Carregar recursos de aprendizado quando a aba for ativada
   useEffect(() => {
     const loadLearningResources = async () => {
-      // Only load if learning tab is active and doesn't have data yet
+      // Só carrega se a aba learning estiver ativa e ainda não tiver dados
       if (
         activeTab !== "learning" ||
         learningState.data ||
@@ -500,7 +500,7 @@ export function RepoAnalysis() {
         return;
       }
 
-      // Extract technologies from detected languages
+      // Extrai tecnologias das linguagens detectadas
       const technologies = Object.keys(languages);
 
       if (technologies.length === 0) {
@@ -511,13 +511,13 @@ export function RepoAnalysis() {
 
       try {
         const repoContext = overview
-          ? `Repository: ${displayRepoName}. ${overview.substring(0, 300)}`
-          : `Repository: ${displayRepoName}`;
+          ? `Repositório: ${displayRepoName}. ${overview.substring(0, 300)}`
+          : `Repositório: ${displayRepoName}`;
 
         const result = await getLearningResources(technologies, repoContext);
-        console.log("✅ Learning resources received:", result);
+        console.log("✅ Learning resources recebidos:", result);
         console.log(
-          "📦 Number of resources:",
+          "📦 Quantidade de recursos:",
           result.learning_resources?.length
         );
 
@@ -531,7 +531,7 @@ export function RepoAnalysis() {
         setLearningState({
           isLoading: false,
           data: null,
-          error: err.message || "Error loading learning resources",
+          error: err.message || "Erro ao carregar recursos de aprendizado",
         });
       }
     };
@@ -626,7 +626,7 @@ export function RepoAnalysis() {
                 <h2>Analysis Error</h2>
                 <p>{analysisState.error}</p>
                 <Link to='/comecar' className={styles.errorButton}>
-                  ← Go Back and Try Again
+                  ← Go back and try again
                 </Link>
               </div>
             </Container>
@@ -685,7 +685,7 @@ export function RepoAnalysis() {
                       )}
                     </div>
 
-                    {/* Botão de Salvar */}
+                    {/* Save Button */}
                     {isAuthenticated && analysisState.data && (
                       <div className={styles.saveButtonContainer}>
                         {isSaved || savedRepoId ? (
@@ -759,7 +759,7 @@ export function RepoAnalysis() {
                   onClick={() => setActiveTab("contributors")}
                 >
                   <span className={styles.tabIcon}>👥</span>
-                  Contributors
+                  Contribuidores
                 </button>
               </div>
             </Container>
@@ -789,7 +789,7 @@ export function RepoAnalysis() {
                           <div className={styles.cardHeaderLeft}>
                             <span className={styles.cardIcon}>🤖</span>
                             <h3 className={styles.cardTitle}>
-                              AI-Generated Overview
+                              Overview gerado por IA
                             </h3>
                           </div>
                         </div>
@@ -839,20 +839,20 @@ export function RepoAnalysis() {
                           <span className={styles.metricValue}>
                             {fileAnalysis?.summary.files_in_context ?? 0}
                           </span>
-                          <span className={styles.metricLabel}>Analyzed</span>
+                          <span className={styles.metricLabel}>Analisados</span>
                         </div>
                         <div className={styles.metricItem}>
                           <span className={styles.metricValue}>
                             {Object.keys(languages).length}
                           </span>
-                          <span className={styles.metricLabel}>Languages</span>
+                          <span className={styles.metricLabel}>Linguagens</span>
                         </div>
                         <div className={styles.metricItem}>
                           <span className={styles.metricValue}>
                             {dependencies.reduce((sum, d) => sum + d.count, 0)}
                           </span>
                           <span className={styles.metricLabel}>
-                            Dependencies
+                            Dependências
                           </span>
                         </div>
                       </div>
@@ -1015,7 +1015,7 @@ export function RepoAnalysis() {
                               ).length
                             }
                           </span>
-                          <span className={styles.depsLabel}>Files</span>
+                          <span className={styles.depsLabel}>Arquivos</span>
                         </div>
                         <div className={styles.depsStat}>
                           <span className={styles.depsValue}>
@@ -1028,7 +1028,7 @@ export function RepoAnalysis() {
                         </div>
                       </div>
                       <div className={styles.mainDeps}>
-                        <span className={styles.depsTitle}>Main:</span>
+                        <span className={styles.depsTitle}>Principais:</span>
                         <div className={styles.depsTags}>
                           {(dependencies.length > 0
                             ? dependencies
@@ -1063,7 +1063,7 @@ export function RepoAnalysis() {
                         � Project Structure
                       </h2>
                       <p className={styles.insightsSubtitle}>
-                        Estrutura de arquivos e diretórios do repositório
+                        Repository file and directory structure
                       </p>
                     </div>
 
@@ -1156,11 +1156,11 @@ export function RepoAnalysis() {
                   <div className={styles.learningContainer}>
                     <div className={styles.learningHeader}>
                       <h2 className={styles.learningTitle}>
-                        📚 Learning Resources
+                        📚 Recursos de Aprendizado
                       </h2>
                       <p className={styles.learningSubtitle}>
-                        Documentation, articles and videos about the technologies
-                        detected in your project
+                        Documentações, artigos e vídeos sobre as tecnologias
+                        detectadas no seu projeto
                       </p>
                     </div>
 
@@ -1168,7 +1168,7 @@ export function RepoAnalysis() {
                     {learningState.isLoading && (
                       <div className={styles.loadingState}>
                         <div className={styles.spinner}></div>
-                        <p>Generating AI learning resources...</p>
+                        <p>Gerando recursos de aprendizado com IA...</p>
                       </div>
                     )}
 
@@ -1183,7 +1183,7 @@ export function RepoAnalysis() {
                           ⚠️ {learningState.error}
                         </p>
                         <p className={styles.errorHint}>
-                          Check if the Gemini API key is configured in the
+                          Verifique se a API key do Gemini está configurada no
                           backend.
                         </p>
                       </Card>
@@ -1222,7 +1222,7 @@ export function RepoAnalysis() {
                                     variant='primary'
                                     className={styles.resourceBadge}
                                   >
-                                    {tech.resources.length} resources
+                                    {tech.resources.length} recursos
                                   </Badge>
                                 </div>
 
@@ -1290,26 +1290,26 @@ export function RepoAnalysis() {
                         className={styles.learningTipsCard}
                       >
                         <h3 className={styles.tipsTitle}>
-                          💡 Learning Tips
+                          💡 Dicas de Aprendizado
                         </h3>
                         <ul className={styles.tipsList}>
                           <li>
-                            <strong>Start with official documentation:</strong> It's
-                            always the most up-to-date and reliable source.
+                            <strong>Comece pela documentação oficial:</strong> É
+                            sempre a fonte mais atualizada e confiável.
                           </li>
                           <li>
-                            <strong>Practice with real projects:</strong>{" "}
-                            Apply what you learn by creating your own
-                            projects.
+                            <strong>Pratique com projetos reais:</strong>{" "}
+                            Aplique o que aprender criando seus próprios
+                            projetos.
                           </li>
                           <li>
-                            <strong>Join communities:</strong> Discord,
-                            Reddit and Stack Overflow are great for getting
-                            help.
+                            <strong>Participe de comunidades:</strong> Discord,
+                            Reddit e Stack Overflow são ótimos para tirar
+                            dúvidas.
                           </li>
                           <li>
-                            <strong>Stay updated:</strong> Technologies
-                            evolve quickly, follow the release notes.
+                            <strong>Mantenha-se atualizado:</strong> Tecnologias
+                            evoluem rápido, acompanhe as release notes.
                           </li>
                         </ul>
                       </Card>
@@ -1328,10 +1328,10 @@ export function RepoAnalysis() {
                   <div className={styles.contributorsContainer}>
                     <div className={styles.contributorsHeader}>
                       <h2 className={styles.contributorsTitle}>
-                        👥 Contributors
+                        👥 Contribuidores
                       </h2>
                       <p className={styles.contributorsSubtitle}>
-                        People who contributed to this repository
+                        Pessoas que contribuíram para este repositório
                       </p>
                     </div>
 
@@ -1349,9 +1349,9 @@ export function RepoAnalysis() {
                             <div className={styles.contributorAvatar}>
                               <img
                                 src={contributor.avatar_url}
-                                alt={`${contributor.username}'s avatar`}
+                                alt={`Avatar de ${contributor.username}`}
                                 className={styles.contributorImage}
-                                loading="lazy"
+                                loading='lazy'
                               />
                             </div>
                             <div className={styles.contributorInfo}>
@@ -1359,11 +1359,13 @@ export function RepoAnalysis() {
                                 {contributor.username}
                               </h3>
                               <p className={styles.contributorContributions}>
-                                <span className={styles.contributionIcon}>📝</span>
+                                <span className={styles.contributionIcon}>
+                                  📝
+                                </span>
                                 {contributor.contributions}{" "}
                                 {contributor.contributions === 1
-                                  ? "contribution"
-                                  : "contributions"}
+                                  ? "contribuição"
+                                  : "contribuições"}
                               </p>
                             </div>
                             <span className={styles.contributorArrow}>→</span>
@@ -1378,10 +1380,11 @@ export function RepoAnalysis() {
                       >
                         <div className={styles.noContributorsContent}>
                           <span className={styles.noContributorsIcon}>👤</span>
-                          <h3>No contributors found</h3>
+                          <h3>Nenhum contribuidor encontrado</h3>
                           <p>
-                            Unable to load contributors for this
-                            repository. This can happen with private or very new repositories.
+                            Não foi possível carregar os contribuidores deste
+                            repositório. Isso pode acontecer em repositórios
+                            privados ou muito novos.
                           </p>
                         </div>
                       </Card>
@@ -1395,7 +1398,7 @@ export function RepoAnalysis() {
                         className={styles.contributorsStatsCard}
                       >
                         <h3 className={styles.statsTitle}>
-                          📊 Contribution Statistics
+                          📊 Estatísticas de Contribuição
                         </h3>
                         <div className={styles.statsGrid}>
                           <div className={styles.statItem}>
@@ -1403,7 +1406,7 @@ export function RepoAnalysis() {
                               {contributors.length}
                             </span>
                             <span className={styles.statLabel}>
-                              Total Contributors
+                              Total Contribution
                             </span>
                           </div>
                           <div className={styles.statItem}>
@@ -1424,7 +1427,7 @@ export function RepoAnalysis() {
                                 : "-"}
                             </span>
                             <span className={styles.statLabel}>
-                              Top Contributor
+                              Top Contribuidor
                             </span>
                           </div>
                         </div>
