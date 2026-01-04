@@ -1887,6 +1887,252 @@
   font-weight: 600;
 }
 
+/* Contributors Tab Styles */
+.contributorsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.contributorsHeader {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.contributorsTitle {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+  transition: color 0.3s ease;
+}
+
+.contributorsSubtitle {
+  font-size: 1.125rem;
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+  transition: color 0.3s ease;
+}
+
+.contributorsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.contributorCard {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 1rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.contributorCard:hover {
+  background: var(--bg-primary);
+  border-color: #8b5cf6;
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px rgba(139, 92, 246, 0.15);
+}
+
+:global(.dark) .contributorCard:hover {
+  box-shadow: 0 10px 30px rgba(139, 92, 246, 0.25);
+}
+
+.contributorAvatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 3px solid transparent;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) border-box;
+  position: relative;
+}
+
+.contributorAvatar::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  padding: 3px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+.contributorImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.contributorInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.contributorName {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 0.25rem 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 0.3s ease;
+}
+
+.contributorContributions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin: 0;
+  transition: color 0.3s ease;
+}
+
+.contributionIcon {
+  font-size: 1rem;
+}
+
+.contributorArrow {
+  font-size: 1.25rem;
+  color: var(--text-secondary);
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: all 0.3s ease;
+}
+
+.contributorCard:hover .contributorArrow {
+  opacity: 1;
+  transform: translateX(0);
+  color: #8b5cf6;
+}
+
+/* No Contributors State */
+.noContributorsCard {
+  text-align: center;
+  padding: 3rem;
+  background: var(--bg-secondary);
+}
+
+.noContributorsContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.noContributorsIcon {
+  font-size: 4rem;
+  opacity: 0.5;
+}
+
+.noContributorsContent h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.noContributorsContent p {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  max-width: 400px;
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* Contributors Stats Card */
+.contributorsStatsCard {
+  margin-top: 1rem;
+}
+
+.statsTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+  transition: color 0.3s ease;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1.5rem;
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 1rem;
+  background: var(--bg-secondary);
+  border-radius: 0.75rem;
+  transition: all 0.3s ease;
+}
+
+.statValue {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #8b5cf6;
+  margin-bottom: 0.25rem;
+}
+
+.statLabel {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  transition: color 0.3s ease;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .contributorsTitle {
+    font-size: 2rem;
+  }
+
+  .contributorsSubtitle {
+    font-size: 1rem;
+  }
+
+  .contributorsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .contributorCard {
+    padding: 1rem;
+  }
+
+  .contributorAvatar {
+    width: 48px;
+    height: 48px;
+  }
+
+  .contributorName {
+    font-size: 1rem;
+  }
+
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .statValue {
+    font-size: 1.5rem;
+  }
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .learningTitle {
