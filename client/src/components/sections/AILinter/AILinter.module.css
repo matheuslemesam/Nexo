@@ -1,5 +1,6 @@
 .section {
-  padding: 5rem 0 8rem 0;
+  padding: 1rem 0 8rem 0;
+  margin-top: -10rem;
   background: #0f172a;
   color: white;
   min-height: 100vh;
