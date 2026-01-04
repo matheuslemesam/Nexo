@@ -134,8 +134,8 @@ The project demonstrates excellent development practices:
     functions: 234,
     classes: 45,
     coverage: 78,
-    complexity: "Média",
-    maintainability: "Alta",
+    complexity: "Medium",
+    maintainability: "High",
   },
 
   insights: [
@@ -470,7 +470,7 @@ export function RepoAnalysis() {
         setAnalysisState({
           isLoading: false,
           data: null,
-          error: err.message || "Erro ao analisar repositório",
+          error: err.message || "Repository analysis error",
         });
       } finally {
         setIsLoaded(true);
@@ -480,18 +480,18 @@ export function RepoAnalysis() {
     loadAnalysis();
   }, [repoUrl, savedRepoId, isAuthenticated, user, handleSaveRepository]);
 
-  // Limpa cache expirado na inicialização
+  // Clean expired cache on initialization
   useEffect(() => {
     const cleaned = cleanExpiredCache();
     if (cleaned > 0) {
-      console.log(`🧹 ${cleaned} entradas de cache expiradas foram removidas`);
+      console.log(`🧹 ${cleaned} expired cache entries were removed`);
     }
-  }, []); // Executa apenas uma vez na montagem
+  }, []); // Execute only once on mount
 
-  // Carregar recursos de aprendizado quando a aba for ativada
+  // Load learning resources when tab is activated
   useEffect(() => {
     const loadLearningResources = async () => {
-      // Só carrega se a aba learning estiver ativa e ainda não tiver dados
+      // Only load if learning tab is active and doesn't have data yet
       if (
         activeTab !== "learning" ||
         learningState.data ||
@@ -500,7 +500,7 @@ export function RepoAnalysis() {
         return;
       }
 
-      // Extrai tecnologias das linguagens detectadas
+      // Extract technologies from detected languages
       const technologies = Object.keys(languages);
 
       if (technologies.length === 0) {
@@ -511,13 +511,13 @@ export function RepoAnalysis() {
 
       try {
         const repoContext = overview
-          ? `Repositório: ${displayRepoName}. ${overview.substring(0, 300)}`
-          : `Repositório: ${displayRepoName}`;
+          ? `Repository: ${displayRepoName}. ${overview.substring(0, 300)}`
+          : `Repository: ${displayRepoName}`;
 
         const result = await getLearningResources(technologies, repoContext);
-        console.log("✅ Learning resources recebidos:", result);
+        console.log("✅ Learning resources received:", result);
         console.log(
-          "📦 Quantidade de recursos:",
+          "📦 Amount of resources:",
           result.learning_resources?.length
         );
 
@@ -531,7 +531,7 @@ export function RepoAnalysis() {
         setLearningState({
           isLoading: false,
           data: null,
-          error: err.message || "Erro ao carregar recursos de aprendizado",
+          error: err.message || "Error loading learning resources",
         });
       }
     };
@@ -858,7 +858,7 @@ export function RepoAnalysis() {
                       </div>
                     </Card>
 
-                    {/* Podcast Section - Segunda coluna ao lado das métricas */}
+                    {/* Podcast Section - Second column next to metrics */}
                     <Card
                       className={`${styles.analysisCard} ${styles.podcastCard}`}
                     >
@@ -1156,11 +1156,11 @@ export function RepoAnalysis() {
                   <div className={styles.learningContainer}>
                     <div className={styles.learningHeader}>
                       <h2 className={styles.learningTitle}>
-                        📚 Recursos de Aprendizado
+                        📚 Learning Resources
                       </h2>
                       <p className={styles.learningSubtitle}>
-                        Documentações, artigos e vídeos sobre as tecnologias
-                        detectadas no seu projeto
+                        Documentation, articles and videos about the
+                        technologies detected in your project
                       </p>
                     </div>
 
@@ -1183,7 +1183,7 @@ export function RepoAnalysis() {
                           ⚠️ {learningState.error}
                         </p>
                         <p className={styles.errorHint}>
-                          Verifique se a API key do Gemini está configurada no
+                          Check if the Gemini API key is configured in the
                           backend.
                         </p>
                       </Card>
@@ -1289,27 +1289,23 @@ export function RepoAnalysis() {
                         padding='lg'
                         className={styles.learningTipsCard}
                       >
-                        <h3 className={styles.tipsTitle}>
-                          💡 Dicas de Aprendizado
-                        </h3>
+                        <h3 className={styles.tipsTitle}>💡 Learning Tips</h3>
                         <ul className={styles.tipsList}>
                           <li>
-                            <strong>Comece pela documentação oficial:</strong> É
-                            sempre a fonte mais atualizada e confiável.
+                            <strong>Start with official documentation:</strong>{" "}
+                            It's always the most up-to-date and reliable source.
                           </li>
                           <li>
-                            <strong>Pratique com projetos reais:</strong>{" "}
-                            Aplique o que aprender criando seus próprios
-                            projetos.
+                            <strong>Practice with real projects:</strong> Apply
+                            what you learn by creating your own projects.
                           </li>
                           <li>
-                            <strong>Participe de comunidades:</strong> Discord,
-                            Reddit e Stack Overflow são ótimos para tirar
-                            dúvidas.
+                            <strong>Join communities:</strong> Discord, Reddit
+                            and Stack Overflow are great for asking questions.
                           </li>
                           <li>
-                            <strong>Mantenha-se atualizado:</strong> Tecnologias
-                            evoluem rápido, acompanhe as release notes.
+                            <strong>Stay updated:</strong> Technologies evolve
+                            fast, follow the release notes.
                           </li>
                         </ul>
                       </Card>
@@ -1328,10 +1324,10 @@ export function RepoAnalysis() {
                   <div className={styles.contributorsContainer}>
                     <div className={styles.contributorsHeader}>
                       <h2 className={styles.contributorsTitle}>
-                        👥 Contribuidores
+                        👥 Contributors
                       </h2>
                       <p className={styles.contributorsSubtitle}>
-                        Pessoas que contribuíram para este repositório
+                        People who contributed to this repository
                       </p>
                     </div>
 
@@ -1349,7 +1345,7 @@ export function RepoAnalysis() {
                             <div className={styles.contributorAvatar}>
                               <img
                                 src={contributor.avatar_url}
-                                alt={`Avatar de ${contributor.username}`}
+                                alt={`Avatar of ${contributor.username}`}
                                 className={styles.contributorImage}
                                 loading='lazy'
                               />
@@ -1364,8 +1360,8 @@ export function RepoAnalysis() {
                                 </span>
                                 {contributor.contributions}{" "}
                                 {contributor.contributions === 1
-                                  ? "contribuição"
-                                  : "contribuições"}
+                                  ? "contribution"
+                                  : "contributions"}
                               </p>
                             </div>
                             <span className={styles.contributorArrow}>→</span>
@@ -1380,11 +1376,11 @@ export function RepoAnalysis() {
                       >
                         <div className={styles.noContributorsContent}>
                           <span className={styles.noContributorsIcon}>👤</span>
-                          <h3>Nenhum contribuidor encontrado</h3>
+                          <h3>No contributors found</h3>
                           <p>
-                            Não foi possível carregar os contribuidores deste
-                            repositório. Isso pode acontecer em repositórios
-                            privados ou muito novos.
+                            Could not load contributors for this repository.
+                            This may happen with private or very new
+                            repositories.
                           </p>
                         </div>
                       </Card>
@@ -1398,7 +1394,7 @@ export function RepoAnalysis() {
                         className={styles.contributorsStatsCard}
                       >
                         <h3 className={styles.statsTitle}>
-                          📊 Estatísticas de Contribuição
+                          📊 Contribution Statistics
                         </h3>
                         <div className={styles.statsGrid}>
                           <div className={styles.statItem}>

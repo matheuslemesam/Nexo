@@ -102,7 +102,7 @@ export function GetStarted() {
       await new Promise(resolve => setTimeout(resolve, 3000));
       
       // Navigate to analysis page with repo URL
-      navigate(`/analysis?repo=${encodeURIComponent(repoUrl)}`);
+      navigate(`/analise?repo=${encodeURIComponent(repoUrl)}`);
       
     } catch {
       setError('Error analyzing the repository. Please try again.');
