@@ -3,10 +3,14 @@ import { Container } from "../../ui";
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useAuth } from "../../../hooks";
+import { listSavedRepos, type SavedRepoSummary } from "../../../services/savedReposService";
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showReposDropdown, setShowReposDropdown] = useState(false);
+  const [savedRepos, setSavedRepos] = useState<SavedRepoSummary[]>([]);
+  const [loadingRepos, setLoadingRepos] = useState(false);
   const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -18,6 +22,25 @@ export function Navbar() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Carrega repos salvos quando abre o dropdown
+  useEffect(() => {
+    if (showReposDropdown && isAuthenticated) {
+      loadSavedRepos();
+    }
+  }, [showReposDropdown, isAuthenticated]);
+
+  const loadSavedRepos = async () => {
+    try {
+      setLoadingRepos(true);
+      const response = await listSavedRepos(0, 5);
+      setSavedRepos(response.repos);
+    } catch (error) {
+      console.error("Erro ao carregar repos salvos:", error);
+    } finally {
+      setLoadingRepos(false);
+    }
+  };
 
   const handleLogout = () => {
     logout();
@@ -148,6 +171,88 @@ export function Navbar() {
                         </svg>
                         Meu Perfil
                       </Link>
+
+                      {/* Repos Salvos - Submenu */}
+                      <div className={styles.reposMenuContainer}>
+                        <button
+                          className={styles.dropdownItem}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setShowReposDropdown(!showReposDropdown);
+                          }}
+                        >
+                          <svg
+                            width='18'
+                            height='18'
+                            viewBox='0 0 24 24'
+                            fill='none'
+                            stroke='currentColor'
+                            strokeWidth='2'
+                          >
+                            <path d='M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z' />
+                          </svg>
+                          Repos Salvos
+                          <svg
+                            width='14'
+                            height='14'
+                            viewBox='0 0 24 24'
+                            fill='none'
+                            stroke='currentColor'
+                            strokeWidth='2'
+                            className={`${styles.expandIcon} ${showReposDropdown ? styles.expandIconOpen : ''}`}
+                          >
+                            <polyline points='6 9 12 15 18 9' />
+                          </svg>
+                        </button>
+
+                        {showReposDropdown && (
+                          <div className={styles.reposSubmenu}>
+                            {loadingRepos ? (
+                              <div className={styles.reposLoading}>
+                                <span className={styles.loadingSpinner}></span>
+                                Carregando...
+                              </div>
+                            ) : savedRepos.length === 0 ? (
+                              <div className={styles.reposEmpty}>
+                                Nenhum repositório salvo
+                              </div>
+                            ) : (
+                              <>
+                                {savedRepos.map((repo) => (
+                                  <Link
+                                    key={repo.id}
+                                    to={`/analise?repo=${encodeURIComponent(repo.repo_url)}&saved=${repo.id}`}
+                                    className={styles.repoItem}
+                                    onClick={() => {
+                                      setShowDropdown(false);
+                                      setShowReposDropdown(false);
+                                    }}
+                                  >
+                                    <div className={styles.repoItemInfo}>
+                                      <span className={styles.repoItemName}>{repo.repo_name}</span>
+                                      <span className={styles.repoItemMeta}>
+                                        ⭐ {repo.stars}
+                                        {repo.has_overview && ' • 📝'}
+                                        {repo.has_podcast && ' • 🎙️'}
+                                      </span>
+                                    </div>
+                                  </Link>
+                                ))}
+                                <Link
+                                  to='/meus-repos'
+                                  className={styles.viewAllRepos}
+                                  onClick={() => {
+                                    setShowDropdown(false);
+                                    setShowReposDropdown(false);
+                                  }}
+                                >
+                                  Ver todos os repos
+                                </Link>
+                              </>
+                            )}
+                          </div>
+                        )}
+                      </div>
 
                       <Link
                         to='/configuracoes'

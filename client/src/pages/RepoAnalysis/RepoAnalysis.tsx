@@ -11,6 +11,8 @@ import {
   formatNumber,
   type AnalyzeResponse,
 } from "../../services/repoAnalysisService";
+import { saveRepository, getSavedRepo } from "../../services/savedReposService";
+import { useAuth } from "../../hooks";
 
 // Tipo para estrutura de diretórios da API
 interface DirectoryStructure {
@@ -293,6 +295,9 @@ export function RepoAnalysis() {
   const [searchParams] = useSearchParams();
   const repoUrl =
     searchParams.get("repo") || "https://github.com/usuario/awesome-project";
+  const savedRepoId = searchParams.get("saved");
+  
+  const { isAuthenticated } = useAuth();
 
   const [activeTab, setActiveTab] = useState<
     "overview" | "diagram" | "insights"
@@ -300,6 +305,9 @@ export function RepoAnalysis() {
   const [activeDiagram, setActiveDiagram] =
     useState<DiagramType>("architecture");
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
   const [podcastState, setPodcastState] = useState<{
     isGenerating: boolean;
     audioUrl: string | null;
@@ -349,6 +357,50 @@ export function RepoAnalysis() {
   // Carrega dados da análise ao montar o componente
   useEffect(() => {
     const loadAnalysis = async () => {
+      // Se tiver savedRepoId, carrega do perfil do usuário
+      if (savedRepoId && isAuthenticated) {
+        try {
+          setAnalysisState({ isLoading: true, data: null, error: null });
+          const savedRepo = await getSavedRepo(savedRepoId);
+          
+          // Reconstrói a resposta AnalyzeResponse a partir dos dados salvos
+          const reconstructedData: AnalyzeResponse = {
+            status: "success",
+            repository: savedRepo.repository_info as unknown as AnalyzeResponse["repository"],
+            file_analysis: savedRepo.file_analysis as unknown as AnalyzeResponse["file_analysis"],
+            dependencies: (savedRepo.dependencies as unknown as AnalyzeResponse["dependencies"]) || [],
+            directory_structure: {},
+            overview: savedRepo.overview || null,
+            overview_usage: null,
+            context: null,
+            errors: null,
+            overview_error: null,
+          };
+          
+          setAnalysisState({
+            isLoading: false,
+            data: reconstructedData,
+            error: null,
+          });
+          setIsSaved(true);
+          
+          // Carrega podcast se existir
+          if (savedRepo.podcast_url) {
+            setPodcastState({
+              isGenerating: false,
+              audioUrl: savedRepo.podcast_url,
+              error: null,
+            });
+          }
+          
+          setIsLoaded(true);
+          return;
+        } catch (error) {
+          console.error("Erro ao carregar repo salvo:", error);
+          // Continua para fazer análise nova
+        }
+      }
+      
       if (!repoUrl || repoUrl === "https://github.com/usuario/awesome-project") {
         // URL padrão/mock - não faz chamada real
         setAnalysisState({
@@ -390,7 +442,59 @@ export function RepoAnalysis() {
     };
 
     loadAnalysis();
-  }, [repoUrl]);
+  }, [repoUrl, savedRepoId, isAuthenticated]);
+
+  // Função para salvar repositório manualmente
+  const handleSaveRepository = async () => {
+    if (!isAuthenticated || !analysisState.data || isSaving) {
+      return;
+    }
+    
+    const data = analysisState.data;
+    const repoInfo = data.repository?.info;
+    
+    // Extrair nome do repo da URL se info não estiver disponível
+    const repoFromUrl = repoUrl.replace("https://github.com/", "").replace(/\/$/, "");
+    const [owner, repoName] = repoFromUrl.split("/");
+    
+    // Usar dados da API ou fallbacks da URL
+    const finalRepoName = repoInfo?.name || repoName || "unknown";
+    const finalFullName = repoInfo?.full_name || repoFromUrl || "unknown/unknown";
+    
+    setIsSaving(true);
+    setSaveError(null);
+    
+    try {
+      console.log("🔄 Salvando repositório...", {
+        repo_url: repoUrl,
+        repo_name: finalRepoName,
+        repo_full_name: finalFullName,
+      });
+      
+      await saveRepository({
+        repo_url: repoUrl,
+        repo_name: finalRepoName,
+        repo_full_name: finalFullName,
+        description: repoInfo?.description || null,
+        stars: repoInfo?.stars || 0,
+        forks: repoInfo?.forks || 0,
+        language: repoInfo?.language || Object.keys(data.repository?.languages || {})[0] || null,
+        overview: data.overview,
+        repository_info: data.repository as unknown as Record<string, unknown>,
+        file_analysis: data.file_analysis as unknown as Record<string, unknown>,
+        dependencies: data.dependencies as unknown as Array<Record<string, unknown>>,
+      });
+      
+      setIsSaved(true);
+      console.log("✅ Repositório salvo no perfil do usuário");
+    } catch (error) {
+      const err = error as Error;
+      console.error("❌ Erro ao salvar repositório:", err);
+      setSaveError(err.message || "Erro ao salvar repositório");
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   // Generate podcast
   const handleGeneratePodcast = async () => {
@@ -561,6 +665,37 @@ export function RepoAnalysis() {
                         </span>
                       )}
                     </div>
+                    
+                    {/* Botão de Salvar */}
+                    {isAuthenticated && analysisState.data && (
+                      <div className={styles.saveButtonContainer}>
+                        {isSaved || savedRepoId ? (
+                          <span className={styles.savedIndicator}>
+                            ✅ Salvo no seu perfil
+                          </span>
+                        ) : (
+                          <button
+                            className={styles.saveButton}
+                            onClick={handleSaveRepository}
+                            disabled={isSaving}
+                          >
+                            {isSaving ? (
+                              <>
+                                <span className={styles.miniSpinner}></span>
+                                Salvando...
+                              </>
+                            ) : (
+                              <>
+                                💾 Salvar no Perfil
+                              </>
+                            )}
+                          </button>
+                        )}
+                        {saveError && (
+                          <span className={styles.saveError}>{saveError}</span>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
