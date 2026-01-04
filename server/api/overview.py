@@ -14,61 +14,76 @@ from services.gemini import gemini_service
 router = APIRouter(prefix="/overview", tags=["Overview IA"])
 
 
-# Prompt otimizado para gerar overview de onboarding
-OVERVIEW_PROMPT_TEMPLATE = """Você é um especialista em análise de código e comunicação técnica.
+# Prompt otimizado para gerar overview de onboarding em HTML
+OVERVIEW_PROMPT_TEMPLATE = """You are an expert in code analysis and technical communication.
 
-Analise o seguinte repositório e gere um **overview contextual** em Markdown.
+LANGUAGE: Your ENTIRE output MUST be in ENGLISH. If the source content (README, description, etc.) is in Portuguese, Spanish, or any other language, you MUST TRANSLATE everything to English in your response. No exceptions.
 
-## Informações do Repositório:
-- **Nome:** {repo_name}
-- **Descrição:** {description}
-- **Estrelas:** {stars} ⭐ | **Forks:** {forks} 🍴
-- **Última Atualização:** {updated_at}
+Analyze the following repository and generate a **contextual overview** in pure HTML (to be rendered in React).
 
-## Arquivos de Contexto (README, configs, etc.):
+## Repository Information:
+- **Name:** {repo_name}
+- **Description:** {description}
+- **Stars:** {stars} ⭐ | **Forks:** {forks} 🍴
+- **Last Update:** {updated_at}
+
+## Context Files (README, configs, etc.):
 {context_payload}
 
 ---
 
-## Sua Tarefa:
-Gere um **overview claro e bem estruturado** em Markdown, focado no CONTEXTO GERAL do projeto.
+## Your Task:
+Generate a **comprehensive, detailed, and well-structured overview** in HTML, focused on the GENERAL CONTEXT of the project.
+IMPORTANT: 
+- Make your response DETAILED and INFORMATIVE (aim for 800-1500 words)
+- Provide DEPTH in your explanations - don't be superficial
+- Include SPECIFIC examples and use cases when possible
+- Output must be 100% in English, translate any non-English content
 
-### Estrutura do texto (use parágrafos bem separados):
+### HTML Structure (use semantic tags):
 
-1. **Título e Introdução**
-   - Um título chamativo com emoji
-   - Um parágrafo de boas-vindas explicando o que é o projeto de forma envolvente
+1. **Title and Introduction**
+   - Use <h2> for the catchy title with emoji
+   - Use <p> for a welcome paragraph explaining what the project is
 
-2. **O Problema e a Solução**
-   - Um parágrafo explicando qual problema o projeto resolve
-   - Um parágrafo explicando COMO ele resolve (a abordagem/solução)
+2. **The Problem and the Solution**
+   - Use <h3> for section subtitles
+   - Use <p> for paragraphs explaining the problem and the solution
 
-3. **Principais Funcionalidades**
-   - Liste as funcionalidades principais em formato de lista com emojis
-   - Seja específico sobre o que cada feature faz
+3. **Main Features**
+   - Use <h3> for the section title
+   - Use <ul> and <li> to list features with emojis
 
-4. **Para Quem é Este Projeto?**
-   - Um parágrafo descrevendo o público-alvo
-   - Casos de uso típicos
+4. **Who Is This Project For?**
+   - Use <h3> for the title
+   - Use <p> to describe target audience and use cases
 
-5. **Como Começar** (SE houver informação sobre instalação/uso)
-   - Passos simples para usar o projeto
-   - Apenas se houver informação clara no README ou configs
+5. **Getting Started** (IF there is information about installation/usage)
+   - Use <h3> for the title
+   - Use <ol> and <li> for numbered steps
+   - Only if there is clear information in README or configs
 
-6. **Considerações Finais**
-   - Um parágrafo de fechamento
-   - Pode incluir status do projeto, próximos passos ou convite para contribuir
+6. **Final Considerations**
+   - Use <h3> for the title
+   - Use <p> for closing
 
-### Regras IMPORTANTES:
-- NÃO liste linguagens, frameworks ou bibliotecas técnicas
-- NÃO mostre estrutura de diretórios ou pastas
-- NÃO faça análise técnica de arquitetura
-- FOQUE no contexto geral, propósito e valor do projeto
-- Use parágrafos bem separados e fluidos
-- Seja informativo mas acessível (não muito técnico)
-- Use emojis com moderação para deixar visual agradável
-- Baseie-se APENAS nos dados fornecidos
-- Retorne APENAS o Markdown, sem explicações adicionais
+### IMPORTANT HTML formatting rules:
+- Use <strong> for important bold text
+- Use <em> for emphasis
+- Use <code> for inline technical terms
+- Use CSS classes for styling: class="overview-title", class="overview-section", class="feature-list", class="steps-list"
+- DO NOT include <html>, <head>, <body> tags - only the internal content
+- DO NOT use inline style attributes
+- DO NOT list languages, frameworks, or technical libraries
+- DO NOT show directory structure or folders
+- DO NOT make technical architecture analysis
+- FOCUS on general context, purpose, and project value
+- Be informative but accessible (not too technical)
+- Use emojis moderately to make it visually pleasant
+- Base yourself ONLY on the provided data
+- Return ONLY the HTML, without additional explanations or code blocks
+- IMPORTANT: If the source content is in Portuguese, TRANSLATE everything to English in the final output
+- All section titles, paragraphs, lists, and content must be in English
 """
 
 
@@ -155,9 +170,9 @@ async def generate_overview(payload: RepoRequest):
     # 5. Chama o Gemini
     gemini_result = await gemini_service.generate_content(
         prompt=prompt,
-        max_output_tokens=4096,
+        max_output_tokens=5000,  # Increased for longer, more detailed overviews
         temperature=0.7,
-        timeout=90.0,  # Timeout maior para respostas longas
+        timeout=120.0,  # Timeout maior para respostas longas
     )
 
     # 6. Monta a resposta

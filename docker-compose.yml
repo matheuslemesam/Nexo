@@ -1,21 +1,9 @@
 services:
-  mongo:
-    container_name: nexo-mongo
-    image: docker.io/library/mongo:7
-    environment:
-      MONGO_INITDB_DATABASE: nexo_db
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongo_data:/data/db
-    healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    restart: unless-stopped
-    networks:
-      - nexo-network
+  # MongoDB local removed - using MongoDB Atlas
+  # mongo:
+  #   container_name: nexo-mongo
+  #   image: docker.io/library/mongo:7
+  #   ...
 
   api:
     container_name: nexo-api
@@ -27,14 +15,9 @@ services:
       ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
     env_file:
       - server/.env
-    environment:
-      - MONGODB_URL=mongodb://mongo:27017
     ports:
       - "8000:8000"
     restart: unless-stopped
-    depends_on:
-      mongo:
-        condition: service_healthy
     networks:
       - nexo-network
 
@@ -55,8 +38,8 @@ services:
     networks:
       - nexo-network
 
-volumes:
-  mongo_data:
+# volumes:
+#   mongo_data:  # Not needed with MongoDB Atlas
 
 networks:
   nexo-network:

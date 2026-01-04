@@ -6,8 +6,20 @@
   display: flex;
   align-items: center;
   width: 100%;
-  background: var(--bg-secondary);
+  background: linear-gradient(
+    180deg,
+    #000000 0%,
+    #0a0520 30%,
+    #0a0520 70%,
+    #000000 100%
+  );
   transition: background 0.3s ease;
+}
+
+/* Ensure all direct children of hero have proper z-index */
+.hero > * {
+  position: relative;
+  z-index: 10;
 }
 
 .gradientBg {
@@ -18,20 +30,20 @@
   bottom: 0;
   background: radial-gradient(
       ellipse at 20% 30%,
-      rgba(255, 200, 150, 0.3) 0%,
+      rgba(139, 92, 246, 0.15) 0%,
       transparent 50%
     ),
     radial-gradient(
       ellipse at 80% 20%,
-      rgba(200, 220, 255, 0.4) 0%,
+      rgba(96, 165, 250, 0.15) 0%,
       transparent 50%
     ),
     radial-gradient(
       ellipse at 50% 80%,
-      rgba(220, 255, 220, 0.3) 0%,
+      rgba(167, 139, 250, 0.15) 0%,
       transparent 50%
     );
-  z-index: 0;
+  z-index: 1;
 }
 
 .gridBackground {
@@ -41,41 +53,41 @@
   right: 0;
   bottom: 0;
   display: grid;
-  z-index: 1;
+  z-index: 2;
   pointer-events: none;
 }
 
 .gridSquare {
-  border: 1px solid rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(139, 92, 246, 0.08);
   transition: all 0.8s ease-in-out;
   background: transparent;
 }
 
 .gridSquareActive {
-  background: rgba(102, 126, 234, 0.08);
-  border-color: rgba(102, 126, 234, 0.15);
-  box-shadow: inset 0 0 20px rgba(102, 126, 234, 0.1);
+  background: rgba(139, 92, 246, 0.12);
+  border-color: rgba(139, 92, 246, 0.3);
+  box-shadow: inset 0 0 20px rgba(139, 92, 246, 0.15);
 }
 
 .content {
   text-align: center;
-  max-width: 700px;
+  max-width: 900px;
   margin: 0 auto;
   position: relative;
-  z-index: 2;
+  z-index: 3;
 }
 
 .title {
   font-size: 4rem;
   font-weight: 700;
-  line-height: 1.1;
-  color: var(--text-primary);
+  line-height: 1.35;
+  color: #ffffff;
   margin-bottom: 1.5rem;
   transition: color 0.3s ease;
 }
 
 .highlight {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 50%, #c4b5fd 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -85,7 +97,7 @@
 
 .subtitle {
   font-size: 1.25rem;
-  color: var(--text-secondary);
+  color: #d1d5db;
   margin-bottom: 2.5rem;
   line-height: 1.6;
   transition: color 0.3s ease;
@@ -102,8 +114,8 @@
   align-items: center;
   justify-content: center;
   padding: 0.875rem 2rem;
-  background: var(--text-primary);
-  color: var(--bg-primary);
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+  color: #ffffff;
   border: none;
   border-radius: 0.5rem;
   font-size: 1rem;
@@ -111,28 +123,31 @@
   cursor: pointer;
   transition: all 0.2s;
   text-decoration: none;
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
 }
 
 .primaryBtn:hover {
-  opacity: 0.9;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
 }
 
 .secondaryBtn {
   padding: 0.875rem 2rem;
-  background: var(--bg-primary);
-  color: var(--text-primary);
-  border: 1px solid var(--border-color);
+  background: rgba(17, 24, 39, 0.7);
+  color: #ffffff;
+  border: 1px solid rgba(139, 92, 246, 0.3);
   border-radius: 0.5rem;
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s;
+  backdrop-filter: blur(10px);
+  text-decoration: none;
 }
 
 .secondaryBtn:hover {
-  border-color: var(--border-hover);
-  background: var(--bg-secondary);
+  border-color: rgba(139, 92, 246, 0.5);
+  background: rgba(17, 24, 39, 0.9);
 }
 
 @media (max-width: 768px) {

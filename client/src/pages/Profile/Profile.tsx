@@ -12,7 +12,7 @@ export function Profile() {
       <div className={styles.page}>
         <Navbar />
         <Container size='md'>
-          <div className={styles.loading}>Carregando...</div>
+          <div className={styles.loading}>Loading...</div>
         </Container>
       </div>
     );
@@ -22,7 +22,7 @@ export function Profile() {
     return <Navigate to='/login' replace />;
   }
 
-  // Gera cor do avatar baseado no nome
+  // Generate avatar color based on name
   const getAvatarColor = (name: string) => {
     const colors = [
       "#667eea",
@@ -48,7 +48,7 @@ export function Profile() {
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("pt-BR", {
+    return new Date(dateString).toLocaleDateString("en-US", {
       day: "2-digit",
       month: "long",
       year: "numeric",
@@ -62,10 +62,10 @@ export function Profile() {
       <main className={styles.main}>
         <Container size='md'>
           <div className={styles.content}>
-            <h1 className={styles.title}>Meu Perfil</h1>
+            <h1 className={styles.title}>My Profile</h1>
 
             <div className={styles.profileCard}>
-              {/* Header com Avatar */}
+              {/* Header with Avatar */}
               <div className={styles.profileHeader}>
                 <div
                   className={styles.avatar}
@@ -79,18 +79,18 @@ export function Profile() {
                 </div>
               </div>
 
-              {/* Informações */}
+              {/* Information */}
               <div className={styles.infoSection}>
-                <h3 className={styles.sectionTitle}>Informações da Conta</h3>
+                <h3 className={styles.sectionTitle}>Account Information</h3>
 
                 <div className={styles.infoGrid}>
                   <div className={styles.infoItem}>
-                    <span className={styles.infoLabel}>Nome Completo</span>
+                    <span className={styles.infoLabel}>Full Name</span>
                     <span className={styles.infoValue}>{user.name}</span>
                   </div>
 
                   <div className={styles.infoItem}>
-                    <span className={styles.infoLabel}>E-mail</span>
+                    <span className={styles.infoLabel}>Email</span>
                     <span className={styles.infoValue}>{user.email}</span>
                   </div>
 
@@ -98,28 +98,28 @@ export function Profile() {
                     <span className={styles.infoLabel}>Status</span>
                     <span className={styles.infoBadge}>
                       {user.is_active ? (
-                        <span className={styles.badgeActive}>Ativo</span>
+                        <span className={styles.badgeActive}>Active</span>
                       ) : (
-                        <span className={styles.badgeInactive}>Inativo</span>
+                        <span className={styles.badgeInactive}>Inactive</span>
                       )}
                     </span>
                   </div>
 
                   <div className={styles.infoItem}>
-                    <span className={styles.infoLabel}>Membro desde</span>
+                    <span className={styles.infoLabel}>Member Since</span>
                     <span className={styles.infoValue}>
                       {formatDate(user.created_at)}
                     </span>
                   </div>
 
                   <div className={styles.infoItem}>
-                    <span className={styles.infoLabel}>ID do Usuário</span>
+                    <span className={styles.infoLabel}>User ID</span>
                     <span className={styles.infoValueMono}>{user._id}</span>
                   </div>
                 </div>
               </div>
 
-              {/* Ações */}
+              {/* Actions */}
               <div className={styles.actions}>
                 <button className={styles.primaryButton}>
                   <svg
@@ -133,7 +133,7 @@ export function Profile() {
                     <path d='M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7' />
                     <path d='M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z' />
                   </svg>
-                  Editar Perfil
+                  Edit Profile
                 </button>
                 <button className={styles.secondaryButton}>
                   <svg
@@ -147,7 +147,7 @@ export function Profile() {
                     <rect x='3' y='11' width='18' height='11' rx='2' ry='2' />
                     <path d='M7 11V7a5 5 0 0 1 10 0v4' />
                   </svg>
-                  Alterar Senha
+                  Change Password
                 </button>
               </div>
             </div>

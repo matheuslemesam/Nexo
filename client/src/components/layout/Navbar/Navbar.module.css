@@ -32,7 +32,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem 0;
+  padding: 0rem 0;
 }
 
 .logo {
@@ -274,6 +274,117 @@
 .dropdownItem svg {
   color: var(--text-secondary);
   transition: color 0.3s ease;
+}
+
+/* Repos Submenu */
+.reposMenuContainer {
+  position: relative;
+}
+
+.expandIcon {
+  margin-left: auto;
+  transition: transform 0.2s ease;
+}
+
+.expandIconOpen {
+  transform: rotate(180deg);
+}
+
+.reposSubmenu {
+  background: var(--bg-secondary);
+  border-radius: 0.5rem;
+  margin: 0.25rem 0.5rem 0.5rem;
+  overflow: hidden;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+:global(.dark) .reposSubmenu {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.reposLoading,
+.reposEmpty {
+  padding: 0.75rem 1rem;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.loadingSpinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--border-color);
+  border-top-color: var(--primary-color, #667eea);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.repoItem {
+  display: block;
+  padding: 0.6rem 0.75rem;
+  color: var(--text-primary);
+  text-decoration: none;
+  border-bottom: 1px solid var(--border-color);
+  transition: background 0.2s;
+}
+
+.repoItem:last-of-type {
+  border-bottom: none;
+}
+
+.repoItem:hover {
+  background: rgba(102, 126, 234, 0.1);
+}
+
+:global(.dark) .repoItem:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.repoItemInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.repoItemName {
+  font-size: 0.8rem;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 180px;
+}
+
+.repoItemMeta {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+}
+
+.viewAllRepos {
+  display: block;
+  padding: 0.6rem 0.75rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-decoration: none;
+  text-align: center;
+  transition: opacity 0.2s;
+}
+
+.viewAllRepos:hover {
+  opacity: 0.9;
 }
 
 @media (max-width: 768px) {

@@ -23,6 +23,17 @@
   margin-bottom: 1.5rem;
 }
 
+.logoImage {
+  height: 110px;
+  width: auto;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+.logoImage:hover {
+  transform: scale(1.1);
+}
+
 .logoIcon {
   font-size: 1.5rem;
 }
@@ -40,10 +51,14 @@
 }
 
 .highlight {
-  background: linear-gradient(135deg, #22c55e 0%, #10b981 50%, #06b6d4 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  display: inline-block;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.highlight:hover {
+  transform: scale(1.05);
 }
 
 .ctaButtons {
@@ -62,10 +77,13 @@
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s;
+  text-decoration: none;
+  display: inline-block;
 }
 
 .primaryBtn:hover {
   background: #1e293b;
+  transform: translateY(-2px);
 }
 
 .secondaryBtn {
@@ -78,18 +96,24 @@
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s;
+  text-decoration: none;
+  display: inline-block;
 }
 
 .secondaryBtn:hover {
   border-color: #9ca3af;
   background: #f9fafb;
+  transform: translateY(-2px);
 }
 
 .links {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 3rem;
+  display: flex;
+  justify-content: center;
+  gap: 30rem;
   margin-bottom: 4rem;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .column h3 {
@@ -160,8 +184,9 @@
   }
 
   .links {
-    grid-template-columns: 1fr;
+    flex-direction: column;
     gap: 2rem;
+    align-items: center;
   }
 
   .bottom {

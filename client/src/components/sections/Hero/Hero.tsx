@@ -2,6 +2,7 @@ import { Container } from "../../ui";
 import styles from "./Hero.module.css";
 import { useRef, useEffect, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
+import { BlackHoleBackground } from "../AskAI/BlackHoleBackground";
 
 // Grid configuration
 const GRID_COLS = 20;
@@ -11,7 +12,14 @@ const ACTIVE_SQUARES = 6; // Number of highlighted squares at a time
 export function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0.5, y: 0.5 });
-  const [activeSquares, setActiveSquares] = useState<number[]>([]);
+
+  const handleWatchDemo = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    const podcastSection = document.getElementById("podcast-demo");
+    if (podcastSection) {
+      podcastSection.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  };
 
   // Generate random active squares
   const generateActiveSquares = useCallback(() => {
@@ -26,10 +34,12 @@ export function Hero() {
     return newActive;
   }, []);
 
-  useEffect(() => {
-    // Initialize active squares
-    setActiveSquares(generateActiveSquares());
+  // Initialize with lazy initialization to avoid synchronous setState in effect
+  const [activeSquares, setActiveSquares] = useState<number[]>(() =>
+    generateActiveSquares()
+  );
 
+  useEffect(() => {
     // Update active squares periodically
     const interval = setInterval(() => {
       setActiveSquares(generateActiveSquares());
@@ -93,6 +103,7 @@ export function Hero() {
 
   return (
     <section className={styles.hero} ref={sectionRef}>
+      <BlackHoleBackground />
       <div className={styles.gradientBg}></div>
       <div
         className={styles.gridBackground}
@@ -124,7 +135,13 @@ export function Hero() {
             <Link to='/comecar' className={styles.primaryBtn}>
               Get Started
             </Link>
-            <button className={styles.secondaryBtn}>Watch Demo</button>
+            <a
+              href='#podcast-demo'
+              className={styles.secondaryBtn}
+              onClick={handleWatchDemo}
+            >
+              Watch Demo
+            </a>
           </div>
         </div>
       </Container>

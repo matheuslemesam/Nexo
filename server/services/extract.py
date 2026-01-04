@@ -254,7 +254,7 @@ async def _fetch_github_metadata(github_api: GitHubAPIService, github_url: str) 
         }
 
 
-async def download_and_extract(github_url: str, branch: str, token: str = None) -> dict:
+async def download_and_extract(github_url: str, branch: str = None, token: str = None) -> dict:
     """
     Baixa o repositório, PRIORIZA arquivos descritivos e monta contexto limitado.
     Retorna informações completas sobre o repositório com payload otimizado.
@@ -265,41 +265,76 @@ async def download_and_extract(github_url: str, branch: str, token: str = None) 
         ignored_dirs=IGNORED_DIRS, ignored_extensions=IGNORED_EXTENSIONS
     )
 
+    # Se a branch não for especificada, busca a branch padrão do repositório
+    if not branch:
+        print("🔍 Branch não especificada, buscando branch padrão do repositório...")
+        metadata_preview = await _fetch_github_metadata(github_api, github_url)
+        branch = metadata_preview.get("metadata", {}).get("default_branch", "main")
+        print(f"📌 Usando branch padrão: {branch}")
+
     # Monta a URL do ZIP
     clean_url = github_url.rstrip("/")
-    zip_url = f"{clean_url}/archive/refs/heads/{branch}.zip"
-
+    
+    # Lista de branches para tentar (em ordem de prioridade)
+    branches_to_try = [branch, "main", "master", "develop", "dev"]
+    # Remove duplicatas mantendo a ordem
+    branches_to_try = list(dict.fromkeys(branches_to_try))
+    
     # Configura Headers (Autenticação se houver token)
     headers = {}
     if token:
+        # GitHub aceita tanto "token" quanto "Bearer" para PATs
         headers["Authorization"] = f"token {token}"
+        print(f"🔑 Usando token do GitHub (primeiros 10 chars): {token[:10]}...")
+    else:
+        print("⚠️ AVISO: Nenhum token GitHub fornecido - pode haver limite de rate")
 
     # Busca metadados do GitHub em paralelo com o download
     metadata_task = asyncio.create_task(_fetch_github_metadata(github_api, github_url))
 
-    async with httpx.AsyncClient(follow_redirects=True) as client:
-        # Usamos .stream() para ler os headers ANTES de baixar o corpo
-        async with client.stream("GET", zip_url, headers=headers) as response:
-            if response.status_code != 200:
-                if response.status_code == 404:
+    file_bytes = None
+    successful_branch = None
+    
+    # Aumenta o timeout para repositórios grandes (120 segundos)
+    timeout = httpx.Timeout(120.0, connect=30.0)
+    async with httpx.AsyncClient(follow_redirects=True, timeout=timeout) as client:
+        # Tenta cada branch até encontrar uma que funcione
+        for try_branch in branches_to_try:
+            zip_url = f"{clean_url}/archive/refs/heads/{try_branch}.zip"
+            print(f"🌐 Tentando acessar branch '{try_branch}': {zip_url}")
+            
+            async with client.stream("GET", zip_url, headers=headers) as response:
+                print(f"📊 Status Code: {response.status_code}")
+                
+                if response.status_code == 200:
+                    # Validação de Content-Length
+                    content_length = response.headers.get("content-length")
+                    if content_length and int(content_length) > MAX_REPO_SIZE_BYTES:
+                        raise HTTPException(
+                            status_code=413,
+                            detail=f"Repositório muito grande ({int(content_length) / 1024 / 1024:.2f} MB). O limite é {MAX_REPO_SIZE_BYTES / 1024 / 1024} MB.",
+                        )
+
+                    # Se passou na verificação, lemos o conteúdo para a memória
+                    file_bytes = await response.aread()
+                    successful_branch = try_branch
+                    print(f"✅ Branch '{try_branch}' encontrada!")
+                    break
+                elif response.status_code == 404:
+                    print(f"⚠️ Branch '{try_branch}' não encontrada, tentando próxima...")
+                    continue
+                else:
                     raise HTTPException(
-                        status_code=404,
-                        detail="Repositório não encontrado. Verifique a URL, a Branch ou se o Token é válido para este repo.",
+                        status_code=400, detail=f"Erro no GitHub: {response.status_code}"
                     )
-                raise HTTPException(
-                    status_code=400, detail=f"Erro no GitHub: {response.status_code}"
-                )
-
-            # Validação de Content-Length
-            content_length = response.headers.get("content-length")
-            if content_length and int(content_length) > MAX_REPO_SIZE_BYTES:
-                raise HTTPException(
-                    status_code=413,
-                    detail=f"Repositório muito grande ({int(content_length) / 1024 / 1024:.2f} MB). O limite é {MAX_REPO_SIZE_BYTES / 1024 / 1024} MB.",
-                )
-
-            # Se passou na verificação, lemos o conteúdo para a memória
-            file_bytes = await response.aread()
+        
+        # Se nenhuma branch funcionou
+        if file_bytes is None:
+            print(f"❌ Nenhuma branch encontrada. Tentativas: {branches_to_try}")
+            raise HTTPException(
+                status_code=404,
+                detail=f"Repositório não encontrado. Tentei as branches: {', '.join(branches_to_try)}. Verifique a URL ou se o Token é válido.",
+            )
 
     # Aguarda os metadados do GitHub
     github_info = await metadata_task

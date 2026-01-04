@@ -7,6 +7,7 @@ import {
   ForgotPassword,
   Profile,
   Settings,
+  SavedRepos,
 } from "./pages";
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
@@ -27,6 +28,7 @@ function App() {
       <Route path='/esqueci-senha' element={<ForgotPassword />} />
       <Route path='/perfil' element={<Profile />} />
       <Route path='/configuracoes' element={<Settings />} />
+      <Route path='/meus-repos' element={<SavedRepos />} />
     </Routes>
   );
 }

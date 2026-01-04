@@ -2,11 +2,11 @@ import { Container } from "../../ui";
 import styles from "./TrustedBy.module.css";
 
 const companies = [
-  { name: "Startups", icon: "🚀" },
-  { name: "Enterprise", icon: "🏢" },
-  { name: "Agencies", icon: "💼" },
-  { name: "Open Source", icon: "🌐" },
-  { name: "DevOps", icon: "⚙️" },
+  { name: "React", icon: "⚛️" },
+  { name: "TypeScript", icon: "📘" },
+  { name: "Python", icon: "🐍" },
+  { name: "Node.js", icon: "🟢" },
+  { name: "Go", icon: "🔵" },
 ];
 
 export function TrustedBy() {
@@ -15,13 +15,13 @@ export function TrustedBy() {
       <Container size='xl'>
         <div className={styles.header}>
           <h2 className={styles.title}>
-            Want to scale your
+            Analyze repositories in
             <br />
-            documentation?
+            any language
           </h2>
           <p className={styles.subtitle}>
-            Teams of all sizes use Nexo to transform legacy code into accessible
-            knowledge.
+            Nexo supports analysis for multiple programming languages and frameworks,
+            providing deep insights regardless of your tech stack.
           </p>
         </div>
 
@@ -35,17 +35,17 @@ export function TrustedBy() {
         </div>
 
         <div className={styles.moreLogos}>
-          <span>Nubank</span>
-          <span>iFood</span>
-          <span>Stone</span>
-          <span>Mercado Livre</span>
-          <span>PagSeguro</span>
-          <span>QuintoAndar</span>
-          <span>Creditas</span>
-          <span>Loft</span>
-          <span>Loggi</span>
-          <span>99</span>
-          <span>EBANX</span>
+          <span>JavaScript</span>
+          <span>Java</span>
+          <span>C++</span>
+          <span>Rust</span>
+          <span>Ruby</span>
+          <span>PHP</span>
+          <span>Swift</span>
+          <span>Kotlin</span>
+          <span>C#</span>
+          <span>Vue.js</span>
+          <span>Angular</span>
         </div>
       </Container>
     </section>

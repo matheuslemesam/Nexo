@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends, status
 from models.basic import RepoRequest
 from schemas.extract import ExtractResponseSchema
 from services.extract import download_and_extract
+from core.config import settings
 
 
 router = APIRouter(prefix="/extract", tags=["Extração"])
@@ -25,9 +26,18 @@ async def extract_repo_context(payload: RepoRequest):
     - Estrutura de diretórios
     - Payload de contexto para análise IA
     """
+    # Usa o token do payload ou o token do .env como fallback
+    github_token = payload.token or settings.GITHUB_TOKEN
+    
+    # Log para debug
+    if github_token:
+        print(f"✅ Token GitHub encontrado (fonte: {'payload' if payload.token else '.env'})")
+    else:
+        print("❌ ERRO: Nenhum token GitHub configurado!")
+    
     # Chama o serviço (Service Layer)
     result = await download_and_extract(
-        github_url=payload.github_url, branch=payload.branch, token=payload.token
+        github_url=payload.github_url, branch=payload.branch, token=github_token
     )
 
     # Monta resposta enriquecida

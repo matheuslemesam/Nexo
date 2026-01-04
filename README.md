@@ -4,9 +4,13 @@
 
 **Transform cold, static code into a living, breathing story you can see and hear.**
 
+
+<img src="client/public/logo-white.png" alt="Nexo Logo" width="200" style="border-radius: 20px;" />
+
+
 [![Made with React](https://img.shields.io/badge/Made%20with-React-61DAFB?style=for-the-badge&logo=react)](https://reactjs.org/)
 [![Powered by Gemini](https://img.shields.io/badge/Powered%20by-Gemini-4285F4?style=for-the-badge&logo=google)](https://ai.google.dev/)
-[![Voice by ElevenLabs](https://img.shields.io/badge/Voice-ElevenLabs-000000?style=for-the-badge)](https://elevenlabs.io/)
+[![Voice by ElevenLabs](https://img.shields.io/ badge/Voice-ElevenLabs-000000?style=for-the-badge)](https://elevenlabs.io/)
 [![Deployed on Vultr](https://img.shields.io/badge/Deployed-Vultr-007BFC?style=for-the-badge&logo=vultr)](https://www.vultr.com/)
 
 [Demo](#-demo) • [Features](#-features) • [Tech Stack](#-tech-stack) • [Installation](#-installation) • [Usage](#-usage)
