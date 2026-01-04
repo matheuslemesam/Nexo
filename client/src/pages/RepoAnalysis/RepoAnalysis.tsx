@@ -21,6 +21,7 @@ import {
   cleanExpiredCache,
 } from "../../services/cacheService";
 import { useAuth } from "../../hooks";
+import { ChatBot } from "../../components/sections";
 
 // Type for API directory structure
 interface DirectoryStructure {
@@ -96,8 +97,6 @@ function countFilesInStructure(structure: DirectoryStructure): number {
   }
   return count;
 }
-
-import { ChatBot } from "../../components/sections/ChatBot";
 
 // Mock data for repository analysis
 const MOCK_REPO_DATA = {
@@ -224,16 +223,9 @@ export function RepoAnalysis() {
     "overview" | "structure" | "learning" | "contributors"
   >("overview");
   const [isLoaded, setIsLoaded] = useState(false);
-<<<<<<< HEAD
-  const analysisState = { isLoading: !isLoaded, error: null };
-  const [expandedSection, setExpandedSection] = useState<string | null>(
-    "summary"
-  );
-=======
   const [isSaved, setIsSaved] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
->>>>>>> origin/main
   const [podcastState, setPodcastState] = useState<{
     isGenerating: boolean;
     audioUrl: string | null;
@@ -606,18 +598,39 @@ export function RepoAnalysis() {
     }
   };
 
+  // Prepare context for ChatBot
+  const chatContext = useMemo(() => {
+    if (!analysisState.data) {
+      return { ...MOCK_REPO_DATA, ...MOCK_ANALYSIS };
+    }
+
+    const data = analysisState.data;
+    const repoInfo = data.repository?.info;
+
+    const techStack = Object.keys(languages).map((lang) => ({
+      name: lang,
+      percentage: 0,
+    }));
+
+    return {
+      name: repoInfo?.full_name || repoInfo?.name || "Unknown Repository",
+      description: repoInfo?.description || "",
+      language: repoInfo?.language || Object.keys(languages)[0] || "",
+      techStack: techStack,
+      fileTree: fileTreeData || [],
+      summary: data.overview || "",
+    };
+  }, [analysisState.data, languages, fileTreeData]);
+
   return (
     <div className={styles.page}>
       <Navbar />
 
       <main className={styles.main}>
-<<<<<<< HEAD
         {/* ChatBot Integration */}
-        <ChatBot repoContext={{ ...MOCK_REPO_DATA, ...MOCK_ANALYSIS }} />
+        <ChatBot repoContext={chatContext} />
 
-=======
         {/* Loading State */}
->>>>>>> origin/main
         {analysisState.isLoading && (
           <section className={styles.loadingSection}>
             <Container size='xl'>

@@ -1,9 +1,19 @@
-services:
   # MongoDB local removed - using MongoDB Atlas
   # mongo:
   #   container_name: nexo-mongo
   #   image: docker.io/library/mongo:7
   #   ...
+
+services:
+  mongo:
+    container_name: nexo-mongo
+    image: mongo:7
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - nexo-network
 
   api:
     container_name: nexo-api
@@ -38,8 +48,8 @@ services:
     networks:
       - nexo-network
 
-# volumes:
-#   mongo_data:  # Not needed with MongoDB Atlas
+volumes:
+  mongo_data:
 
 networks:
   nexo-network:
