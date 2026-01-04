@@ -7,7 +7,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from api import auth, extract, overview, podcast, chat
+from api import auth, extract, overview, podcast, chat, analyze, saved_repos, learning
 from core.config import settings
 from services.database import connect_to_mongo, close_mongo_connection
 
@@ -49,6 +49,9 @@ app.include_router(extract.router, prefix=settings.API_V1_PREFIX)
 app.include_router(podcast.router, prefix=f"{settings.API_V1_PREFIX}/podcast", tags=["Podcast"])
 app.include_router(overview.router, prefix=settings.API_V1_PREFIX)
 app.include_router(chat.router, prefix=f"{settings.API_V1_PREFIX}/chat", tags=["Chat"])
+app.include_router(analyze.router, prefix=settings.API_V1_PREFIX)
+app.include_router(saved_repos.router, prefix=settings.API_V1_PREFIX)
+app.include_router(learning.router, prefix=settings.API_V1_PREFIX)
 
 
 @app.get("/")

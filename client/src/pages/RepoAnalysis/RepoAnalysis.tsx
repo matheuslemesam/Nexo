@@ -215,6 +215,7 @@ export function RepoAnalysis() {
   const [activeDiagram, setActiveDiagram] =
     useState<DiagramType>("architecture");
   const [isLoaded, setIsLoaded] = useState(false);
+  const analysisState = { isLoading: !isLoaded, error: null };
   const [expandedSection, setExpandedSection] = useState<string | null>(
     "summary"
   );
@@ -338,6 +339,36 @@ export function RepoAnalysis() {
       <main className={styles.main}>
         {/* ChatBot Integration */}
         <ChatBot repoContext={{ ...MOCK_REPO_DATA, ...MOCK_ANALYSIS }} />
+
+        {analysisState.isLoading && (
+          <section className={styles.loadingSection}>
+            <Container size='xl'>
+              <div className={styles.loadingContent}>
+                <div className={styles.spinner}></div>
+                <p>Analyzing repository...</p>
+                <p className={styles.loadingSubtext}>
+                  Extracting data and generating AI overview
+                </p>
+              </div>
+            </Container>
+          </section>
+        )}
+
+        {/* Error State */}
+        {analysisState.error && !analysisState.isLoading && (
+          <section className={styles.errorSection}>
+            <Container size='xl'>
+              <div className={styles.errorContent}>
+                <span className={styles.errorIcon}>⚠️</span>
+                <h2>Analysis Error</h2>
+                <p>{analysisState.error}</p>
+                <Link to='/comecar' className={styles.errorButton}>
+                  ← Go back and try again
+                </Link>
+              </div>
+            </Container>
+          </section>
+        )}
 
         {/* Header Section */}
         <section className={styles.header}>
