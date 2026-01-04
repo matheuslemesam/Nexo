@@ -193,9 +193,55 @@ export function formatNumber(num: number): string {
   return num.toString();
 }
 
+// === Tipos e função para recursos de aprendizado ===
+
+export interface LearningResource {
+  type: "docs" | "article" | "video";
+  title: string;
+  url: string;
+  description: string;
+}
+
+export interface TechnologyLearningResource {
+  technology: string;
+  icon: string;
+  color: string;
+  summary: string;
+  resources: LearningResource[];
+}
+
+export interface LearningResourcesResponse {
+  learning_resources: TechnologyLearningResource[];
+  detected_technologies: string[];
+}
+
+/**
+ * Busca recursos de aprendizado baseados nas tecnologias detectadas
+ * @param technologies Lista de tecnologias (ex: ['TypeScript', 'React', 'FastAPI'])
+ * @param repoContext Contexto opcional do repositório
+ * @returns Promise com os recursos de aprendizado
+ */
+export async function getLearningResources(
+  technologies: string[],
+  repoContext?: string
+): Promise<LearningResourcesResponse> {
+  const params = new URLSearchParams({
+    technologies: technologies.join(","),
+  });
+
+  if (repoContext) {
+    params.append("repo_context", repoContext);
+  }
+
+  return api.get<LearningResourcesResponse>(
+    `/api/v1/learning-resources?${params.toString()}`
+  );
+}
+
 export default {
   analyzeRepository,
   getLanguagesPercentage,
   formatDate,
   formatNumber,
+  getLearningResources,
 };

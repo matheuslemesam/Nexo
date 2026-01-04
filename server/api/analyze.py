@@ -9,6 +9,7 @@ from models.basic import RepoRequest
 from schemas.analyze import AnalyzeResponseSchema
 from services.extract import download_and_extract
 from services.gemini import gemini_service
+from core.config import settings
 
 
 router = APIRouter(prefix="/analyze", tags=["Análise Unificada"])
@@ -100,14 +101,29 @@ async def analyze_repository(payload: RepoRequest):
     errors = []
     extract_result = None
 
+    # Usa o token do payload ou o token do .env como fallback
+    github_token = payload.token or settings.GITHUB_TOKEN
+    
+    # Log para debug
+    if github_token:
+        print(f"✅ Token GitHub encontrado (fonte: {'payload' if payload.token else '.env'})")
+    else:
+        print("❌ ERRO: Nenhum token GitHub configurado!")
+
     # === ETAPA 1: Extração do Repositório ===
     try:
+        print(f"🚀 Iniciando extração de: {payload.github_url} (branch: {payload.branch})")
         extract_result = await download_and_extract(
             github_url=payload.github_url,
             branch=payload.branch,
-            token=payload.token,
+            token=github_token,
         )
+        print("✅ Extração concluída com sucesso!")
     except Exception as e:
+        print(f"❌ ERRO na extração: {str(e)}")
+        print(f"❌ Tipo do erro: {type(e).__name__}")
+        import traceback
+        print(f"❌ Traceback: {traceback.format_exc()}")
         return AnalyzeResponseSchema(
             status="error",
             repository=None,
@@ -137,7 +153,7 @@ async def analyze_repository(payload: RepoRequest):
     }
 
     # Monta análise de arquivos
-    file_stats = extract_result.get("file_stats", {})
+    file_stats = extract_result.get("file_stats") or {}
     file_analysis = {
         "summary": {
             "total_files": file_stats.get("total_files", 0),
@@ -200,12 +216,17 @@ async def analyze_repository(payload: RepoRequest):
         )
 
     # Chama o Gemini
+    print(f"🤖 Chamando Gemini para gerar overview...")
+    print(f"📊 Tamanho do prompt: {len(prompt)} caracteres")
     gemini_result = await gemini_service.generate_content(
         prompt=prompt,
         max_output_tokens=4096,
         temperature=0.7,
         timeout=90.0,
     )
+    print(f"✅ Gemini respondeu: success={gemini_result.get('success')}")
+    if not gemini_result.get('success'):
+        print(f"❌ Erro do Gemini: {gemini_result.get('error')}")
 
     # Monta resultado do overview
     overview_content = None

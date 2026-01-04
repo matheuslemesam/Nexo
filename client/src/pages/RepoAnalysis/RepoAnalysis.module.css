@@ -238,12 +238,10 @@
   gap: 1.5rem;
 }
 
-/* Center podcast card */
+/* Remove centralização do podcast - agora fica no grid */
 .podcastCard {
-  grid-column: 1 / -1;
-  max-width: 800px;
-  margin: 0 auto;
-  width: 100%;
+  background: var(--card-bg);
+  transition: background 0.3s ease;
 }
 
 .summaryCard {
@@ -1612,4 +1610,315 @@
 .markdownContent em {
   color: var(--text-secondary);
   font-style: italic;
+}
+
+/* ====================================
+   Learning Resources Tab Styles
+   ==================================== */
+
+.learningContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.learningHeader {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.learningTitle {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+  transition: color 0.3s ease;
+}
+
+.learningSubtitle {
+  font-size: 1.125rem;
+  color: var(--text-secondary);
+  max-width: 700px;
+  margin: 0 auto;
+  line-height: 1.6;
+  transition: color 0.3s ease;
+}
+
+/* Loading and Error States */
+.loadingState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  gap: 1rem;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid var(--border-color);
+  border-top-color: #8b5cf6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loadingState p {
+  color: var(--text-secondary);
+  font-size: 1rem;
+}
+
+.errorCard {
+  text-align: center;
+  padding: 2rem;
+  background: rgba(239, 68, 68, 0.05);
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.errorMessage {
+  color: #ef4444;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.errorHint {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.resourcesList {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.resourceCard {
+  border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+}
+
+.resourceCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+:global(.dark) .resourceCard:hover {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.resourceHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.resourceTechInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.resourceIcon {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.resourceTechName {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.resourceBadge {
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.25rem 0.75rem;
+}
+
+.resourceSummary {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: var(--bg-secondary);
+  border-radius: 0.5rem;
+  border-left: 3px solid var(--border-color);
+  transition: all 0.3s ease;
+}
+
+.resourceItems {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.resourceItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 0.75rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.resourceItem:hover {
+  background: var(--bg-primary);
+  border-color: #8b5cf6;
+  transform: translateX(8px);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.15);
+}
+
+.resourceItemHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  flex: 1;
+}
+
+.resourceTypeIcon {
+  font-size: 1.5rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.resourceItemInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.resourceItemTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+  transition: color 0.3s ease;
+}
+
+.resourceItem:hover .resourceItemTitle {
+  color: #8b5cf6;
+}
+
+.resourceItemDesc {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.5;
+  transition: color 0.3s ease;
+}
+
+.resourceItemArrow {
+  font-size: 1.25rem;
+  color: var(--text-secondary);
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.resourceItem:hover .resourceItemArrow {
+  color: #8b5cf6;
+  transform: translateX(4px);
+}
+
+/* Learning Tips Card */
+.learningTipsCard {
+  background: linear-gradient(
+    135deg,
+    rgba(139, 92, 246, 0.05) 0%,
+    rgba(102, 126, 234, 0.05) 100%
+  );
+  border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.tipsTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 1rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: color 0.3s ease;
+}
+
+.tipsList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.tipsList li {
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  padding-left: 1.5rem;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.tipsList li::before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  color: #8b5cf6;
+  font-weight: 700;
+}
+
+.tipsList li strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .learningTitle {
+    font-size: 2rem;
+  }
+
+  .learningSubtitle {
+    font-size: 1rem;
+  }
+
+  .resourceHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .resourceTechName {
+    font-size: 1.25rem;
+  }
+
+  .resourceItem {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .resourceItemArrow {
+    align-self: flex-end;
+  }
+
+  .resourceItem:hover {
+    transform: translateX(0);
+    transform: translateY(-4px);
+  }
 }
