@@ -12,6 +12,79 @@ import {
   type AnalyzeResponse,
 } from "../../services/repoAnalysisService";
 
+// Tipo para estrutura de diretórios da API
+interface DirectoryStructure {
+  [key: string]: DirectoryStructure | null | string;
+}
+
+// Tipo para item da árvore de arquivos visual
+interface FileTreeItem {
+  name: string;
+  type: "folder" | "file";
+  children?: FileTreeItem[];
+  fileCount?: number;
+}
+
+/**
+ * Converte a estrutura de diretórios da API para o formato visual da árvore
+ */
+function convertDirectoryStructure(structure: DirectoryStructure): FileTreeItem[] {
+  const items: FileTreeItem[] = [];
+
+  for (const [key, value] of Object.entries(structure)) {
+    // Chave terminando com "/" é diretório
+    if (key.endsWith("/")) {
+      const name = key;
+      const isDict = value !== null && typeof value === "object";
+
+      if (isDict) {
+        const children = convertDirectoryStructure(value as DirectoryStructure);
+        const fileCount = countFilesInStructure(value as DirectoryStructure);
+        items.push({
+          name,
+          type: "folder",
+          children: children.length > 0 ? children : undefined,
+          fileCount,
+        });
+      } else {
+        items.push({ name, type: "folder" });
+      }
+    } else if (key === "...") {
+      // Indicador de mais arquivos
+      items.push({ name: value as string, type: "file" });
+    } else {
+      // Arquivo normal (valor é null)
+      items.push({ name: key, type: "file" });
+    }
+  }
+
+  // Ordena: pastas primeiro, depois arquivos
+  return items.sort((a, b) => {
+    if (a.type === "folder" && b.type !== "folder") return -1;
+    if (a.type !== "folder" && b.type === "folder") return 1;
+    return a.name.localeCompare(b.name);
+  });
+}
+
+/**
+ * Conta arquivos em uma estrutura de diretório
+ */
+function countFilesInStructure(structure: DirectoryStructure): number {
+  let count = 0;
+  for (const [key, value] of Object.entries(structure)) {
+    if (key === "...") {
+      // Extrai número do texto como "+15 more files"
+      const match = (value as string).match(/\d+/);
+      if (match) count += parseInt(match[0], 10);
+    } else if (key.endsWith("/") && value && typeof value === "object") {
+      count += countFilesInStructure(value as DirectoryStructure);
+    } else if (!key.endsWith("/")) {
+      count += 1;
+    }
+  }
+  return count;
+}
+
 // Mock data for repository analysis
 const MOCK_REPO_DATA = {
   name: "awesome-project",
@@ -257,9 +330,15 @@ export function RepoAnalysis() {
   const dependencies = analysisState.data?.dependencies || [];
   const overview = analysisState.data?.overview;
   const languages = analysisState.data?.repository?.languages || {};
+  const directoryStructure = analysisState.data?.directory_structure as DirectoryStructure | undefined;
 
   // Converte linguagens para porcentagens
   const languagesWithPercentage = getLanguagesPercentage(languages);
+
+  // Converte estrutura de diretórios para formato visual
+  const fileTreeData = directoryStructure 
+    ? convertDirectoryStructure(directoryStructure)
+    : null;
 
   interface PodcastResponse {
     success: boolean;
@@ -1067,33 +1146,48 @@ export function RepoAnalysis() {
                       <span>📁</span> Project Structure
                     </h3>
                     <div className={styles.fileTree}>
-                      {MOCK_ANALYSIS.fileTree.map((item, idx) => (
+                      {(fileTreeData || MOCK_ANALYSIS.fileTree.map(item => ({
+                        name: item.name,
+                        type: "folder" as const,
+                        fileCount: item.files,
+                        children: item.children?.map(child => ({
+                          name: child.name,
+                          type: "folder" as const,
+                          fileCount: child.files,
+                        })),
+                      }))).map((item, idx) => (
                         <div key={idx} className={styles.fileTreeItem}>
-                          <div className={styles.fileTreeFolder}>
-                            <span className={styles.folderIcon}>📂</span>
+                          <div className={item.type === "folder" ? styles.fileTreeFolder : styles.fileTreeFile}>
+                            <span className={styles.folderIcon}>
+                              {item.type === "folder" ? "📂" : "📄"}
+                            </span>
                             <span className={styles.folderName}>
                               {item.name}
                             </span>
-                            {item.files && (
+                            {item.type === "folder" && item.fileCount !== undefined && item.fileCount > 0 && (
                               <span className={styles.fileCount}>
-                                {item.files} files
+                                {item.fileCount} files
                               </span>
                             )}
                           </div>
-                          {item.children && (
+                          {item.children && item.children.length > 0 && (
                             <div className={styles.fileTreeChildren}>
                               {item.children.map((child, childIdx) => (
                                 <div
                                   key={childIdx}
-                                  className={styles.fileTreeChild}
+                                  className={child.type === "folder" ? styles.fileTreeChild : styles.fileTreeChildFile}
                                 >
-                                  <span className={styles.folderIcon}>📁</span>
+                                  <span className={styles.folderIcon}>
+                                    {child.type === "folder" ? "📁" : "📄"}
+                                  </span>
                                   <span className={styles.folderName}>
                                     {child.name}
                                   </span>
-                                  <span className={styles.fileCount}>
-                                    {child.files} files
-                                  </span>
+                                  {child.type === "folder" && child.fileCount !== undefined && child.fileCount > 0 && (
+                                    <span className={styles.fileCount}>
+                                      {child.fileCount} files
+                                    </span>
+                                  )}
                                 </div>
                               ))}
                             </div>
