@@ -123,11 +123,11 @@ async def analyze_repository(payload: RepoRequest):
 
     # === ETAPA 2: Montar dados de resposta da extração ===
     github_data = extract_result.get("github", {})
-    metadata = github_data.get("metadata", {})
+    metadata = github_data.get("metadata") or {}
 
     # Monta informações do repositório
     repository_info = {
-        "info": metadata,
+        "info": metadata if metadata else None,
         "contributors": github_data.get("contributors", []),
         "branches": {
             "count": github_data.get("branch_count", 0),
