@@ -33,8 +33,12 @@ Analyze the following repository and generate a **contextual overview** in pure 
 ---
 
 ## Your Task:
-Generate a **clear and well-structured overview** in HTML, focused on the GENERAL CONTEXT of the project.
-REMEMBER: Output must be 100% in English, translate any non-English content.
+Generate a **comprehensive, detailed, and well-structured overview** in HTML, focused on the GENERAL CONTEXT of the project.
+IMPORTANT: 
+- Make your response DETAILED and INFORMATIVE (aim for 800-1500 words)
+- Provide DEPTH in your explanations - don't be superficial
+- Include SPECIFIC examples and use cases when possible
+- Output must be 100% in English, translate any non-English content
 
 ### HTML Structure (use semantic tags):
 
@@ -166,9 +170,9 @@ async def generate_overview(payload: RepoRequest):
     # 5. Chama o Gemini
     gemini_result = await gemini_service.generate_content(
         prompt=prompt,
-        max_output_tokens=4096,
+        max_output_tokens=5000,  # Increased for longer, more detailed overviews
         temperature=0.7,
-        timeout=90.0,  # Timeout maior para respostas longas
+        timeout=120.0,  # Timeout maior para respostas longas
     )
 
     # 6. Monta a resposta
