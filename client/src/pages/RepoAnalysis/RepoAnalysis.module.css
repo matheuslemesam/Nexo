@@ -906,6 +906,34 @@
   background: var(--bg-tertiary);
 }
 
+.fileTreeFile {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.375rem;
+  transition: background 0.2s;
+}
+
+.fileTreeFile:hover {
+  background: var(--bg-tertiary);
+}
+
+.fileTreeChildFile {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
+  transition: background 0.2s;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.fileTreeChildFile:hover {
+  background: var(--bg-tertiary);
+}
+
 /* Actions */
 .actions {
   display: flex;
