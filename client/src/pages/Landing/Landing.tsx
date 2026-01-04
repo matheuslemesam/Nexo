@@ -2,9 +2,6 @@ import { Navbar } from "../../components/layout";
 import {
   Hero,
   MCPServer,
-  AskAI,
-  AgentOwlbert,
-  AILinter,
   DocsAudit,
   PodcastDemo,
   TrustedBy,
@@ -23,7 +20,6 @@ export function Landing() {
         <Hero />
         <PodcastDemo />
         <MCPServer />
-        <AILinter />
         <DocsAudit />
         <TrustedBy />
       </main>

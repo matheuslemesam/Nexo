@@ -67,7 +67,7 @@ export function Footer() {
           </h2>
           <div className={styles.ctaButtons}>
             <Link to="/comecar" className={styles.primaryBtn}>Start Analyzing</Link>
-            <Link to="/auth/register" className={styles.secondaryBtn}>Create Account</Link>
+            <Link to="/register" className={styles.secondaryBtn}>Create Account</Link>
           </div>
         </div>
 
@@ -91,14 +91,12 @@ export function Footer() {
             <h3 className={styles.columnTitle}>Account</h3>
             <ul>
               <li>
-                <Link to="/auth/login">Sign In</Link>
+                <Link to="/login">Sign In</Link>
               </li>
               <li>
-                <Link to="/auth/register">Create Account</Link>
+                <Link to="/register">Create Account</Link>
               </li>
-              <li>
-                <Link to="/auth/forgot-password">Forgot Password</Link>
-              </li>
+
             </ul>
           </div>
 
