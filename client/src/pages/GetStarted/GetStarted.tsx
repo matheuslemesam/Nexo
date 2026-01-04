@@ -86,12 +86,12 @@ export function GetStarted() {
     setError('');
 
     if (!repoUrl.trim()) {
-      setError('Por favor, insira um link de repositório');
+      setError('Please enter a repository link');
       return;
     }
 
     if (!validateGitHubUrl(repoUrl)) {
-      setError('Por favor, insira um link válido do GitHub (ex: https://github.com/usuario/repositorio)');
+      setError('Please enter a valid GitHub link (e.g. https://github.com/user/repository)');
       return;
     }
 
@@ -102,10 +102,10 @@ export function GetStarted() {
       await new Promise(resolve => setTimeout(resolve, 3000));
       
       // Navigate to analysis page with repo URL
-      navigate(`/analise?repo=${encodeURIComponent(repoUrl)}`);
+      navigate(`/analysis?repo=${encodeURIComponent(repoUrl)}`);
       
     } catch {
-      setError('Erro ao analisar o repositório. Tente novamente.');
+      setError('Error analyzing the repository. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -131,22 +131,22 @@ export function GetStarted() {
         <div className={styles.loadingOverlay}>
           <div className={styles.loadingContent}>
             <div className={styles.spinner}></div>
-            <h2 className={styles.loadingTitle}>Analisando Repositório</h2>
+            <h2 className={styles.loadingTitle}>Analyzing Repository</h2>
             <p className={styles.loadingText}>
-              Estamos escaneando o código e gerando a documentação...
+              We are scanning the code and generating the documentation...
             </p>
             <div className={styles.loadingSteps}>
               <div className={styles.loadingStep}>
                 <span className={styles.stepIcon}>🔍</span>
-                <span>Clonando repositório...</span>
+                <span>Cloning repository...</span>
               </div>
               <div className={styles.loadingStep}>
                 <span className={styles.stepIcon}>📂</span>
-                <span>Analisando estrutura...</span>
+                <span>Analyzing structure...</span>
               </div>
               <div className={styles.loadingStep}>
                 <span className={styles.stepIcon}>🤖</span>
-                <span>Gerando documentação com IA...</span>
+                <span>Generating documentation with AI...</span>
               </div>
             </div>
           </div>
@@ -168,10 +168,10 @@ export function GetStarted() {
         <Container size="lg">
           <div className={styles.content}>
             <h1 className={styles.title}>
-              Comece a <span className={styles.highlight} style={gradientStyle}>Documentar</span>
+              Start <span className={styles.highlight} style={gradientStyle}>Documenting</span>
             </h1>
             <p className={styles.subtitle}>
-              Cole o link do seu repositório GitHub e deixe a IA transformar seu código em documentação viva.
+              Paste your GitHub repository link and let AI turn your code into living documentation.
             </p>
 
             <form onSubmit={handleSubmit} className={styles.form}>
@@ -185,7 +185,7 @@ export function GetStarted() {
                   type="url"
                   value={repoUrl}
                   onChange={(e) => setRepoUrl(e.target.value)}
-                  placeholder="https://github.com/usuario/repositorio"
+                  placeholder="https://github.com/user/repository"
                   className={styles.input}
                   disabled={isLoading}
                 />
@@ -198,22 +198,22 @@ export function GetStarted() {
                 className={styles.submitBtn}
                 disabled={isLoading}
               >
-                {isLoading ? 'Analisando...' : 'Analisar Repositório'}
+                {isLoading ? 'Analyzing...' : 'Analyze Repository'}
               </button>
             </form>
 
             <div className={styles.features}>
               <div className={styles.feature}>
                 <span className={styles.featureIcon}>⚡</span>
-                <span>Análise em segundos</span>
+                <span>Analysis in seconds</span>
               </div>
               <div className={styles.feature}>
                 <span className={styles.featureIcon}>🔒</span>
-                <span>Código seguro</span>
+                <span>Secure code</span>
               </div>
               <div className={styles.feature}>
                 <span className={styles.featureIcon}>🎯</span>
-                <span>Documentação precisa</span>
+                <span>Accurate documentation</span>
               </div>
             </div>
           </div>

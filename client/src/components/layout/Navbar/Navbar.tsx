@@ -98,7 +98,7 @@ export function Navbar() {
               rel='noopener noreferrer'
               className={styles.link}
             >
-              Contato
+              Contact
             </a>
 
             {isAuthenticated && user ? (
@@ -107,7 +107,7 @@ export function Navbar() {
                 <button
                   className={styles.avatarButton}
                   onClick={() => setShowDropdown(!showDropdown)}
-                  aria-label='Menu do usuário'
+                  aria-label='User menu'
                 >
                   <div
                     className={styles.avatar}
@@ -169,7 +169,7 @@ export function Navbar() {
                           <path d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2' />
                           <circle cx='12' cy='7' r='4' />
                         </svg>
-                        Meu Perfil
+                        My Profile
                       </Link>
 
                       {/* Repos Salvos - Submenu */}
@@ -191,7 +191,7 @@ export function Navbar() {
                           >
                             <path d='M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z' />
                           </svg>
-                          Repos Salvos
+                          Saved Repos
                           <svg
                             width='14'
                             height='14'
@@ -210,11 +210,11 @@ export function Navbar() {
                             {loadingRepos ? (
                               <div className={styles.reposLoading}>
                                 <span className={styles.loadingSpinner}></span>
-                                Carregando...
+                                Loading...
                               </div>
                             ) : savedRepos.length === 0 ? (
                               <div className={styles.reposEmpty}>
-                                Nenhum repositório salvo
+                                No saved repositories
                               </div>
                             ) : (
                               <>
@@ -246,7 +246,7 @@ export function Navbar() {
                                     setShowReposDropdown(false);
                                   }}
                                 >
-                                  Ver todos os repos
+                                  View all repos
                                 </Link>
                               </>
                             )}
@@ -270,7 +270,7 @@ export function Navbar() {
                           <circle cx='12' cy='12' r='3' />
                           <path d='M12 1v6m0 6v6m6-12l-6 6m0 0l-6 6m12 0l-6-6m0 0l-6-6' />
                         </svg>
-                        Configurações
+                        Settings
                       </Link>
 
                       <div className={styles.dropdownDivider} />
@@ -291,20 +291,20 @@ export function Navbar() {
                           <polyline points='16 17 21 12 16 7' />
                           <line x1='21' y1='12' x2='9' y2='12' />
                         </svg>
-                        Sair
+                        Logout
                       </button>
                     </div>
                   </>
                 )}
               </div>
             ) : (
-              // Usuário não autenticado - mostra botões de login/registro
+              // User not authenticated - show login/register buttons
               <>
                 <Link to='/login' className={styles.link}>
-                  Entrar
+                  Sign In
                 </Link>
                 <Link to='/register' className={styles.tryButton}>
-                  Criar Conta
+                  Sign Up
                 </Link>
               </>
             )}

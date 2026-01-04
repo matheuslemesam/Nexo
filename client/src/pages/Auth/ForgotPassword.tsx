@@ -86,12 +86,12 @@ export function ForgotPassword() {
     setError('');
 
     if (!email.trim()) {
-      setError('Por favor, insira seu e-mail');
+      setError('Please enter your email');
       return;
     }
 
     if (!validateEmail(email)) {
-      setError('Por favor, insira um e-mail válido');
+      setError('Please enter a valid email');
       return;
     }
 
@@ -106,7 +106,7 @@ export function ForgotPassword() {
       
       setIsSuccess(true);
     } catch (err) {
-      setError('Erro ao enviar e-mail. Tente novamente.');
+      setError('Error sending email. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -160,16 +160,16 @@ export function ForgotPassword() {
                       </svg>
                     </div>
                     <h1 className={styles.title}>
-                      Esqueceu sua <span className={styles.highlight} style={gradientStyle}>senha</span>?
+                      Forgot your <span className={styles.highlight} style={gradientStyle}>password</span>?
                     </h1>
                     <p className={styles.subtitle}>
-                      Não se preocupe! Digite seu e-mail e enviaremos um link para você redefinir sua senha.
+                      Don't worry! Enter your email and we'll send you a link to reset your password.
                     </p>
                   </div>
 
                   <form className={styles.form} onSubmit={handleSubmit}>
                     <div className={styles.inputGroup}>
-                      <label htmlFor="email" className={styles.label}>E-mail</label>
+                      <label htmlFor="email" className={styles.label}>Email</label>
                       <div className={styles.inputWrapper}>
                         <span className={styles.inputIcon}>
                           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -201,18 +201,18 @@ export function ForgotPassword() {
                       {isLoading ? (
                         <>
                           <span className={styles.btnSpinner}></span>
-                          Enviando...
+                          Sending...
                         </>
                       ) : (
-                        'Enviar link de recuperação'
+                        'Send recovery link'
                       )}
                     </button>
                   </form>
 
                   <p className={styles.switchAuth}>
-                    Lembrou sua senha?{' '}
+                    Remember your password?{' '}
                     <Link to="/login" className={styles.switchLink}>
-                      Voltar ao login
+                      Back to login
                     </Link>
                   </p>
                 </>
@@ -224,20 +224,20 @@ export function ForgotPassword() {
                       <polyline points="22 4 12 14.01 9 11.01"/>
                     </svg>
                   </div>
-                  <h2 className={styles.successTitle}>E-mail enviado!</h2>
+                  <h2 className={styles.successTitle}>Email sent!</h2>
                   <p className={styles.successText}>
-                    Enviamos um link de recuperação para <strong>{email}</strong>. 
-                    Verifique sua caixa de entrada e siga as instruções.
+                    We've sent a recovery link to <strong>{email}</strong>. 
+                    Check your inbox and follow the instructions.
                   </p>
                   <p className={styles.successNote}>
-                    Não recebeu o e-mail? Verifique sua pasta de spam ou{' '}
+                    Didn't receive the email? Check your spam folder or{' '}
                     <button 
                       type="button" 
                       className={styles.resendBtn}
                       onClick={handleResend}
                       disabled={isLoading}
                     >
-                      {isLoading ? 'Reenviando...' : 'clique aqui para reenviar'}
+                      {isLoading ? 'Resending...' : 'click here to resend'}
                     </button>
                   </p>
                   <Link to="/login" className={styles.backToLogin}>
@@ -245,7 +245,7 @@ export function ForgotPassword() {
                       <line x1="19" y1="12" x2="5" y2="12"/>
                       <polyline points="12 19 5 12 12 5"/>
                     </svg>
-                    Voltar ao login
+                    Back to login
                   </Link>
                 </div>
               )}

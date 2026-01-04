@@ -13,7 +13,7 @@ export function Settings() {
       <div className={styles.page}>
         <Navbar />
         <Container size='md'>
-          <div className={styles.loading}>Carregando...</div>
+          <div className={styles.loading}>Loading...</div>
         </Container>
       </div>
     );
@@ -30,9 +30,9 @@ export function Settings() {
       <main className={styles.main}>
         <Container size='md'>
           <div className={styles.content}>
-            <h1 className={styles.title}>Configurações</h1>
+            <h1 className={styles.title}>Settings</h1>
 
-            {/* Aparência */}
+            {/* Appearance */}
             <div className={styles.section}>
               <div className={styles.sectionHeader}>
                 <div className={styles.sectionIcon}>
@@ -56,18 +56,18 @@ export function Settings() {
                   </svg>
                 </div>
                 <div>
-                  <h2 className={styles.sectionTitle}>Aparência</h2>
+                  <h2 className={styles.sectionTitle}>Appearance</h2>
                   <p className={styles.sectionDescription}>
-                    Personalize a aparência da aplicação
+                    Customize the application's appearance
                   </p>
                 </div>
               </div>
 
               <div className={styles.settingItem}>
                 <div className={styles.settingInfo}>
-                  <h3 className={styles.settingTitle}>Modo Escuro</h3>
+                  <h3 className={styles.settingTitle}>Dark Mode</h3>
                   <p className={styles.settingDescription}>
-                    Alterna entre tema claro e escuro
+                    Toggle between light and dark themes
                   </p>
                 </div>
                 <button
@@ -75,7 +75,7 @@ export function Settings() {
                     theme === "dark" ? styles.toggleActive : ""
                   }`}
                   onClick={toggleTheme}
-                  aria-label='Alternar tema'
+                  aria-label='Toggle theme'
                 >
                   <span className={styles.toggleSlider}>
                     {theme === "dark" ? (
@@ -166,7 +166,7 @@ export function Settings() {
               </div>
             </div>
 
-            {/* Notificações */}
+            {/* Notifications */}
             <div className={styles.section}>
               <div className={styles.sectionHeader}>
                 <div className={styles.sectionIcon}>
@@ -183,9 +183,9 @@ export function Settings() {
                   </svg>
                 </div>
                 <div>
-                  <h2 className={styles.sectionTitle}>Notificações</h2>
+                  <h2 className={styles.sectionTitle}>Notifications</h2>
                   <p className={styles.sectionDescription}>
-                    Gerencie suas preferências de notificação
+                    Manage your notification preferences
                   </p>
                 </div>
               </div>
@@ -193,10 +193,10 @@ export function Settings() {
               <div className={styles.settingItem}>
                 <div className={styles.settingInfo}>
                   <h3 className={styles.settingTitle}>
-                    Notificações por E-mail
+                    Email Notifications
                   </h3>
                   <p className={styles.settingDescription}>
-                    Receba atualizações importantes por e-mail
+                    Receive important updates by email
                   </p>
                 </div>
                 <button
@@ -220,9 +220,9 @@ export function Settings() {
 
               <div className={styles.settingItem}>
                 <div className={styles.settingInfo}>
-                  <h3 className={styles.settingTitle}>Notificações Push</h3>
+                  <h3 className={styles.settingTitle}>Push Notifications</h3>
                   <p className={styles.settingDescription}>
-                    Receba notificações no navegador
+                    Receive browser notifications
                   </p>
                 </div>
                 <button className={styles.toggle} disabled>
@@ -231,7 +231,7 @@ export function Settings() {
               </div>
             </div>
 
-            {/* Conta */}
+            {/* Account */}
             <div className={styles.section}>
               <div className={styles.sectionHeader}>
                 <div className={styles.sectionIcon}>
@@ -248,17 +248,17 @@ export function Settings() {
                   </svg>
                 </div>
                 <div>
-                  <h2 className={styles.sectionTitle}>Conta</h2>
+                  <h2 className={styles.sectionTitle}>Account</h2>
                   <p className={styles.sectionDescription}>
-                    Gerencie sua conta e privacidade
+                    Manage your account and privacy
                   </p>
                 </div>
               </div>
 
               <div className={styles.dangerZone}>
-                <h3 className={styles.dangerTitle}>Zona de Perigo</h3>
+                <h3 className={styles.dangerTitle}>Danger Zone</h3>
                 <p className={styles.dangerDescription}>
-                  Ações irreversíveis relacionadas à sua conta
+                  Irreversible actions related to your account
                 </p>
                 <button className={styles.dangerButton}>
                   <svg
@@ -272,7 +272,7 @@ export function Settings() {
                     <polyline points='3 6 5 6 21 6' />
                     <path d='M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2' />
                   </svg>
-                  Excluir Conta
+                  Delete Account
                 </button>
               </div>
             </div>

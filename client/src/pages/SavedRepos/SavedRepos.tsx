@@ -32,7 +32,7 @@ export function SavedRepos() {
       const response = await listSavedRepos(0, 50);
       setRepos(response.repos);
     } catch (err) {
-      setError("Erro ao carregar repositórios salvos");
+      setError("Error loading saved repositories");
       console.error(err);
     } finally {
       setLoading(false);
@@ -43,7 +43,7 @@ export function SavedRepos() {
     e.preventDefault();
     e.stopPropagation();
     
-    if (!confirm("Tem certeza que deseja remover este repositório?")) {
+    if (!confirm("Are you sure you want to remove this repository?")) {
       return;
     }
     
@@ -52,8 +52,8 @@ export function SavedRepos() {
       await deleteSavedRepo(repoId);
       setRepos(repos.filter(r => r.id !== repoId));
     } catch (err) {
-      console.error("Erro ao deletar repo:", err);
-      alert("Erro ao remover repositório");
+      console.error("Error deleting repo:", err);
+      alert("Error removing repository");
     } finally {
       setDeletingId(null);
     }
@@ -61,7 +61,7 @@ export function SavedRepos() {
 
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
-    return date.toLocaleDateString("pt-BR", {
+    return date.toLocaleDateString("en-US", {
       day: "2-digit",
       month: "short",
       year: "numeric",
@@ -76,7 +76,7 @@ export function SavedRepos() {
           <Container>
             <div className={styles.loading}>
               <div className={styles.spinner}></div>
-              <p>Carregando repositórios...</p>
+              <p>Loading repositories...</p>
             </div>
           </Container>
         </main>
@@ -94,17 +94,17 @@ export function SavedRepos() {
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
               </svg>
-              Meus Repositórios Salvos
+              My Saved Repositories
             </h1>
             <p className={styles.subtitle}>
-              {repos.length} {repos.length === 1 ? "repositório" : "repositórios"} salvo{repos.length !== 1 && "s"}
+              {repos.length} {repos.length === 1 ? "repository" : "repositories"} saved
             </p>
           </div>
 
           {error && (
             <div className={styles.error}>
               <p>{error}</p>
-              <button onClick={loadRepos}>Tentar novamente</button>
+              <button onClick={loadRepos}>Try again</button>
             </div>
           )}
 
@@ -115,10 +115,10 @@ export function SavedRepos() {
                   <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
                 </svg>
               </div>
-              <h3>Nenhum repositório salvo</h3>
-              <p>Quando você analisar repositórios, eles serão salvos aqui automaticamente.</p>
+              <h3>No saved repositories</h3>
+              <p>When you analyze repositories, they will be automatically saved here.</p>
               <Link to="/comecar" className={styles.ctaButton}>
-                Analisar um Repositório
+                Analyze a Repository
               </Link>
             </Card>
           )}
@@ -147,7 +147,7 @@ export function SavedRepos() {
                       className={styles.deleteButton}
                       onClick={(e) => handleDelete(repo.id, e)}
                       disabled={deletingId === repo.id}
-                      title="Remover repositório"
+                      title="Remove repository"
                     >
                       {deletingId === repo.id ? (
                         <span className={styles.miniSpinner}></span>
@@ -185,7 +185,7 @@ export function SavedRepos() {
                       )}
                     </div>
                     <span className={styles.date}>
-                      Salvo em {formatDate(repo.created_at)}
+                      Saved on {formatDate(repo.created_at)}
                     </span>
                   </div>
                 </Link>
@@ -198,7 +198,7 @@ export function SavedRepos() {
   );
 }
 
-// Helper para cores de linguagens
+// Helper for language colors
 function getLanguageColor(language: string): string {
   const colors: Record<string, string> = {
     TypeScript: "#3178c6",
