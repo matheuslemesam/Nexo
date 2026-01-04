@@ -23,8 +23,6 @@ export function Landing() {
         <Hero />
         <PodcastDemo />
         <MCPServer />
-        <AskAI />
-        <AgentOwlbert />
         <AILinter />
         <DocsAudit />
         <TrustedBy />

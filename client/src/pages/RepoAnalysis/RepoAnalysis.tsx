@@ -12,6 +12,7 @@ import {
   getLearningResources,
   type AnalyzeResponse,
   type LearningResourcesResponse,
+  type Contributor,
 } from "../../services/repoAnalysisService";
 import { saveRepository, getSavedRepo } from "../../services/savedReposService";
 import {
@@ -218,7 +219,8 @@ export function RepoAnalysis() {
   const { isAuthenticated, user } = useAuth();
 
   const [activeTab, setActiveTab] = useState<
-    "overview" | "structure" | "learning"
+    "overview" | "structure" | "learning" | "contributors"
+
   >("overview");
   const [isLoaded, setIsLoaded] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
@@ -263,6 +265,7 @@ export function RepoAnalysis() {
   const fileAnalysis = analysisState.data?.file_analysis;
   const dependencies = analysisState.data?.dependencies || [];
   const overview = analysisState.data?.overview;
+  const contributors: Contributor[] = analysisState.data?.repository?.contributors || [];
 
   // Usa useMemo para evitar recriação do objeto languages em cada render
   const languages = useMemo(
@@ -748,6 +751,15 @@ export function RepoAnalysis() {
                 >
                   <span className={styles.tabIcon}>📚</span>
                   Learning
+                </button>
+                <button
+                  className={`${styles.tab} ${
+                    activeTab === "contributors" ? styles.tabActive : ""
+                  }`}
+                  onClick={() => setActiveTab("contributors")}
+                >
+                  <span className={styles.tabIcon}>👥</span>
+                  Contribuidores
                 </button>
               </div>
             </Container>
@@ -1300,6 +1312,123 @@ export function RepoAnalysis() {
                             evoluem rápido, acompanhe as release notes.
                           </li>
                         </ul>
+                      </Card>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Contributors Tab */}
+              {activeTab === "contributors" && (
+                <div
+                  className={`${styles.tabContent} ${
+                    isLoaded ? styles.loaded : ""
+                  }`}
+                >
+                  <div className={styles.contributorsContainer}>
+                    <div className={styles.contributorsHeader}>
+                      <h2 className={styles.contributorsTitle}>
+                        👥 Contribuidores
+                      </h2>
+                      <p className={styles.contributorsSubtitle}>
+                        Pessoas que contribuíram para este repositório
+                      </p>
+                    </div>
+
+                    {/* Contributors Grid */}
+                    {contributors.length > 0 ? (
+                      <div className={styles.contributorsGrid}>
+                        {contributors.map((contributor, index) => (
+                          <a
+                            key={index}
+                            href={contributor.profile_url}
+                            target='_blank'
+                            rel='noopener noreferrer'
+                            className={styles.contributorCard}
+                          >
+                            <div className={styles.contributorAvatar}>
+                              <img
+                                src={contributor.avatar_url}
+                                alt={`Avatar de ${contributor.username}`}
+                                className={styles.contributorImage}
+                                loading="lazy"
+                              />
+                            </div>
+                            <div className={styles.contributorInfo}>
+                              <h3 className={styles.contributorName}>
+                                {contributor.username}
+                              </h3>
+                              <p className={styles.contributorContributions}>
+                                <span className={styles.contributionIcon}>📝</span>
+                                {contributor.contributions}{" "}
+                                {contributor.contributions === 1
+                                  ? "contribuição"
+                                  : "contribuições"}
+                              </p>
+                            </div>
+                            <span className={styles.contributorArrow}>→</span>
+                          </a>
+                        ))}
+                      </div>
+                    ) : (
+                      <Card
+                        variant='outlined'
+                        padding='lg'
+                        className={styles.noContributorsCard}
+                      >
+                        <div className={styles.noContributorsContent}>
+                          <span className={styles.noContributorsIcon}>👤</span>
+                          <h3>Nenhum contribuidor encontrado</h3>
+                          <p>
+                            Não foi possível carregar os contribuidores deste
+                            repositório. Isso pode acontecer em repositórios
+                            privados ou muito novos.
+                          </p>
+                        </div>
+                      </Card>
+                    )}
+
+                    {/* Contributors Stats */}
+                    {contributors.length > 0 && (
+                      <Card
+                        variant='elevated'
+                        padding='lg'
+                        className={styles.contributorsStatsCard}
+                      >
+                        <h3 className={styles.statsTitle}>
+                          📊 Estatísticas de Contribuição
+                        </h3>
+                        <div className={styles.statsGrid}>
+                          <div className={styles.statItem}>
+                            <span className={styles.statValue}>
+                              {contributors.length}
+                            </span>
+                            <span className={styles.statLabel}>
+                              Total de Contribuidores
+                            </span>
+                          </div>
+                          <div className={styles.statItem}>
+                            <span className={styles.statValue}>
+                              {contributors.reduce(
+                                (sum, c) => sum + c.contributions,
+                                0
+                              )}
+                            </span>
+                            <span className={styles.statLabel}>
+                              Total de Contribuições
+                            </span>
+                          </div>
+                          <div className={styles.statItem}>
+                            <span className={styles.statValue}>
+                              {contributors.length > 0
+                                ? contributors[0].username
+                                : "-"}
+                            </span>
+                            <span className={styles.statLabel}>
+                              Top Contribuidor
+                            </span>
+                          </div>
+                        </div>
                       </Card>
                     )}
                   </div>

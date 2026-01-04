@@ -7,7 +7,10 @@ export function MCPServer() {
       <Container size='xl'>
         <div className={styles.grid}>
           <div className={styles.content}>
-            <Badge variant='primary'>CORE</Badge>
+            <div className={styles.badges}>
+              <Badge variant='primary'>CORE</Badge>
+              <Badge variant='secondary'>AI Integrated</Badge>
+            </div>
             <h2 className={styles.title}>
               Intelligent
               <br />
