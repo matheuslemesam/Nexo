@@ -5,6 +5,8 @@ import { Container, Card, Badge } from "../../components/ui";
 import styles from "./RepoAnalysis.module.css";
 import api from "../../services/api";
 
+import { ChatBot } from "../../components/sections/ChatBot";
+
 // Mock data for repository analysis
 const MOCK_REPO_DATA = {
   name: "awesome-project",
@@ -334,6 +336,9 @@ export function RepoAnalysis() {
       <Navbar />
 
       <main className={styles.main}>
+        {/* ChatBot Integration */}
+        <ChatBot repoContext={{ ...MOCK_REPO_DATA, ...MOCK_ANALYSIS }} />
+
         {/* Header Section */}
         <section className={styles.header}>
           <Container size='xl'>

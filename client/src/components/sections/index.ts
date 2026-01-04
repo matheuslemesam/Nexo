@@ -7,3 +7,4 @@ export { DocsAudit } from "./DocsAudit";
 export { TrustedBy } from "./TrustedBy";
 export { Footer } from "./Footer";
 export { PodcastDemo } from "./PodcastDemo";
+export { ChatBot } from "./ChatBot";
